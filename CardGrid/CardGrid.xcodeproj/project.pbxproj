@@ -8,12 +8,20 @@
 
 /* Begin PBXBuildFile section */
 		93AB328F28EDEE7D00F3C470 /* CardGridApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AB328E28EDEE7D00F3C470 /* CardGridApp.swift */; };
-		93AB329128EDEE7D00F3C470 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AB329028EDEE7D00F3C470 /* ContentView.swift */; };
 		93AB329328EDEE7E00F3C470 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 93AB329228EDEE7E00F3C470 /* Assets.xcassets */; };
 		93AB329728EDEE7E00F3C470 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 93AB329628EDEE7E00F3C470 /* Preview Assets.xcassets */; };
 		93AB32A128EDEE7E00F3C470 /* CardGridTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AB32A028EDEE7E00F3C470 /* CardGridTests.swift */; };
 		93AB32AB28EDEE7E00F3C470 /* CardGridUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AB32AA28EDEE7E00F3C470 /* CardGridUITests.swift */; };
 		93AB32AD28EDEE7E00F3C470 /* CardGridUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AB32AC28EDEE7E00F3C470 /* CardGridUITestsLaunchTests.swift */; };
+		93AB32C728EDF17800F3C470 /* SmallCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AB32C128EDF17800F3C470 /* SmallCardView.swift */; };
+		93AB32C828EDF17800F3C470 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AB32C228EDF17800F3C470 /* ContentView.swift */; };
+		93AB32C928EDF17800F3C470 /* CardGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AB32C328EDF17800F3C470 /* CardGridView.swift */; };
+		93AB32CA28EDF17800F3C470 /* FullCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AB32C428EDF17800F3C470 /* FullCardView.swift */; };
+		93AB32CB28EDF17800F3C470 /* InteractiveButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AB32C528EDF17800F3C470 /* InteractiveButtonView.swift */; };
+		93AB32CC28EDF17800F3C470 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AB32C628EDF17800F3C470 /* CardView.swift */; };
+		93AB32D028EDF18500F3C470 /* CardModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AB32CD28EDF18500F3C470 /* CardModel.swift */; };
+		93AB32D128EDF18500F3C470 /* SelectedCardDecorationsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AB32CE28EDF18500F3C470 /* SelectedCardDecorationsModel.swift */; };
+		93AB32D228EDF18500F3C470 /* ColorCardModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AB32CF28EDF18500F3C470 /* ColorCardModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,7 +44,6 @@
 /* Begin PBXFileReference section */
 		93AB328B28EDEE7D00F3C470 /* CardGrid.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CardGrid.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		93AB328E28EDEE7D00F3C470 /* CardGridApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardGridApp.swift; sourceTree = "<group>"; };
-		93AB329028EDEE7D00F3C470 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		93AB329228EDEE7E00F3C470 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		93AB329428EDEE7E00F3C470 /* CardGrid.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CardGrid.entitlements; sourceTree = "<group>"; };
 		93AB329628EDEE7E00F3C470 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -45,6 +52,15 @@
 		93AB32A628EDEE7E00F3C470 /* CardGridUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CardGridUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		93AB32AA28EDEE7E00F3C470 /* CardGridUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardGridUITests.swift; sourceTree = "<group>"; };
 		93AB32AC28EDEE7E00F3C470 /* CardGridUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardGridUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		93AB32C128EDF17800F3C470 /* SmallCardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SmallCardView.swift; sourceTree = "<group>"; };
+		93AB32C228EDF17800F3C470 /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		93AB32C328EDF17800F3C470 /* CardGridView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardGridView.swift; sourceTree = "<group>"; };
+		93AB32C428EDF17800F3C470 /* FullCardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FullCardView.swift; sourceTree = "<group>"; };
+		93AB32C528EDF17800F3C470 /* InteractiveButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InteractiveButtonView.swift; sourceTree = "<group>"; };
+		93AB32C628EDF17800F3C470 /* CardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
+		93AB32CD28EDF18500F3C470 /* CardModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardModel.swift; sourceTree = "<group>"; };
+		93AB32CE28EDF18500F3C470 /* SelectedCardDecorationsModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectedCardDecorationsModel.swift; sourceTree = "<group>"; };
+		93AB32CF28EDF18500F3C470 /* ColorCardModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorCardModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,10 +111,11 @@
 		93AB328D28EDEE7D00F3C470 /* CardGrid */ = {
 			isa = PBXGroup;
 			children = (
-				93AB328E28EDEE7D00F3C470 /* CardGridApp.swift */,
-				93AB329028EDEE7D00F3C470 /* ContentView.swift */,
+				93AB32C028EDF15200F3C470 /* Views */,
+				93AB32BF28EDF14D00F3C470 /* Models */,
 				93AB329228EDEE7E00F3C470 /* Assets.xcassets */,
 				93AB329428EDEE7E00F3C470 /* CardGrid.entitlements */,
+				93AB328E28EDEE7D00F3C470 /* CardGridApp.swift */,
 				93AB329528EDEE7E00F3C470 /* Preview Content */,
 			);
 			path = CardGrid;
@@ -127,6 +144,29 @@
 				93AB32AC28EDEE7E00F3C470 /* CardGridUITestsLaunchTests.swift */,
 			);
 			path = CardGridUITests;
+			sourceTree = "<group>";
+		};
+		93AB32BF28EDF14D00F3C470 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				93AB32CD28EDF18500F3C470 /* CardModel.swift */,
+				93AB32CF28EDF18500F3C470 /* ColorCardModel.swift */,
+				93AB32CE28EDF18500F3C470 /* SelectedCardDecorationsModel.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		93AB32C028EDF15200F3C470 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				93AB32C328EDF17800F3C470 /* CardGridView.swift */,
+				93AB32C628EDF17800F3C470 /* CardView.swift */,
+				93AB32C228EDF17800F3C470 /* ContentView.swift */,
+				93AB32C428EDF17800F3C470 /* FullCardView.swift */,
+				93AB32C528EDF17800F3C470 /* InteractiveButtonView.swift */,
+				93AB32C128EDF17800F3C470 /* SmallCardView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -259,8 +299,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				93AB329128EDEE7D00F3C470 /* ContentView.swift in Sources */,
+				93AB32D128EDF18500F3C470 /* SelectedCardDecorationsModel.swift in Sources */,
+				93AB32D228EDF18500F3C470 /* ColorCardModel.swift in Sources */,
+				93AB32CC28EDF17800F3C470 /* CardView.swift in Sources */,
+				93AB32C928EDF17800F3C470 /* CardGridView.swift in Sources */,
+				93AB32CB28EDF17800F3C470 /* InteractiveButtonView.swift in Sources */,
+				93AB32C728EDF17800F3C470 /* SmallCardView.swift in Sources */,
 				93AB328F28EDEE7D00F3C470 /* CardGridApp.swift in Sources */,
+				93AB32D028EDF18500F3C470 /* CardModel.swift in Sources */,
+				93AB32C828EDF17800F3C470 /* ContentView.swift in Sources */,
+				93AB32CA28EDF17800F3C470 /* FullCardView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
