@@ -15,7 +15,7 @@ enum CardUX {
     static let shadowRadius: CGFloat = 2
     static let verticalSpacing: CGFloat = 10
     static let minimumCardWidth: CGFloat = 140
-    static let animation = Animation.interpolatingSpring(stiffness: 425, damping: 30)
+    static let animation = Animation.easeInOut // Animation.interpolatingSpring(stiffness: 425, damping: 30)
 }
 
 struct CardView<Card>: View where Card: CardModel {

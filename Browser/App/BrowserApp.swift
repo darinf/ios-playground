@@ -4,9 +4,11 @@ import SwiftUI
 
 @main
 struct BrowserApp: App {
+    let browserViewModel = BrowserViewModel()
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            BrowserView(model: browserViewModel)
         }
     }
 }

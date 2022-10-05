@@ -15,14 +15,15 @@ enum CardUX {
 
 struct CardView<Card>: View where Card: CardModel {
     let namespace: Namespace.ID
-    let card: Card
+    @ObservedObject var model: CardViewModel<Card>
     let selected: Bool
     let zoomed: Bool
 
-    @EnvironmentObject var selectedCardDecorationsModel: SelectedCardDecorationsModel
-
+    var card: Card {
+        model.card
+    }
     var showDecorations: Bool {
-        !selected || selectedCardDecorationsModel.showDecorations
+        model.showDecorations
     }
     var cardRadius: CGFloat {
         showDecorations ? CardUX.cardRadius : 0
@@ -58,10 +59,16 @@ struct CardView<Card>: View where Card: CardModel {
             .offset(x: 0, y: CardUX.titleHeight + CardUX.verticalSpacing)
             .opacity(showDecorations ? 1 : 0)
         }
+        // Update showDecorations if the card is appearing or disappearing. This ensures
+        // consistency as sometimes a view is not removed right away.
         .onAppear {
-            guard selected else { return }
             withAnimation(.easeInOut) {
-                selectedCardDecorationsModel.showDecorations = !zoomed
+                model.showDecorations = !zoomed
+            }
+        }
+        .onDisappear {
+            withAnimation(.easeInOut) {
+                model.showDecorations = zoomed
             }
         }
     }

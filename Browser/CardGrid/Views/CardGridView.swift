@@ -7,31 +7,30 @@ enum CardGridUX {
 }
 
 struct CardGridView<Card>: View where Card: CardModel {
-    let namespace: Namespace.ID
-    let cards: [Card]
-    @Binding var selectedCardId: String?
-    @Binding var zoomed: Bool
+    @Namespace var namespace
+    @ObservedObject var model: CardGridViewModel<Card>
 
-    var body: some View {
+    var grid: some View {
         ScrollView {
             let columns = [
                 GridItem(.adaptive(minimum: CardUX.minimumCardWidth),
                          spacing: CardGridUX.spacing)
             ]
             LazyVGrid(columns: columns, spacing: CardGridUX.spacing + CardUX.titleHeight + CardUX.verticalSpacing) {
-                ForEach(cards) { card in
-                    let selected = selectedCardId == card.id
+                ForEach(model.cards) { cardDetail in
+                    let selected = model.selectedCardId == cardDetail.id
                     InteractiveButtonView {
-                        selectedCardId = card.id
+                        if model.zoomed { return }
+                        model.selectedCardId = cardDetail.id
                         withAnimation(CardUX.animation) {
-                            zoomed = true
+                            model.zoomed = true
                         }
                     } label: {
                         SmallCardView(
                             namespace: namespace,
-                            card: card,
+                            model: cardDetail.model,
                             selected: selected,
-                            zoomed: zoomed
+                            zoomed: model.zoomed
                         )
                         .aspectRatio(CardUX.aspectRatio, contentMode: .fill)
                     }
@@ -39,6 +38,28 @@ struct CardGridView<Card>: View where Card: CardModel {
                 }
             }
             .padding(CardGridUX.spacing)
+        }
+    }
+
+    var body: some View {
+        ZStack {
+            grid
+            if let selectedCardId = model.selectedCardId {
+                if let cardDetail = model.cards.first(where: { $0.id == selectedCardId }), model.zoomed {
+                    FullCardView(
+                        namespace: namespace,
+                        model: cardDetail.model
+                    )
+                    .onTapGesture {
+                        withAnimation(CardUX.animation) {
+                            model.zoomed = false
+                        }
+                    }
+                }
+            }
+        }
+        .onAppear {
+            model.selectedCardId = model.cards[0].id
         }
     }
 }
