@@ -1,0 +1,617 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		93AB328F28EDEE7D00F3C470 /* CardGridApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AB328E28EDEE7D00F3C470 /* CardGridApp.swift */; };
+		93AB329128EDEE7D00F3C470 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AB329028EDEE7D00F3C470 /* ContentView.swift */; };
+		93AB329328EDEE7E00F3C470 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 93AB329228EDEE7E00F3C470 /* Assets.xcassets */; };
+		93AB329728EDEE7E00F3C470 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 93AB329628EDEE7E00F3C470 /* Preview Assets.xcassets */; };
+		93AB32A128EDEE7E00F3C470 /* CardGridTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AB32A028EDEE7E00F3C470 /* CardGridTests.swift */; };
+		93AB32AB28EDEE7E00F3C470 /* CardGridUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AB32AA28EDEE7E00F3C470 /* CardGridUITests.swift */; };
+		93AB32AD28EDEE7E00F3C470 /* CardGridUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AB32AC28EDEE7E00F3C470 /* CardGridUITestsLaunchTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		93AB329D28EDEE7E00F3C470 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 93AB328328EDEE7D00F3C470 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 93AB328A28EDEE7D00F3C470;
+			remoteInfo = CardGrid;
+		};
+		93AB32A728EDEE7E00F3C470 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 93AB328328EDEE7D00F3C470 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 93AB328A28EDEE7D00F3C470;
+			remoteInfo = CardGrid;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		93AB328B28EDEE7D00F3C470 /* CardGrid.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CardGrid.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		93AB328E28EDEE7D00F3C470 /* CardGridApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardGridApp.swift; sourceTree = "<group>"; };
+		93AB329028EDEE7D00F3C470 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		93AB329228EDEE7E00F3C470 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		93AB329428EDEE7E00F3C470 /* CardGrid.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CardGrid.entitlements; sourceTree = "<group>"; };
+		93AB329628EDEE7E00F3C470 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		93AB329C28EDEE7E00F3C470 /* CardGridTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CardGridTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		93AB32A028EDEE7E00F3C470 /* CardGridTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardGridTests.swift; sourceTree = "<group>"; };
+		93AB32A628EDEE7E00F3C470 /* CardGridUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CardGridUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		93AB32AA28EDEE7E00F3C470 /* CardGridUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardGridUITests.swift; sourceTree = "<group>"; };
+		93AB32AC28EDEE7E00F3C470 /* CardGridUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardGridUITestsLaunchTests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		93AB328828EDEE7D00F3C470 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		93AB329928EDEE7E00F3C470 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		93AB32A328EDEE7E00F3C470 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		93AB328228EDEE7D00F3C470 = {
+			isa = PBXGroup;
+			children = (
+				93AB328D28EDEE7D00F3C470 /* CardGrid */,
+				93AB329F28EDEE7E00F3C470 /* CardGridTests */,
+				93AB32A928EDEE7E00F3C470 /* CardGridUITests */,
+				93AB328C28EDEE7D00F3C470 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		93AB328C28EDEE7D00F3C470 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				93AB328B28EDEE7D00F3C470 /* CardGrid.app */,
+				93AB329C28EDEE7E00F3C470 /* CardGridTests.xctest */,
+				93AB32A628EDEE7E00F3C470 /* CardGridUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		93AB328D28EDEE7D00F3C470 /* CardGrid */ = {
+			isa = PBXGroup;
+			children = (
+				93AB328E28EDEE7D00F3C470 /* CardGridApp.swift */,
+				93AB329028EDEE7D00F3C470 /* ContentView.swift */,
+				93AB329228EDEE7E00F3C470 /* Assets.xcassets */,
+				93AB329428EDEE7E00F3C470 /* CardGrid.entitlements */,
+				93AB329528EDEE7E00F3C470 /* Preview Content */,
+			);
+			path = CardGrid;
+			sourceTree = "<group>";
+		};
+		93AB329528EDEE7E00F3C470 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				93AB329628EDEE7E00F3C470 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		93AB329F28EDEE7E00F3C470 /* CardGridTests */ = {
+			isa = PBXGroup;
+			children = (
+				93AB32A028EDEE7E00F3C470 /* CardGridTests.swift */,
+			);
+			path = CardGridTests;
+			sourceTree = "<group>";
+		};
+		93AB32A928EDEE7E00F3C470 /* CardGridUITests */ = {
+			isa = PBXGroup;
+			children = (
+				93AB32AA28EDEE7E00F3C470 /* CardGridUITests.swift */,
+				93AB32AC28EDEE7E00F3C470 /* CardGridUITestsLaunchTests.swift */,
+			);
+			path = CardGridUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		93AB328A28EDEE7D00F3C470 /* CardGrid */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 93AB32B028EDEE7E00F3C470 /* Build configuration list for PBXNativeTarget "CardGrid" */;
+			buildPhases = (
+				93AB328728EDEE7D00F3C470 /* Sources */,
+				93AB328828EDEE7D00F3C470 /* Frameworks */,
+				93AB328928EDEE7D00F3C470 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CardGrid;
+			productName = CardGrid;
+			productReference = 93AB328B28EDEE7D00F3C470 /* CardGrid.app */;
+			productType = "com.apple.product-type.application";
+		};
+		93AB329B28EDEE7E00F3C470 /* CardGridTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 93AB32B328EDEE7E00F3C470 /* Build configuration list for PBXNativeTarget "CardGridTests" */;
+			buildPhases = (
+				93AB329828EDEE7E00F3C470 /* Sources */,
+				93AB329928EDEE7E00F3C470 /* Frameworks */,
+				93AB329A28EDEE7E00F3C470 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				93AB329E28EDEE7E00F3C470 /* PBXTargetDependency */,
+			);
+			name = CardGridTests;
+			productName = CardGridTests;
+			productReference = 93AB329C28EDEE7E00F3C470 /* CardGridTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		93AB32A528EDEE7E00F3C470 /* CardGridUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 93AB32B628EDEE7E00F3C470 /* Build configuration list for PBXNativeTarget "CardGridUITests" */;
+			buildPhases = (
+				93AB32A228EDEE7E00F3C470 /* Sources */,
+				93AB32A328EDEE7E00F3C470 /* Frameworks */,
+				93AB32A428EDEE7E00F3C470 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				93AB32A828EDEE7E00F3C470 /* PBXTargetDependency */,
+			);
+			name = CardGridUITests;
+			productName = CardGridUITests;
+			productReference = 93AB32A628EDEE7E00F3C470 /* CardGridUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		93AB328328EDEE7D00F3C470 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1400;
+				LastUpgradeCheck = 1400;
+				TargetAttributes = {
+					93AB328A28EDEE7D00F3C470 = {
+						CreatedOnToolsVersion = 14.0.1;
+					};
+					93AB329B28EDEE7E00F3C470 = {
+						CreatedOnToolsVersion = 14.0.1;
+						TestTargetID = 93AB328A28EDEE7D00F3C470;
+					};
+					93AB32A528EDEE7E00F3C470 = {
+						CreatedOnToolsVersion = 14.0.1;
+						TestTargetID = 93AB328A28EDEE7D00F3C470;
+					};
+				};
+			};
+			buildConfigurationList = 93AB328628EDEE7D00F3C470 /* Build configuration list for PBXProject "CardGrid" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 93AB328228EDEE7D00F3C470;
+			productRefGroup = 93AB328C28EDEE7D00F3C470 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				93AB328A28EDEE7D00F3C470 /* CardGrid */,
+				93AB329B28EDEE7E00F3C470 /* CardGridTests */,
+				93AB32A528EDEE7E00F3C470 /* CardGridUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		93AB328928EDEE7D00F3C470 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				93AB329728EDEE7E00F3C470 /* Preview Assets.xcassets in Resources */,
+				93AB329328EDEE7E00F3C470 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		93AB329A28EDEE7E00F3C470 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		93AB32A428EDEE7E00F3C470 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		93AB328728EDEE7D00F3C470 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				93AB329128EDEE7D00F3C470 /* ContentView.swift in Sources */,
+				93AB328F28EDEE7D00F3C470 /* CardGridApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		93AB329828EDEE7E00F3C470 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				93AB32A128EDEE7E00F3C470 /* CardGridTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		93AB32A228EDEE7E00F3C470 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				93AB32AD28EDEE7E00F3C470 /* CardGridUITestsLaunchTests.swift in Sources */,
+				93AB32AB28EDEE7E00F3C470 /* CardGridUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		93AB329E28EDEE7E00F3C470 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 93AB328A28EDEE7D00F3C470 /* CardGrid */;
+			targetProxy = 93AB329D28EDEE7E00F3C470 /* PBXContainerItemProxy */;
+		};
+		93AB32A828EDEE7E00F3C470 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 93AB328A28EDEE7D00F3C470 /* CardGrid */;
+			targetProxy = 93AB32A728EDEE7E00F3C470 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		93AB32AE28EDEE7E00F3C470 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		93AB32AF28EDEE7E00F3C470 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		93AB32B128EDEE7E00F3C470 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = CardGrid/CardGrid.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"CardGrid/Preview Content\"";
+				DEVELOPMENT_TEAM = C7ZSH475YN;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = darinf.CardGrid;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		93AB32B228EDEE7E00F3C470 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = CardGrid/CardGrid.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"CardGrid/Preview Content\"";
+				DEVELOPMENT_TEAM = C7ZSH475YN;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = darinf.CardGrid;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		93AB32B428EDEE7E00F3C470 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = C7ZSH475YN;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = darinf.CardGridTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CardGrid.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CardGrid";
+			};
+			name = Debug;
+		};
+		93AB32B528EDEE7E00F3C470 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = C7ZSH475YN;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = darinf.CardGridTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CardGrid.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CardGrid";
+			};
+			name = Release;
+		};
+		93AB32B728EDEE7E00F3C470 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = C7ZSH475YN;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = darinf.CardGridUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = CardGrid;
+			};
+			name = Debug;
+		};
+		93AB32B828EDEE7E00F3C470 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = C7ZSH475YN;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = darinf.CardGridUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = CardGrid;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		93AB328628EDEE7D00F3C470 /* Build configuration list for PBXProject "CardGrid" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				93AB32AE28EDEE7E00F3C470 /* Debug */,
+				93AB32AF28EDEE7E00F3C470 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		93AB32B028EDEE7E00F3C470 /* Build configuration list for PBXNativeTarget "CardGrid" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				93AB32B128EDEE7E00F3C470 /* Debug */,
+				93AB32B228EDEE7E00F3C470 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		93AB32B328EDEE7E00F3C470 /* Build configuration list for PBXNativeTarget "CardGridTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				93AB32B428EDEE7E00F3C470 /* Debug */,
+				93AB32B528EDEE7E00F3C470 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		93AB32B628EDEE7E00F3C470 /* Build configuration list for PBXNativeTarget "CardGridUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				93AB32B728EDEE7E00F3C470 /* Debug */,
+				93AB32B828EDEE7E00F3C470 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 93AB328328EDEE7D00F3C470 /* Project object */;
+}
