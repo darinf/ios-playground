@@ -8,9 +8,5 @@
 import Combine
 
 class SelectedCardDecorationsModel: ObservableObject {
-    @Published var showDecorations: Bool = true {
-        didSet {
-            print(">>> didSet showDecorations: \(showDecorations)")
-        }
-    }
+    @Published var showDecorations: Bool = true
 }
