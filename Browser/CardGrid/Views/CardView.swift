@@ -10,7 +10,8 @@ enum CardUX {
     static let shadowRadius: CGFloat = 2
     static let verticalSpacing: CGFloat = 10
     static let minimumCardWidth: CGFloat = 140
-    static let animation = Animation.interpolatingSpring(stiffness: 425, damping: 30)
+    static let transitionAnimation = Animation.interactiveSpring(response: 0.25)
+    static let decorationAnimation = Animation.easeInOut(duration: 0.1)
 }
 
 struct CardView<Card>: View where Card: CardModel {
@@ -62,12 +63,12 @@ struct CardView<Card>: View where Card: CardModel {
         // Update showDecorations if the card is appearing or disappearing. This ensures
         // consistency as sometimes a view is not removed right away.
         .onAppear {
-            withAnimation(.easeInOut) {
+            withAnimation(CardUX.decorationAnimation) {
                 model.showDecorations = !zoomed
             }
         }
         .onDisappear {
-            withAnimation(.easeInOut) {
+            withAnimation(CardUX.decorationAnimation) {
                 model.showDecorations = zoomed
             }
         }

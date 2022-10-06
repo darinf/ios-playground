@@ -11,7 +11,7 @@ struct CardGridView<Card>: View where Card: CardModel {
     @ObservedObject var model: CardGridViewModel<Card>
 
     var grid: some View {
-        ScrollView {
+        ScrollView(showsIndicators: false) {
             let columns = [
                 GridItem(.adaptive(minimum: CardUX.minimumCardWidth),
                          spacing: CardGridUX.spacing)
@@ -22,7 +22,7 @@ struct CardGridView<Card>: View where Card: CardModel {
                     InteractiveButtonView {
                         if model.zoomed { return }
                         model.selectedCardId = cardDetail.id
-                        withAnimation(CardUX.animation) {
+                        withAnimation(CardUX.transitionAnimation) {
                             model.zoomed = true
                         }
                     } label: {
@@ -51,7 +51,7 @@ struct CardGridView<Card>: View where Card: CardModel {
                         model: cardDetail.model
                     )
                     .onTapGesture {
-                        withAnimation(CardUX.animation) {
+                        withAnimation(CardUX.transitionAnimation) {
                             model.zoomed = false
                         }
                     }
