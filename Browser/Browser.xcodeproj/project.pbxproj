@@ -50,13 +50,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		933A5A8428EF570C00F8A35E /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				93AB330128EDFAA600F3C470 /* ReportsPressesButtonStyle.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
 		93AB32D328EDF92400F3C470 = {
 			isa = PBXGroup;
 			children = (
-				93AB32E328EDF92400F3C470 /* Assets.xcassets */,
 				93AB330A28EDFAC500F3C470 /* App */,
+				93AB32E328EDF92400F3C470 /* Assets.xcassets */,
 				93AB32ED28EDF9C200F3C470 /* CardGrid */,
 				93AB32DD28EDF92400F3C470 /* Products */,
+				933A5A8428EF570C00F8A35E /* Utils */,
 			);
 			sourceTree = "<group>";
 		};
@@ -93,7 +102,6 @@
 				93AB330028EDFAA600F3C470 /* CardGridView.swift */,
 				93AB330328EDFAA600F3C470 /* CardView.swift */,
 				93AB330428EDFAA600F3C470 /* FullCardView.swift */,
-				93AB330128EDFAA600F3C470 /* ReportsPressesButtonStyle.swift */,
 				93AB330228EDFAA600F3C470 /* SmallCardView.swift */,
 			);
 			path = Views;
