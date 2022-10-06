@@ -12,6 +12,7 @@ enum CardUX {
     static let minimumCardWidth: CGFloat = 140
     static let transitionAnimation = Animation.interactiveSpring(response: 0.25)
     static let decorationAnimation = Animation.easeInOut(duration: 0.1)
+    static let pressAnimation = Animation.easeOut
 }
 
 struct CardView<Card>: View where Card: CardModel {
@@ -60,6 +61,8 @@ struct CardView<Card>: View where Card: CardModel {
             .offset(x: 0, y: CardUX.titleHeight + CardUX.verticalSpacing)
             .opacity(showDecorations ? 1 : 0)
         }
+        .scaleEffect(model.pressed ? 0.95 : 1)
+        .animation(CardUX.pressAnimation, value: model.pressed)
         // Update showDecorations if the card is appearing or disappearing. This ensures
         // consistency as sometimes a view is not removed right away.
         .onAppear {

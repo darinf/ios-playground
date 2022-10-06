@@ -19,22 +19,18 @@ struct CardGridView<Card>: View where Card: CardModel {
             LazyVGrid(columns: columns, spacing: CardGridUX.spacing + CardUX.titleHeight + CardUX.verticalSpacing) {
                 ForEach(model.cards) { cardDetail in
                     let selected = model.selectedCardId == cardDetail.id
-                    InteractiveButtonView {
+                    SmallCardView(
+                        namespace: namespace,
+                        model: cardDetail.model,
+                        selected: selected,
+                        zoomed: model.zoomed
+                    ) {
                         if model.zoomed { return }
                         model.selectedCardId = cardDetail.id
                         withAnimation(CardUX.transitionAnimation) {
                             model.zoomed = true
                         }
-                    } label: {
-                        SmallCardView(
-                            namespace: namespace,
-                            model: cardDetail.model,
-                            selected: selected,
-                            zoomed: model.zoomed
-                        )
-                        .aspectRatio(CardUX.aspectRatio, contentMode: .fill)
                     }
-                    .zIndex(selected ? 1 : 0)
                 }
             }
             .padding(CardGridUX.spacing)
