@@ -9,7 +9,7 @@ struct FullCardView<Card>: View where Card: CardModel {
     var body: some View {
         CardView(namespace: namespace, model: model, selected: true, zoomed: true)
             .zIndex(1)
-            .ignoresSafeArea()
+            .ignoresSafeArea(edges: .bottom)
             .transition(.identity.animation(.default))
     }
 }
