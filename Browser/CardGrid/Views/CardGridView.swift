@@ -6,9 +6,10 @@ enum CardGridUX {
     static let spacing: CGFloat = 18
 }
 
-struct CardGridView<Card>: View where Card: CardModel {
+struct CardGridView<Card, OverlayContent>: View where Card: CardModel, OverlayContent: View {
     @Namespace var namespace
     @ObservedObject var model: CardGridViewModel<Card>
+    @ViewBuilder let bottomOverlay: (_ zoomed: Bool) -> OverlayContent
 
     var grid: some View {
         ScrollView(showsIndicators: false) {
@@ -63,13 +64,7 @@ struct CardGridView<Card>: View where Card: CardModel {
 
                 VStack {
                     Spacer()
-                    HStack {
-                        Spacer()
-                        Circle()
-                            .fill(Color(uiColor: .systemBackground))
-                            .frame(height: 50)
-                            .offset(x: -50, y: model.zoomed ? -50 : 100)
-                    }
+                    bottomOverlay(model.zoomed)
                 }
                 .ignoresSafeArea(edges: [.top, .bottom])
                 .zIndex(2)
