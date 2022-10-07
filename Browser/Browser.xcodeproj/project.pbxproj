@@ -90,6 +90,60 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		933A5A8E28F0073E00F8A35E /* WebContents */ = {
+			isa = PBXGroup;
+			children = (
+				933A5A9128F0077600F8A35E /* Models */,
+				933A5A9028F0076700F8A35E /* ViewModels */,
+				933A5A8F28F0076000F8A35E /* Views */,
+			);
+			path = WebContents;
+			sourceTree = "<group>";
+		};
+		933A5A8F28F0076000F8A35E /* Views */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		933A5A9028F0076700F8A35E /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		933A5A9128F0077600F8A35E /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		933A5A9228F00AB200F8A35E /* ZeroQuery */ = {
+			isa = PBXGroup;
+			children = (
+				933A5A9428F00AC300F8A35E /* Views */,
+				933A5A9328F00ABE00F8A35E /* ViewModels */,
+			);
+			path = ZeroQuery;
+			sourceTree = "<group>";
+		};
+		933A5A9328F00ABE00F8A35E /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		933A5A9428F00AC300F8A35E /* Views */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		93AB32D328EDF92400F3C470 = {
 			isa = PBXGroup;
 			children = (
@@ -99,6 +153,8 @@
 				933A5A8B28EFFBDE00F8A35E /* OmniBar */,
 				93AB32DD28EDF92400F3C470 /* Products */,
 				933A5A8428EF570C00F8A35E /* Utils */,
+				933A5A8E28F0073E00F8A35E /* WebContents */,
+				933A5A9228F00AB200F8A35E /* ZeroQuery */,
 			);
 			sourceTree = "<group>";
 		};

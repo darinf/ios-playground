@@ -20,7 +20,7 @@ struct BrowserView: View {
     }
 
     @ViewBuilder
-    func cardContent(card: ColorCardModel) -> some View {
+    func zoomedCard(card: ColorCardModel) -> some View {
         Color.gray
     }
 
@@ -28,8 +28,8 @@ struct BrowserView: View {
         ZStack {
             CardGridView(
                 model: model.cardGridViewModel,
-                cardContent: cardContent,
-                bottomOverlay: bottomOverlay
+                bottomOverlay: bottomOverlay,
+                zoomedCard: zoomedCard
             )
         }
     }
