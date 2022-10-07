@@ -39,6 +39,10 @@ class WebContentsCardModel: CardModel {
             self.title = title ?? ""
         }.store(in: &subscriptions)
 
+        if let url = url {
+            webView.load(URLRequest(url: url))
+        }
+
         return webView
     }()
 

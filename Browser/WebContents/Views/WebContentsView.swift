@@ -20,11 +20,5 @@ struct WebContentsView: View {
 
     var body: some View {
         WebViewContainerView(webView: card.webView)
-//            .onAppear {
-//                card.navigate(to: card.url)
-//            }
-//            .onDisappear {
-//                card.takeSnapshot()
-//            }
     }
 }

@@ -33,7 +33,7 @@ class BrowserViewModel: ObservableObject {
 
     init() {
         let initialCards: [WebContentsCardModel] = [
-            .init()
+            .init(url: URL(string: "https://news.ycombinator.com/")!)
         ]
         self.cardGridViewModel = .init(cards: initialCards)
 
@@ -41,7 +41,9 @@ class BrowserViewModel: ObservableObject {
         self.selectedCardIdSubscription = self.cardGridViewModel.$selectedCardId.sink { id in
             if let id = id, let details = self.cardGridViewModel.cardDetails(for: id) {
                 self.selectedCardUrlSubscription = details.model.card.$url.sink { url in
-                    self.omniBarViewModel.urlFieldViewModel.input = url?.absoluteString ?? ""
+                    DispatchQueue.main.async {
+                        self.omniBarViewModel.urlFieldViewModel.input = url?.absoluteString ?? ""
+                    }
                 }
             } else {
                 self.selectedCardUrlSubscription = nil

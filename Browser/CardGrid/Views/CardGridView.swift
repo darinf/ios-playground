@@ -61,6 +61,7 @@ struct CardGridView<Card, ZoomedContent, OverlayContent>: View where Card: CardM
                         Group {
                             if model.showContent {
                                 zoomedCard(details.model.card)
+                                    .transition(.asymmetric(insertion: .opacity, removal: .identity))
                             }
                         }
                     )
