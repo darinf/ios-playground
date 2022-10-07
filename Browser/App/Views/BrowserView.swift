@@ -14,7 +14,9 @@ struct BrowserView: View {
                 case .urlField:
                     model.presentZeroQuery()
                 case .showTabs:
-                    model.cardGridViewModel.zoomOut()
+                    model.selectedCard?.takeSnapshot() {
+                        model.cardGridViewModel.zoomOut()
+                    }
                 case .showMenu:
                     print(">>> showMenu")
                 }
@@ -23,8 +25,32 @@ struct BrowserView: View {
     }
 
     @ViewBuilder
-    func zoomedCard(card: ColorCardModel) -> some View {
-        Color.gray
+    func zeroQuery() -> some View {
+        if model.showZeroQuery {
+            ZeroQueryView(model: model.zeroQueryViewModel, namespace: namespace) { action in
+                switch action {
+                case .cancel:
+                    model.dismissZeroQuery()
+                case .navigate(let input):
+                    print(">>> navigate to \(input)")
+                    model.omniBarViewModel.urlFieldViewModel.input = input
+                    model.dismissZeroQuery()
+
+                    if let selectedCard = model.selectedCard {
+                        if let url = URL(string: input) {
+                            selectedCard.navigate(to: url)
+                        } else {
+//                            selectedCard.model.card.navigate(to: URL(string: "https://neeva.com/search?q=\(input)")!)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    func zoomedCard(card: WebContentsCardModel) -> some View {
+        WebContentsView(model: model.webContentsViewModel, card: card)
     }
 
     var body: some View {
@@ -34,19 +60,7 @@ struct BrowserView: View {
                 bottomOverlay: bottomOverlay,
                 zoomedCard: zoomedCard
             )
-
-            if model.showZeroQuery {
-                ZeroQueryView(model: model.zeroQueryViewModel, namespace: namespace) { action in
-                    switch action {
-                    case .cancel:
-                        model.dismissZeroQuery()
-                    case .navigate(let input):
-                        print(">>> navigate to \(input)")
-                        model.omniBarViewModel.urlFieldViewModel.input = input
-                        model.dismissZeroQuery()
-                    }
-                }
-            }
+            zeroQuery()
         }
     }
 }

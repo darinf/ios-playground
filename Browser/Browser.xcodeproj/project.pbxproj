@@ -18,6 +18,9 @@
 		933A5A9E28F00FF600F8A35E /* ExpandoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A5A9D28F00FF600F8A35E /* ExpandoView.swift */; };
 		933A5AA028F07C4900F8A35E /* ZeroQueryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A5A9F28F07C4900F8A35E /* ZeroQueryViewModel.swift */; };
 		933A5AA228F07CB700F8A35E /* UrlFieldViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A5AA128F07CB700F8A35E /* UrlFieldViewModel.swift */; };
+		933A5AA428F08E9F00F8A35E /* WebContentsCardModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A5AA328F08E9F00F8A35E /* WebContentsCardModel.swift */; };
+		933A5AA628F0907200F8A35E /* WebContentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A5AA528F0907200F8A35E /* WebContentsView.swift */; };
+		933A5AA828F090F300F8A35E /* WebContentsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A5AA728F090F300F8A35E /* WebContentsViewModel.swift */; };
 		93AB32E028EDF92400F3C470 /* BrowserApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AB32DF28EDF92400F3C470 /* BrowserApp.swift */; };
 		93AB32E228EDF92400F3C470 /* BrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AB32E128EDF92400F3C470 /* BrowserView.swift */; };
 		93AB32E428EDF92400F3C470 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 93AB32E328EDF92400F3C470 /* Assets.xcassets */; };
@@ -44,6 +47,9 @@
 		933A5A9D28F00FF600F8A35E /* ExpandoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandoView.swift; sourceTree = "<group>"; };
 		933A5A9F28F07C4900F8A35E /* ZeroQueryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZeroQueryViewModel.swift; sourceTree = "<group>"; };
 		933A5AA128F07CB700F8A35E /* UrlFieldViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UrlFieldViewModel.swift; sourceTree = "<group>"; };
+		933A5AA328F08E9F00F8A35E /* WebContentsCardModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebContentsCardModel.swift; sourceTree = "<group>"; };
+		933A5AA528F0907200F8A35E /* WebContentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebContentsView.swift; sourceTree = "<group>"; };
+		933A5AA728F090F300F8A35E /* WebContentsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebContentsViewModel.swift; sourceTree = "<group>"; };
 		93AB32DC28EDF92400F3C470 /* Browser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Browser.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		93AB32DF28EDF92400F3C470 /* BrowserApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserApp.swift; sourceTree = "<group>"; };
 		93AB32E128EDF92400F3C470 /* BrowserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserView.swift; sourceTree = "<group>"; };
@@ -122,6 +128,7 @@
 		933A5A8F28F0076000F8A35E /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				933A5AA528F0907200F8A35E /* WebContentsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -129,6 +136,7 @@
 		933A5A9028F0076700F8A35E /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				933A5AA728F090F300F8A35E /* WebContentsViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -136,6 +144,7 @@
 		933A5A9128F0077600F8A35E /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				933A5AA328F08E9F00F8A35E /* WebContentsCardModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -321,9 +330,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				933A5AA828F090F300F8A35E /* WebContentsViewModel.swift in Sources */,
 				93AB331628EE165300F3C470 /* CardGridViewModel.swift in Sources */,
 				933A5A9A28F00EED00F8A35E /* ShowTabsView.swift in Sources */,
 				933A5A9828F00DDD00F8A35E /* UrlFieldView.swift in Sources */,
+				933A5AA428F08E9F00F8A35E /* WebContentsCardModel.swift in Sources */,
 				93AB32FE28EDFA9D00F3C470 /* CardViewModel.swift in Sources */,
 				933A5AA028F07C4900F8A35E /* ZeroQueryViewModel.swift in Sources */,
 				93AB330828EDFAA600F3C470 /* CardView.swift in Sources */,
@@ -335,6 +346,7 @@
 				933A5AA228F07CB700F8A35E /* UrlFieldViewModel.swift in Sources */,
 				933A5A8828EFD97900F8A35E /* OmniBarView.swift in Sources */,
 				933A5A9C28F00F3B00F8A35E /* ShowMenuView.swift in Sources */,
+				933A5AA628F0907200F8A35E /* WebContentsView.swift in Sources */,
 				93AB330528EDFAA600F3C470 /* CardGridView.swift in Sources */,
 				93AB330728EDFAA600F3C470 /* SmallCardView.swift in Sources */,
 				93AB32E228EDF92400F3C470 /* BrowserView.swift in Sources */,

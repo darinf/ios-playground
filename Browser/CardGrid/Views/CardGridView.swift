@@ -12,8 +12,6 @@ struct CardGridView<Card, ZoomedContent, OverlayContent>: View where Card: CardM
     @ViewBuilder let bottomOverlay: (_ zoomed: Bool) -> OverlayContent
     @ViewBuilder let zoomedCard: (_ card: Card) -> ZoomedContent
 
-    @State private var showContent = false
-
     var grid: some View {
         ScrollView(showsIndicators: false) {
             let columns = [
@@ -31,9 +29,7 @@ struct CardGridView<Card, ZoomedContent, OverlayContent>: View where Card: CardM
                     ) {
                         if model.zoomed { return }
                         model.selectedCardId = cardDetail.id
-                        withAnimation(CardUX.transitionAnimation) {
-                            model.zoomed = true
-                        }
+                        model.zoomIn()
                     }
                 }
             }
@@ -46,7 +42,9 @@ struct CardGridView<Card, ZoomedContent, OverlayContent>: View where Card: CardM
             ZStack(alignment: .top) {
                 grid
                     .onAnimationCompleted(for: model.zoomed) {
-                        showContent = model.zoomed
+                        if model.zoomed {
+                            model.showContent = true
+                        }
                     }
 
                 Color(uiColor: .systemBackground)
@@ -62,7 +60,7 @@ struct CardGridView<Card, ZoomedContent, OverlayContent>: View where Card: CardM
                         )
                         .overlay(
                             Group {
-                                if showContent {
+                                if model.showContent {
                                     zoomedCard(cardDetail.model.card)
                                 }
                             }
@@ -79,6 +77,7 @@ struct CardGridView<Card, ZoomedContent, OverlayContent>: View where Card: CardM
                 .zIndex(2)
             }
             .onAppear {
+                if model.cards.isEmpty { return }
                 model.selectedCardId = model.cards[0].id
             }
         }
