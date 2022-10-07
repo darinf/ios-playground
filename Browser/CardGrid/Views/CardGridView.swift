@@ -10,6 +10,7 @@ struct CardGridView<Card, OverlayContent>: View where Card: CardModel, OverlayCo
     @Namespace var namespace
     @ObservedObject var model: CardGridViewModel<Card>
     @ViewBuilder let bottomOverlay: (_ zoomed: Bool) -> OverlayContent
+    @State var showContent = false
 
     var grid: some View {
         ScrollView(showsIndicators: false) {
@@ -42,6 +43,9 @@ struct CardGridView<Card, OverlayContent>: View where Card: CardModel, OverlayCo
         GeometryReader { geom in
             ZStack(alignment: .top) {
                 grid
+                    .onAnimationCompleted(for: model.zoomed) {
+                        showContent = model.zoomed
+                    }
 
                 Color(uiColor: .systemBackground)
                     .frame(height: geom.safeAreaInsets.top)
@@ -54,6 +58,14 @@ struct CardGridView<Card, OverlayContent>: View where Card: CardModel, OverlayCo
                             namespace: namespace,
                             model: cardDetail.model
                         )
+                        .overlay(
+                            Group {
+                                if showContent {
+                                    Color.gray
+                                }
+                            }
+                        )
+                        .ignoresSafeArea(edges: .bottom)
                         .onTapGesture {
                             withAnimation(CardUX.transitionAnimation) {
                                 model.zoomed = false

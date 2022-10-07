@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		933249EC28EE354500AAD774 /* BrowserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933249EB28EE354500AAD774 /* BrowserViewModel.swift */; };
+		933A5A8628EF9C6600F8A35E /* AnimationCompletionModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A5A8528EF9C6600F8A35E /* AnimationCompletionModifier.swift */; };
 		93AB32E028EDF92400F3C470 /* BrowserApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AB32DF28EDF92400F3C470 /* BrowserApp.swift */; };
 		93AB32E228EDF92400F3C470 /* BrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AB32E128EDF92400F3C470 /* BrowserView.swift */; };
 		93AB32E428EDF92400F3C470 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 93AB32E328EDF92400F3C470 /* Assets.xcassets */; };
@@ -24,6 +25,7 @@
 
 /* Begin PBXFileReference section */
 		933249EB28EE354500AAD774 /* BrowserViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserViewModel.swift; sourceTree = "<group>"; };
+		933A5A8528EF9C6600F8A35E /* AnimationCompletionModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationCompletionModifier.swift; sourceTree = "<group>"; };
 		93AB32DC28EDF92400F3C470 /* Browser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Browser.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		93AB32DF28EDF92400F3C470 /* BrowserApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserApp.swift; sourceTree = "<group>"; };
 		93AB32E128EDF92400F3C470 /* BrowserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserView.swift; sourceTree = "<group>"; };
@@ -54,6 +56,7 @@
 			isa = PBXGroup;
 			children = (
 				93AB330128EDFAA600F3C470 /* ReportsPressesButtonStyle.swift */,
+				933A5A8528EF9C6600F8A35E /* AnimationCompletionModifier.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -216,6 +219,7 @@
 				93AB330828EDFAA600F3C470 /* CardView.swift in Sources */,
 				93AB32FF28EDFA9D00F3C470 /* ColorCardModel.swift in Sources */,
 				93AB330628EDFAA600F3C470 /* ReportsPressesButtonStyle.swift in Sources */,
+				933A5A8628EF9C6600F8A35E /* AnimationCompletionModifier.swift in Sources */,
 				933249EC28EE354500AAD774 /* BrowserViewModel.swift in Sources */,
 				93AB330528EDFAA600F3C470 /* CardGridView.swift in Sources */,
 				93AB330728EDFAA600F3C470 /* SmallCardView.swift in Sources */,
