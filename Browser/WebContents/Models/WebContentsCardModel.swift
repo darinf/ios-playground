@@ -67,7 +67,8 @@ class WebContentsCardModel: CardModel {
         webView.load(URLRequest(url: url))
     }
 
-    func takeSnapshot(completion: @escaping () -> Void) {
+    func prepareToShowAsThumbnail(completion: @escaping () -> Void) {
+        webView.stopLoading()
         webView.takeSnapshot(with: nil) { image, error in
             // No idea what thread this comes in on, so make sure we are on main.
             DispatchQueue.main.async {

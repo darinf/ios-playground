@@ -17,7 +17,7 @@ class ColorCardModel: CardModel {
     let thumbnail: UIImage
     let favicon: UIImage
 
-    func takeSnapshot(completion: @escaping () -> Void) {
+    func prepareToShowAsThumbnail(completion: @escaping () -> Void) {
         DispatchQueue.main.async(execute: completion)
     }
 

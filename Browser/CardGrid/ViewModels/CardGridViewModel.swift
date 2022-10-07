@@ -51,7 +51,7 @@ class CardGridViewModel<Card>: ObservableObject where Card: CardModel {
         }
 
         if showContent, let details = selectedCardDetails {
-            details.model.card.takeSnapshot() { startAnimation() }
+            details.model.card.prepareToShowAsThumbnail() { startAnimation() }
         } else {
             startAnimation()
         }
