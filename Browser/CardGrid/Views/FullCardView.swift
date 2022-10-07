@@ -10,5 +10,6 @@ struct FullCardView<Card>: View, Animatable where Card: CardModel {
         CardView(namespace: namespace, model: model, selected: true, zoomed: true)
             .zIndex(1)
             .transition(.identity.animation(.default))
+            .ignoresSafeArea(edges: .bottom)
     }
 }

@@ -35,6 +35,7 @@ struct CardGridView<Card, ZoomedContent, OverlayContent>: View where Card: CardM
             }
             .padding(CardGridUX.spacing)
         }
+        .background(Color(uiColor: .systemBackground))
     }
 
     var body: some View {
@@ -52,20 +53,20 @@ struct CardGridView<Card, ZoomedContent, OverlayContent>: View where Card: CardM
                     .offset(y: model.zoomed ? 0 : -geom.safeAreaInsets.top)
                     .ignoresSafeArea()
 
-                if let details = model.selectedCardDetails, model.zoomed {
-                    FullCardView(
-                        namespace: namespace,
-                        model: details.model
-                    )
-                    .overlay(
-                        Group {
-                            if model.showContent {
-                                zoomedCard(details.model.card)
-                                    .transition(.asymmetric(insertion: .opacity, removal: .identity))
-                            }
-                        }
-                    )
-                    .ignoresSafeArea(edges: .bottom)
+                if let details = model.selectedCardDetails {
+                    if model.zoomed {
+                        FullCardView(
+                            namespace: namespace,
+                            model: details.model
+                        )
+                    }
+
+                    // The selected tab is always loaded so we can seamlessly just
+                    // move it to the foreground when zoomed. This happens only
+                    // after the FullCardView transition completes via showContent.
+                    zoomedCard(details.model.card)
+                        .ignoresSafeArea(edges: .bottom)
+                        .zIndex(model.zoomed && model.showContent ? 1 : -1)
                 }
 
                 VStack {

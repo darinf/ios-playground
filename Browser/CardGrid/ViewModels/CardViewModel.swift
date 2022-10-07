@@ -1,6 +1,7 @@
 // Copyright 2022 Darin Fisher. All rights reserved.
 
 import Combine
+import Foundation
 
 class CardViewModel<Card>: ObservableObject where Card: CardModel {
     let card: Card
@@ -13,7 +14,9 @@ class CardViewModel<Card>: ObservableObject where Card: CardModel {
         self.card = card
 
         self.subscription = self.card.objectWillChange.sink { [weak self] _ in
-            self?.objectWillChange.send()
+            DispatchQueue.main.async {
+                self?.objectWillChange.send()
+            }
         }
     }
 }

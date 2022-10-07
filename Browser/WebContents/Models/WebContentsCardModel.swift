@@ -32,11 +32,15 @@ class WebContentsCardModel: CardModel {
         webView.allowsBackForwardNavigationGestures = true
 
         webView.publisher(for: \.url, options: .new).sink { url in
-            self.url = url
+            DispatchQueue.main.async {
+                self.url = url
+            }
         }.store(in: &subscriptions)
 
         webView.publisher(for: \.title, options: .new).sink { title in
-            self.title = title ?? ""
+            DispatchQueue.main.async {
+                self.title = title ?? ""
+            }
         }.store(in: &subscriptions)
 
         if let url = url {
