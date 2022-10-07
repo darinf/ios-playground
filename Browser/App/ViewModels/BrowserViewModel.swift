@@ -1,11 +1,25 @@
 // Copyright 2022 Darin Fisher. All rights reserved.
 
-import Combine
+import SwiftUI
 
 class BrowserViewModel: ObservableObject {
     let cardGridViewModel: CardGridViewModel<ColorCardModel>
     let omniBarViewModel = OmniBarViewModel()
     let zeroQueryViewModel = ZeroQueryViewModel()
+
+    @Published private(set) var showZeroQuery = false
+
+    func presentZeroQuery() {
+        withAnimation {
+            showZeroQuery = true
+        }
+    }
+
+    func dismissZeroQuery() {
+        withAnimation {
+            showZeroQuery = false
+        }
+    }
 
     init() {
         let cards: [ColorCardModel] = [

@@ -20,6 +20,8 @@ struct UrlFieldView: View {
                 Group {
                     if editable {
                         TextField("Search or enter address", text: $model.input)
+                            .textInputAutocapitalization(.never)
+                            .disableAutocorrection(true)
                             .focused($hasFocus)
                             .matchedGeometryEffect(id: "urlField.text", in: namespace)
                             .onReceive(model.$hasFocus) {
