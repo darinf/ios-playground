@@ -8,4 +8,5 @@ protocol CardModel: ObservableObject, Identifiable {
     var title: String { get }
     var thumbnail: UIImage { get }
     var favicon: UIImage { get }
+    func takeSnapshot(completion: @escaping () -> Void)
 }

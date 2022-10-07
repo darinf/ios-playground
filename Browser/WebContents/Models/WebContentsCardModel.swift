@@ -48,10 +48,13 @@ class WebContentsCardModel: CardModel {
 
     func takeSnapshot(completion: @escaping () -> Void) {
         webView.takeSnapshot(with: nil) { image, error in
-            if let image = image {
-                self.thumbnail = image
+            // No idea what thread this comes in on, so make sure we are on main.
+            DispatchQueue.main.async {
+                if let image = image {
+                    self.thumbnail = image
+                }
+                completion()
             }
-            completion()
         }
     }
 }

@@ -19,7 +19,7 @@ struct CardGridView<Card, ZoomedContent, OverlayContent>: View where Card: CardM
                          spacing: CardGridUX.spacing)
             ]
             LazyVGrid(columns: columns, spacing: CardGridUX.spacing + CardUX.titleHeight + CardUX.verticalSpacing) {
-                ForEach(model.cards) { cardDetail in
+                ForEach(model.allDetails) { cardDetail in
                     let selected = model.selectedCardId == cardDetail.id
                     SmallCardView(
                         namespace: namespace,
@@ -52,21 +52,19 @@ struct CardGridView<Card, ZoomedContent, OverlayContent>: View where Card: CardM
                     .offset(y: model.zoomed ? 0 : -geom.safeAreaInsets.top)
                     .ignoresSafeArea()
 
-                if let selectedCardId = model.selectedCardId {
-                    if let cardDetail = model.cards.first(where: { $0.id == selectedCardId }), model.zoomed {
-                        FullCardView(
-                            namespace: namespace,
-                            model: cardDetail.model
-                        )
-                        .overlay(
-                            Group {
-                                if model.showContent {
-                                    zoomedCard(cardDetail.model.card)
-                                }
+                if let details = model.selectedCardDetails, model.zoomed {
+                    FullCardView(
+                        namespace: namespace,
+                        model: details.model
+                    )
+                    .overlay(
+                        Group {
+                            if model.showContent {
+                                zoomedCard(details.model.card)
                             }
-                        )
-                        .ignoresSafeArea(edges: .bottom)
-                    }
+                        }
+                    )
+                    .ignoresSafeArea(edges: .bottom)
                 }
 
                 VStack {
@@ -77,8 +75,9 @@ struct CardGridView<Card, ZoomedContent, OverlayContent>: View where Card: CardM
                 .zIndex(2)
             }
             .onAppear {
-                if model.cards.isEmpty { return }
-                model.selectedCardId = model.cards[0].id
+                if !model.allDetails.isEmpty {
+                    model.selectedCardId = model.allDetails[0].id
+                }
             }
         }
     }

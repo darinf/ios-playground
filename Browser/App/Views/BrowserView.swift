@@ -14,9 +14,7 @@ struct BrowserView: View {
                 case .urlField:
                     model.presentZeroQuery()
                 case .showTabs:
-                    model.selectedCard?.takeSnapshot() {
-                        model.cardGridViewModel.zoomOut()
-                    }
+                    model.cardGridViewModel.zoomOut()
                 case .showMenu:
                     print(">>> showMenu")
                 }

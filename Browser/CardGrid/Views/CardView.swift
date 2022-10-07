@@ -36,17 +36,25 @@ struct CardView<Card>: View where Card: CardModel {
 
     var body: some View {
         ZStack(alignment: .bottom) {
-            Image(uiImage: card.thumbnail)
-                .resizable()
-                .matchedGeometryEffect(id: "\(card.id).thumbnail", in: namespace)
+            // Image thumbnail as background so we can clip it.
+            Color.clear
+                .matchedGeometryEffect(id: "\(card.id).thumbnail-container", in: namespace)
+                .background(alignment: .topLeading) {
+                    Image(uiImage: card.thumbnail)
+                        .resizable()
+                        .scaledToFill()
+                        .matchedGeometryEffect(id: "\(card.id).thumbnail", in: namespace)
+                }
+                .clipped()
+                .matchedGeometryEffect(id: "\(card.id).thumbnail-clip", in: namespace)
                 .cornerRadius(cardRadius)
                 .matchedGeometryEffect(id: "\(card.id).thumbnail-corners", in: namespace)
-                .shadow(radius: shadowRadius)
                 .overlay(
                     RoundedRectangle(cornerRadius: cardRadius)
                         .stroke(Color(UIColor.label).opacity(selected && showDecorations ? 1 : 0), lineWidth: 3)
                         .matchedGeometryEffect(id: "\(card.id).selection-border", in: namespace)
                 )
+
             HStack {
                 Image(uiImage: card.favicon)
                     .resizable()

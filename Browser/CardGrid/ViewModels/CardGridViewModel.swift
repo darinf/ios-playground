@@ -8,7 +8,7 @@ class CardGridViewModel<Card>: ObservableObject where Card: CardModel {
     @Published var showContent: Bool = false
     @Published var selectedCardId: String?
 
-    struct CardDetail: Identifiable {
+    struct CardDetails: Identifiable {
         let model: CardViewModel<Card>
         var id: String { model.card.id }
         init(card: Card) {
@@ -16,21 +16,21 @@ class CardGridViewModel<Card>: ObservableObject where Card: CardModel {
         }
     }
 
-    let cards: [CardDetail]
+    private(set) var allDetails: [CardDetails]
 
-    func card(for id: String) -> CardDetail? {
-        cards.first(where: { $0.id == id })
+    func cardDetails(for id: String) -> CardDetails? {
+        allDetails.first(where: { $0.id == id })
     }
 
-    var selectedCard: CardDetail? {
+    var selectedCardDetails: CardDetails? {
         guard let id = selectedCardId else {
             return nil
         }
-        return card(for: id)
+        return cardDetails(for: id)
     }
 
     init(cards: [Card]) {
-        self.cards = cards.map { CardDetail(card: $0) }
+        self.allDetails = cards.map { CardDetails(card: $0) }
     }
 
     func zoomIn() {
@@ -43,8 +43,17 @@ class CardGridViewModel<Card>: ObservableObject where Card: CardModel {
 
     func zoomOut() {
         // showContent updated after the animation completes
-        withAnimation(CardUX.transitionAnimation) {
-            zoomed = false
+
+        let startAnimation = {
+            withAnimation(CardUX.transitionAnimation) {
+                self.zoomed = false
+            }
+        }
+
+        if showContent, let details = selectedCardDetails {
+            details.model.card.takeSnapshot() { startAnimation() }
+        } else {
+            startAnimation()
         }
     }
 }

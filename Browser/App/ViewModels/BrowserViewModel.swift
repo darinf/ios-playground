@@ -28,7 +28,7 @@ class BrowserViewModel: ObservableObject {
     }
 
     var selectedCard: WebContentsCardModel? {
-        cardGridViewModel.selectedCard?.model.card
+        cardGridViewModel.selectedCardDetails?.model.card
     }
 
     init() {
@@ -39,8 +39,8 @@ class BrowserViewModel: ObservableObject {
 
         // Observe selected card's URL.
         self.selectedCardIdSubscription = self.cardGridViewModel.$selectedCardId.sink { id in
-            if let id = id, let cardDetail = self.cardGridViewModel.card(for: id) {
-                self.selectedCardUrlSubscription = cardDetail.model.card.$url.sink { url in
+            if let id = id, let details = self.cardGridViewModel.cardDetails(for: id) {
+                self.selectedCardUrlSubscription = details.model.card.$url.sink { url in
                     self.omniBarViewModel.urlFieldViewModel.input = url?.absoluteString ?? ""
                 }
             } else {
