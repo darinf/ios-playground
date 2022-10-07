@@ -6,11 +6,13 @@ enum CardGridUX {
     static let spacing: CGFloat = 18
 }
 
-struct CardGridView<Card, OverlayContent>: View where Card: CardModel, OverlayContent: View {
+struct CardGridView<Card, CardContent, OverlayContent>: View where Card: CardModel, CardContent: View, OverlayContent: View {
     @Namespace var namespace
     @ObservedObject var model: CardGridViewModel<Card>
+    @ViewBuilder let cardContent: (_ card: Card) -> CardContent
     @ViewBuilder let bottomOverlay: (_ zoomed: Bool) -> OverlayContent
-    @State var showContent = false
+
+    @State private var showContent = false
 
     var grid: some View {
         ScrollView(showsIndicators: false) {
@@ -61,16 +63,16 @@ struct CardGridView<Card, OverlayContent>: View where Card: CardModel, OverlayCo
                         .overlay(
                             Group {
                                 if showContent {
-                                    Color.gray
+                                    cardContent(cardDetail.model.card)
                                 }
                             }
                         )
                         .ignoresSafeArea(edges: .bottom)
-                        .onTapGesture {
-                            withAnimation(CardUX.transitionAnimation) {
-                                model.zoomed = false
-                            }
-                        }
+//                        .onTapGesture {
+//                            withAnimation(CardUX.transitionAnimation) {
+//                                model.zoomed = false
+//                            }
+//                        }
                     }
                 }
 

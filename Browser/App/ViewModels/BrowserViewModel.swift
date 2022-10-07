@@ -4,6 +4,7 @@ import Combine
 
 class BrowserViewModel: ObservableObject {
     let cardGridViewModel: CardGridViewModel<ColorCardModel>
+    let omniBarViewModel: OmniBarViewModel
 
     init() {
         let cards: [ColorCardModel] = [
@@ -19,5 +20,6 @@ class BrowserViewModel: ObservableObject {
         ]
 
         self.cardGridViewModel = .init(cards: cards)
+        self.omniBarViewModel = .init()
     }
 }

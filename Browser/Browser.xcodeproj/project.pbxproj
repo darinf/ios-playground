@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		933249EC28EE354500AAD774 /* BrowserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933249EB28EE354500AAD774 /* BrowserViewModel.swift */; };
 		933A5A8628EF9C6600F8A35E /* AnimationCompletionModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A5A8528EF9C6600F8A35E /* AnimationCompletionModifier.swift */; };
+		933A5A8828EFD97900F8A35E /* OmniBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A5A8728EFD97900F8A35E /* OmniBarView.swift */; };
+		933A5A8A28EFDA9900F8A35E /* OmniBarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A5A8928EFDA9900F8A35E /* OmniBarViewModel.swift */; };
 		93AB32E028EDF92400F3C470 /* BrowserApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AB32DF28EDF92400F3C470 /* BrowserApp.swift */; };
 		93AB32E228EDF92400F3C470 /* BrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AB32E128EDF92400F3C470 /* BrowserView.swift */; };
 		93AB32E428EDF92400F3C470 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 93AB32E328EDF92400F3C470 /* Assets.xcassets */; };
@@ -26,6 +28,8 @@
 /* Begin PBXFileReference section */
 		933249EB28EE354500AAD774 /* BrowserViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserViewModel.swift; sourceTree = "<group>"; };
 		933A5A8528EF9C6600F8A35E /* AnimationCompletionModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationCompletionModifier.swift; sourceTree = "<group>"; };
+		933A5A8728EFD97900F8A35E /* OmniBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OmniBarView.swift; sourceTree = "<group>"; };
+		933A5A8928EFDA9900F8A35E /* OmniBarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OmniBarViewModel.swift; sourceTree = "<group>"; };
 		93AB32DC28EDF92400F3C470 /* Browser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Browser.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		93AB32DF28EDF92400F3C470 /* BrowserApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserApp.swift; sourceTree = "<group>"; };
 		93AB32E128EDF92400F3C470 /* BrowserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserView.swift; sourceTree = "<group>"; };
@@ -61,12 +65,38 @@
 			path = Utils;
 			sourceTree = "<group>";
 		};
+		933A5A8B28EFFBDE00F8A35E /* OmniBar */ = {
+			isa = PBXGroup;
+			children = (
+				933A5A8D28EFFBF100F8A35E /* Views */,
+				933A5A8C28EFFBEA00F8A35E /* ViewModels */,
+			);
+			path = OmniBar;
+			sourceTree = "<group>";
+		};
+		933A5A8C28EFFBEA00F8A35E /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				933A5A8928EFDA9900F8A35E /* OmniBarViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		933A5A8D28EFFBF100F8A35E /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				933A5A8728EFD97900F8A35E /* OmniBarView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		93AB32D328EDF92400F3C470 = {
 			isa = PBXGroup;
 			children = (
 				93AB330A28EDFAC500F3C470 /* App */,
 				93AB32E328EDF92400F3C470 /* Assets.xcassets */,
 				93AB32ED28EDF9C200F3C470 /* CardGrid */,
+				933A5A8B28EFFBDE00F8A35E /* OmniBar */,
 				93AB32DD28EDF92400F3C470 /* Products */,
 				933A5A8428EF570C00F8A35E /* Utils */,
 			);
@@ -221,9 +251,11 @@
 				93AB330628EDFAA600F3C470 /* ReportsPressesButtonStyle.swift in Sources */,
 				933A5A8628EF9C6600F8A35E /* AnimationCompletionModifier.swift in Sources */,
 				933249EC28EE354500AAD774 /* BrowserViewModel.swift in Sources */,
+				933A5A8828EFD97900F8A35E /* OmniBarView.swift in Sources */,
 				93AB330528EDFAA600F3C470 /* CardGridView.swift in Sources */,
 				93AB330728EDFAA600F3C470 /* SmallCardView.swift in Sources */,
 				93AB32E228EDF92400F3C470 /* BrowserView.swift in Sources */,
+				933A5A8A28EFDA9900F8A35E /* OmniBarViewModel.swift in Sources */,
 				93AB32E028EDF92400F3C470 /* BrowserApp.swift in Sources */,
 				93AB32FD28EDFA9D00F3C470 /* CardModel.swift in Sources */,
 				93AB330928EDFAA600F3C470 /* FullCardView.swift in Sources */,
