@@ -47,6 +47,8 @@ class WebContentsCardModel: CardModel {
             webView.load(URLRequest(url: url))
         }
 
+        Self.addRefreshControl(webView: webView)
+
         return webView
     }()
 
@@ -64,5 +66,17 @@ class WebContentsCardModel: CardModel {
                 completion()
             }
         }
+    }
+
+    private static func addRefreshControl(webView: WKWebView) {
+        let rc = UIRefreshControl(
+            frame: .zero,
+            primaryAction: UIAction { [weak webView] _ in
+                webView?.reload()
+                // Dismiss refresh control now as the regular progress bar will soon appear.
+                webView?.scrollView.refreshControl?.endRefreshing()
+            })
+        webView.scrollView.refreshControl = rc
+        webView.scrollView.bringSubviewToFront(rc)
     }
 }
