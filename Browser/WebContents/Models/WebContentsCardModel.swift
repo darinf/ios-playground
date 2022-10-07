@@ -15,7 +15,11 @@ class WebContentsCardModel: CardModel {
 
     @Published private(set) var url: URL?
 
+    // If overlays should be hidden b/c the content is being scrolled
+    @Published private(set) var hideOverlays: Bool = false
+
     private var subscriptions: Set<AnyCancellable> = []
+    private var scrollViewObserver: ScrollViewObserver?
 
     init(url: URL? = nil) {
         self.url = url
@@ -47,7 +51,14 @@ class WebContentsCardModel: CardModel {
             webView.load(URLRequest(url: url))
         }
 
-        Self.addRefreshControl(webView: webView)
+        Self.addRefreshControl(to: webView)
+
+        scrollViewObserver = .init(scrollView: webView.scrollView)
+        scrollViewObserver?.$direction.sink { [weak self] direction in
+            DispatchQueue.main.async {
+                self?.hideOverlays = (direction == .down)
+            }
+        }.store(in: &subscriptions)
 
         return webView
     }()
@@ -68,7 +79,7 @@ class WebContentsCardModel: CardModel {
         }
     }
 
-    private static func addRefreshControl(webView: WKWebView) {
+    private static func addRefreshControl(to webView: WKWebView) {
         let rc = UIRefreshControl(
             frame: .zero,
             primaryAction: UIAction { [weak webView] _ in

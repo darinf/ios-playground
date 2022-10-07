@@ -97,6 +97,6 @@ struct OmniBarView: View {
             }
         }
         .padding(.bottom, 50)
-        .offset(y: zoomed ? 0 : 150)
+        .offset(y: zoomed && !model.hidden ? 0 : 150)
     }
 }

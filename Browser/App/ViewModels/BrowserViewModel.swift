@@ -5,7 +5,7 @@ import SwiftUI
 
 class BrowserViewModel: ObservableObject {
     private var selectedCardIdSubscription: AnyCancellable?
-    private var selectedCardUrlSubscription: AnyCancellable?
+    private var selectedCardSubscriptions: Set<AnyCancellable> = []
 
     let cardGridViewModel: CardGridViewModel<WebContentsCardModel>
     let omniBarViewModel = OmniBarViewModel()
@@ -38,16 +38,35 @@ class BrowserViewModel: ObservableObject {
         self.cardGridViewModel = .init(cards: initialCards)
 
         // Observe selected card's URL.
-        self.selectedCardIdSubscription = self.cardGridViewModel.$selectedCardId.sink { id in
-            if let id = id, let details = self.cardGridViewModel.cardDetails(for: id) {
-                self.selectedCardUrlSubscription = details.model.card.$url.sink { url in
-                    DispatchQueue.main.async {
-                        self.omniBarViewModel.urlFieldViewModel.input = url?.absoluteString ?? ""
-                    }
-                }
+        self.selectedCardIdSubscription = self.cardGridViewModel.$selectedCardId.sink { [weak self] id in
+            guard let self = self else { return }
+            if let id = id {
+                self.observe(cardDetails: self.cardGridViewModel.cardDetails(for: id))
             } else {
-                self.selectedCardUrlSubscription = nil
+                self.observe(cardDetails: nil)
             }
         }
+    }
+
+    func observe(cardDetails: CardGridViewModel<WebContentsCardModel>.CardDetails?) {
+        guard let details = cardDetails else {
+            self.selectedCardSubscriptions = []
+            return
+        }
+
+        let card = details.model.card
+
+        card.$url.sink { url in
+            DispatchQueue.main.async {
+                self.omniBarViewModel.urlFieldViewModel.input = url?.absoluteString ?? ""
+            }
+        }.store(in: &selectedCardSubscriptions)
+
+        card.$hideOverlays.sink { hideOverlays in
+            DispatchQueue.main.async {
+                self.omniBarViewModel.update(hidden: hideOverlays)
+            }
+        }.store(in: &selectedCardSubscriptions)
+
     }
 }
