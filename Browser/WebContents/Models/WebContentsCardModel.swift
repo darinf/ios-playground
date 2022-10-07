@@ -7,28 +7,42 @@ import WebKit
 
 // One of these per tab
 class WebContentsCardModel: CardModel {
+    // CardModel fields:
     let id = UUID().uuidString
-    var title: String {
-        "Some title"
-    }
+    @Published private(set) var title: String = ""
+    @Published private(set) var thumbnail = UIImage(systemName: "plus")!
+    @Published private(set) var favicon = UIImage(systemName: "plus")!
 
-    @Published var thumbnail = UIImage(systemName: "plus")!
-    var favicon = UIImage(systemName: "plus")!
+    @Published private(set) var url: URL?
 
-    @Published private(set) var url: URL
+    private var subscriptions: Set<AnyCancellable> = []
 
-    init(url: URL) {
+    init(url: URL? = nil) {
         self.url = url
     }
 
-    lazy var webView: WKWebView = {
+    private static var configuration = {
         let configuration = WKWebViewConfiguration()
         configuration.processPool = WKProcessPool()
-        return WKWebView(frame: .zero, configuration: configuration)
+        return configuration
+    }()
+
+    lazy var webView: WKWebView = {
+        let webView = WKWebView(frame: .zero, configuration: Self.configuration)
+        webView.allowsBackForwardNavigationGestures = true
+
+        webView.publisher(for: \.url, options: .new).sink { url in
+            self.url = url
+        }.store(in: &subscriptions)
+
+        webView.publisher(for: \.title, options: .new).sink { title in
+            self.title = title ?? ""
+        }.store(in: &subscriptions)
+
+        return webView
     }()
 
     func navigate(to url: URL) {
-        self.url = url  // XXX need to instead observe webView.url
         webView.load(URLRequest(url: url))
     }
 

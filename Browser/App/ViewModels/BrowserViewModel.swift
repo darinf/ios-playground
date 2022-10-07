@@ -1,8 +1,12 @@
 // Copyright 2022 Darin Fisher. All rights reserved.
 
+import Combine
 import SwiftUI
 
 class BrowserViewModel: ObservableObject {
+    private var selectedCardIdSubscription: AnyCancellable?
+    private var selectedCardUrlSubscription: AnyCancellable?
+
     let cardGridViewModel: CardGridViewModel<WebContentsCardModel>
     let omniBarViewModel = OmniBarViewModel()
     let zeroQueryViewModel = ZeroQueryViewModel()
@@ -11,6 +15,7 @@ class BrowserViewModel: ObservableObject {
     @Published private(set) var showZeroQuery = false
 
     func presentZeroQuery() {
+        zeroQueryViewModel.urlFieldViewModel.input = omniBarViewModel.urlFieldViewModel.input
         withAnimation {
             showZeroQuery = true
         }
@@ -27,21 +32,20 @@ class BrowserViewModel: ObservableObject {
     }
 
     init() {
-//        let cards: [ColorCardModel] = [
-//            .init(title: "First", color: .systemBlue),
-//            .init(title: "Second", color: .systemPink),
-//            .init(title: "Third", color: .systemPurple),
-//            .init(title: "Fourth", color: .systemTeal),
-//            .init(title: "Fifth", color: .systemOrange),
-//            .init(title: "Sixth", color: .systemGreen),
-//            .init(title: "Seventh", color: .systemIndigo),
-//            .init(title: "Eighth", color: .systemRed),
-//            .init(title: "Ninth", color: .systemBrown)
-//        ]
-//
         let initialCards: [WebContentsCardModel] = [
-            .init(url: URL(string: "https://news.ycombinator.com/")!)
+            .init()
         ]
         self.cardGridViewModel = .init(cards: initialCards)
+
+        // Observe selected card's URL.
+        self.selectedCardIdSubscription = self.cardGridViewModel.$selectedCardId.sink { id in
+            if let id = id, let cardDetail = self.cardGridViewModel.card(for: id) {
+                self.selectedCardUrlSubscription = cardDetail.model.card.$url.sink { url in
+                    self.omniBarViewModel.urlFieldViewModel.input = url?.absoluteString ?? ""
+                }
+            } else {
+                self.selectedCardUrlSubscription = nil
+            }
+        }
     }
 }

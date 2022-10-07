@@ -11,6 +11,16 @@ struct ZeroQueryView: View {
 
     var body: some View {
         VStack {
+            HStack {
+                Spacer()
+                Button {
+                    model.urlFieldViewModel.hasFocus = false
+                    handler(.cancel)
+                } label: {
+                    Text("Cancel")
+                        .padding(.trailing, 15)
+                }
+            }
             Spacer()
             HStack(spacing: 0) {
                 Spacer()
@@ -26,13 +36,6 @@ struct ZeroQueryView: View {
                     })
                 }
                 .padding(.trailing, 15)
-                Button {
-                    model.urlFieldViewModel.hasFocus = false
-                    handler(.cancel)
-                } label: {
-                    Text("Cancel")
-                        .padding(.trailing, 15)
-                }
             }
             .padding(.bottom, 8)
         }

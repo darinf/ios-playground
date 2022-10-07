@@ -56,8 +56,10 @@ struct CardView<Card>: View where Card: CardModel {
                     .matchedGeometryEffect(id: "\(card.id).favicon-corners", in: namespace)
                 Text(card.title)
                     .font(.system(size: CardUX.titleHeight))
+                    .lineLimit(1)
                     .matchedGeometryEffect(id: "\(card.id).title", in: namespace)
             }
+            .frame(maxWidth: CardUX.minimumCardWidth)
             .offset(x: 0, y: CardUX.titleHeight + CardUX.verticalSpacing)
             .opacity(showDecorations ? 1 : 0)
         }

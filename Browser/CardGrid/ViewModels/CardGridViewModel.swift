@@ -18,8 +18,15 @@ class CardGridViewModel<Card>: ObservableObject where Card: CardModel {
 
     let cards: [CardDetail]
 
+    func card(for id: String) -> CardDetail? {
+        cards.first(where: { $0.id == id })
+    }
+
     var selectedCard: CardDetail? {
-        cards.first(where: { $0.id == selectedCardId })
+        guard let id = selectedCardId else {
+            return nil
+        }
+        return card(for: id)
     }
 
     init(cards: [Card]) {
