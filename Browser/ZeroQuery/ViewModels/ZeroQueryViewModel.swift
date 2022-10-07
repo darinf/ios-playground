@@ -2,7 +2,6 @@
 
 import Combine
 
-class OmniBarViewModel: ObservableObject {
+class ZeroQueryViewModel: ObservableObject {
     let urlFieldViewModel = UrlFieldViewModel()
-    @Published var expanded: Bool = false
 }
