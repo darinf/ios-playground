@@ -9,6 +9,14 @@ struct UrlFieldView: View {
     var submit: (() -> Void)? = nil
 
     @FocusState var hasFocus: Bool
+
+    var displayText: String {
+        // If model.input is a URL string, then extract just the hostname.
+        guard let url = URL(string: model.input) else {
+            return model.input
+        }
+        return url.host ?? model.input
+    }
     
     var body: some View {
         RoundedRectangle(cornerRadius: 25)
@@ -34,7 +42,9 @@ struct UrlFieldView: View {
                                 submit?()
                             }
                     } else {
-                        Text(model.input)
+                        Text(displayText)
+                            .lineLimit(1)
+                            .truncationMode(.head)
                             .matchedGeometryEffect(id: "urlField.text", in: namespace)
                     }
                 }

@@ -9,7 +9,7 @@ enum CardGridUX {
 struct CardGridView<Card, ZoomedContent, OverlayContent>: View where Card: CardModel, ZoomedContent: View, OverlayContent: View {
     @Namespace var namespace
     @ObservedObject var model: CardGridViewModel<Card>
-    @ViewBuilder let bottomOverlay: (_ zoomed: Bool) -> OverlayContent
+    @ViewBuilder let overlay: (_ zoomed: Bool) -> OverlayContent
     @ViewBuilder let zoomedCard: (_ card: Card) -> ZoomedContent
 
     var grid: some View {
@@ -69,12 +69,9 @@ struct CardGridView<Card, ZoomedContent, OverlayContent>: View where Card: CardM
                         .zIndex(model.zoomed && model.showContent ? 1 : -1)
                 }
 
-                VStack {
-                    Spacer()
-                    bottomOverlay(model.zoomed)
-                }
-                .ignoresSafeArea(edges: [.top, .bottom])
-                .zIndex(2)
+                overlay(model.zoomed)
+                    .ignoresSafeArea(edges: [.top, .bottom])
+                    .zIndex(2)
             }
             .onAppear {
                 if !model.allDetails.isEmpty {

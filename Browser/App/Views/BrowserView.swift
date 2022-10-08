@@ -7,7 +7,7 @@ struct BrowserView: View {
     @ObservedObject var model: BrowserViewModel
 
     @ViewBuilder
-    func bottomOverlay(zoomed: Bool) -> some View {
+    func overlay(zoomed: Bool) -> some View {
         if !model.showZeroQuery {
             OmniBarView(model: model.omniBarViewModel, namespace: namespace, zoomed: zoomed) { action in
                 switch action {
@@ -55,7 +55,7 @@ struct BrowserView: View {
         ZStack {
             CardGridView(
                 model: model.cardGridViewModel,
-                bottomOverlay: bottomOverlay,
+                overlay: overlay,
                 zoomedCard: zoomedCard
             )
             zeroQuery()

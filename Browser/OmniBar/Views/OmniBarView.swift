@@ -37,66 +37,79 @@ struct OmniBarView: View {
         ExpandoView(namespace: namespace)
     }
 
-    var body: some View {
-        Group {
-            if model.expanded {
-                VStack {
-                    HStack {
-                        Spacer()
-                        Button {
-                            handler(.showMenu)
-                        } label: {
-                            showMenu
-                        }
-                        .padding(.trailing, 5)
-                    }
-                    HStack {
-                        Button {
-                            handler(.urlField)
-                        } label: {
-                            urlField
-                        }
-                        .zIndex(1)
-                        .frame(maxWidth: .infinity)
-                        .padding(.leading, 25)
-
-                        Button {
-                            handler(.showTabs)
-                        } label: {
-                            showTabs
-                        }
-
-                        Button {
-                            withAnimation(OmniBarUX.transitionAnimation) {
-                                model.expanded.toggle()
-                            }
-                        } label: {
-                            expando
-                        }
-                    }
+    @ViewBuilder
+    var expandedLayout: some View {
+        VStack {
+            HStack {
+                Spacer()
+                Button {
+                    handler(.showMenu)
+                } label: {
+                    showMenu
                 }
-                .padding(.trailing, 25)
-            } else {
-                HStack {
-                    Spacer()
-                    Button {
-                        withAnimation(OmniBarUX.transitionAnimation) {
-                            model.expanded.toggle()
-                        }
-                    } label: {
-                        ZStack {
-                            urlField
-                                .frame(width: 40)
-                            showTabs
-                            showMenu
-                            expando
-                        }
+                .padding(.trailing, 5)
+            }
+            HStack {
+                Button {
+                    handler(.urlField)
+                } label: {
+                    urlField
+                }
+                .zIndex(1)
+                .frame(maxWidth: .infinity)
+                .padding(.leading, 25)
+
+                Button {
+                    handler(.showTabs)
+                } label: {
+                    showTabs
+                }
+
+                Button {
+                    withAnimation(OmniBarUX.transitionAnimation) {
+                        model.expanded.toggle()
                     }
-                    .padding(.trailing, 25)
+                } label: {
+                    expando
                 }
             }
         }
-        .padding(.bottom, 50)
-        .offset(y: zoomed && !model.hidden ? 0 : 150)
+        .padding(.trailing, 25)
+    }
+
+    @ViewBuilder
+    var compactLayout: some View {
+        HStack {
+            Spacer()
+            Button {
+                withAnimation(OmniBarUX.transitionAnimation) {
+                    model.expanded.toggle()
+                }
+            } label: {
+                ZStack {
+                    urlField
+                        .frame(width: 40)
+                    showTabs
+                    showMenu
+                    expando
+                }
+            }
+            .padding(.trailing, 25)
+        }
+    }
+
+    var body: some View {
+        VStack {
+            Spacer()
+            Group {
+                if model.expanded {
+                    expandedLayout
+                } else {
+                    compactLayout
+                }
+            }
+            .padding(.bottom, 50)
+            .offset(y: zoomed && !model.hidden ? 0 : 150)
+        }
     }
 }
