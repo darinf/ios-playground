@@ -2,7 +2,7 @@
 
 import SwiftUI
 
-struct ShowTabsView: View {
+struct ShowCardsView: View {
     let namespace: Namespace.ID
     var height: CGFloat = 40
 
@@ -14,6 +14,7 @@ struct ShowTabsView: View {
             .shadow(radius: OmniBarUX.shadowRadius)
             .overlay(
                 Image(systemName: "square.on.square")
+                    .foregroundColor(OmniBarUX.textColor)
                     .matchedGeometryEffect(id: "showTabs.icon", in: namespace)
             )
     }

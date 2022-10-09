@@ -12,9 +12,16 @@ struct BrowserView: View {
             OmniBarView(model: model.omniBarViewModel, namespace: namespace, zoomed: zoomed) { action in
                 switch action {
                 case .urlField:
-                    model.presentZeroQuery()
-                case .showTabs:
-                    model.cardGridViewModel.zoomOut()
+                    model.presentZeroQuery(target: .existingCard)
+                case .newCard:
+                    model.presentZeroQuery(target: .newCard)
+                    break
+                case .showCards:
+                    if zoomed {
+                        model.cardGridViewModel.zoomOut()
+                    } else {
+                        model.cardGridViewModel.zoomIn()
+                    }
                 case .showMenu:
                     print(">>> showMenu")
                 }
@@ -26,22 +33,7 @@ struct BrowserView: View {
     func zeroQuery() -> some View {
         if model.showZeroQuery {
             ZeroQueryView(model: model.zeroQueryViewModel, namespace: namespace) { action in
-                switch action {
-                case .cancel:
-                    model.dismissZeroQuery()
-                case .navigate(let input):
-                    print(">>> navigate to \(input)")
-                    model.omniBarViewModel.urlFieldViewModel.input = input
-                    model.dismissZeroQuery()
-
-                    if let selectedCard = model.selectedCard {
-                        if let url = URL(string: input) {
-                            selectedCard.navigate(to: url)
-                        } else {
-//                            selectedCard.model.card.navigate(to: URL(string: "https://neeva.com/search?q=\(input)")!)
-                        }
-                    }
-                }
+                model.handleZeroQueryAction(action)
             }
         }
     }

@@ -46,6 +46,7 @@ struct UrlFieldView: View {
                             .lineLimit(1)
                             .truncationMode(.head)
                             .matchedGeometryEffect(id: "urlField.text", in: namespace)
+                            .foregroundColor(OmniBarUX.textColor)
                     }
                 }
                 .padding([.leading, .trailing], 8)

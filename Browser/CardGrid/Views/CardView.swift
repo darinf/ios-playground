@@ -49,6 +49,7 @@ struct CardView<Card>: View where Card: CardModel {
                 .matchedGeometryEffect(id: "\(card.id).thumbnail-clip", in: namespace)
                 .cornerRadius(cardRadius)
                 .matchedGeometryEffect(id: "\(card.id).thumbnail-corners", in: namespace)
+                .shadow(radius: shadowRadius)
                 .overlay(
                     RoundedRectangle(cornerRadius: cardRadius)
                         .stroke(Color(UIColor.label).opacity(selected && showDecorations ? 1 : 0), lineWidth: 3)

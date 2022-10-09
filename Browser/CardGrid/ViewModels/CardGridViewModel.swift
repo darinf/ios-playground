@@ -4,8 +4,8 @@ import Combine
 import SwiftUI
 
 class CardGridViewModel<Card>: ObservableObject where Card: CardModel {
-    @Published private(set) var zoomed: Bool = false
-    @Published var showContent: Bool = false
+    @Published private(set) var zoomed: Bool = true
+    @Published var showContent: Bool = true
     @Published var selectedCardId: String?
 
     struct CardDetails: Identifiable {
@@ -16,7 +16,7 @@ class CardGridViewModel<Card>: ObservableObject where Card: CardModel {
         }
     }
 
-    private(set) var allDetails: [CardDetails]
+    @Published private(set) var allDetails: [CardDetails]
 
     func cardDetails(for id: String) -> CardDetails? {
         allDetails.first(where: { $0.id == id })
@@ -27,6 +27,10 @@ class CardGridViewModel<Card>: ObservableObject where Card: CardModel {
             return nil
         }
         return cardDetails(for: id)
+    }
+
+    func appendCard(card: Card) {
+        self.allDetails.append(CardDetails(card: card))
     }
 
     init(cards: [Card]) {

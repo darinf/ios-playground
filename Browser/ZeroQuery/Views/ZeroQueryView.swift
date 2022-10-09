@@ -26,7 +26,8 @@ struct ZeroQueryView: View {
                 Spacer()
                 ZStack(alignment: .trailing) {
                     Group {
-                        ShowTabsView(namespace: namespace, height: 20)
+                        NewCardView(namespace: namespace, height: 20)
+                        ShowCardsView(namespace: namespace, height: 20)
                         ShowMenuView(namespace: namespace, height: 20)
                         ExpandoView(namespace: namespace, height: 20)
                     }

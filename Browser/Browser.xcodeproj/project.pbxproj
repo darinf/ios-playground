@@ -13,7 +13,7 @@
 		933A5A8A28EFDA9900F8A35E /* OmniBarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A5A8928EFDA9900F8A35E /* OmniBarViewModel.swift */; };
 		933A5A9628F00C1300F8A35E /* ZeroQueryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A5A9528F00C1300F8A35E /* ZeroQueryView.swift */; };
 		933A5A9828F00DDD00F8A35E /* UrlFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A5A9728F00DDD00F8A35E /* UrlFieldView.swift */; };
-		933A5A9A28F00EED00F8A35E /* ShowTabsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A5A9928F00EED00F8A35E /* ShowTabsView.swift */; };
+		933A5A9A28F00EED00F8A35E /* ShowCardsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A5A9928F00EED00F8A35E /* ShowCardsView.swift */; };
 		933A5A9C28F00F3B00F8A35E /* ShowMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A5A9B28F00F3B00F8A35E /* ShowMenuView.swift */; };
 		933A5A9E28F00FF600F8A35E /* ExpandoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A5A9D28F00FF600F8A35E /* ExpandoView.swift */; };
 		933A5AA028F07C4900F8A35E /* ZeroQueryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A5A9F28F07C4900F8A35E /* ZeroQueryViewModel.swift */; };
@@ -22,6 +22,7 @@
 		933A5AA628F0907200F8A35E /* WebContentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A5AA528F0907200F8A35E /* WebContentsView.swift */; };
 		933A5AA828F090F300F8A35E /* WebContentsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A5AA728F090F300F8A35E /* WebContentsViewModel.swift */; };
 		933A5AAA28F0DC6100F8A35E /* ScrollViewObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A5AA928F0DC6100F8A35E /* ScrollViewObserver.swift */; };
+		933A5AAC28F249AB00F8A35E /* NewCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A5AAB28F249AB00F8A35E /* NewCardView.swift */; };
 		93AB32E028EDF92400F3C470 /* BrowserApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AB32DF28EDF92400F3C470 /* BrowserApp.swift */; };
 		93AB32E228EDF92400F3C470 /* BrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AB32E128EDF92400F3C470 /* BrowserView.swift */; };
 		93AB32E428EDF92400F3C470 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 93AB32E328EDF92400F3C470 /* Assets.xcassets */; };
@@ -43,7 +44,7 @@
 		933A5A8928EFDA9900F8A35E /* OmniBarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OmniBarViewModel.swift; sourceTree = "<group>"; };
 		933A5A9528F00C1300F8A35E /* ZeroQueryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZeroQueryView.swift; sourceTree = "<group>"; };
 		933A5A9728F00DDD00F8A35E /* UrlFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UrlFieldView.swift; sourceTree = "<group>"; };
-		933A5A9928F00EED00F8A35E /* ShowTabsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowTabsView.swift; sourceTree = "<group>"; };
+		933A5A9928F00EED00F8A35E /* ShowCardsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowCardsView.swift; sourceTree = "<group>"; };
 		933A5A9B28F00F3B00F8A35E /* ShowMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowMenuView.swift; sourceTree = "<group>"; };
 		933A5A9D28F00FF600F8A35E /* ExpandoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandoView.swift; sourceTree = "<group>"; };
 		933A5A9F28F07C4900F8A35E /* ZeroQueryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZeroQueryViewModel.swift; sourceTree = "<group>"; };
@@ -52,6 +53,7 @@
 		933A5AA528F0907200F8A35E /* WebContentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebContentsView.swift; sourceTree = "<group>"; };
 		933A5AA728F090F300F8A35E /* WebContentsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebContentsViewModel.swift; sourceTree = "<group>"; };
 		933A5AA928F0DC6100F8A35E /* ScrollViewObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollViewObserver.swift; sourceTree = "<group>"; };
+		933A5AAB28F249AB00F8A35E /* NewCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewCardView.swift; sourceTree = "<group>"; };
 		93AB32DC28EDF92400F3C470 /* Browser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Browser.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		93AB32DF28EDF92400F3C470 /* BrowserApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserApp.swift; sourceTree = "<group>"; };
 		93AB32E128EDF92400F3C470 /* BrowserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserView.swift; sourceTree = "<group>"; };
@@ -111,8 +113,9 @@
 			children = (
 				933A5A9D28F00FF600F8A35E /* ExpandoView.swift */,
 				933A5A8728EFD97900F8A35E /* OmniBarView.swift */,
+				933A5AAB28F249AB00F8A35E /* NewCardView.swift */,
 				933A5A9B28F00F3B00F8A35E /* ShowMenuView.swift */,
-				933A5A9928F00EED00F8A35E /* ShowTabsView.swift */,
+				933A5A9928F00EED00F8A35E /* ShowCardsView.swift */,
 				933A5A9728F00DDD00F8A35E /* UrlFieldView.swift */,
 			);
 			path = Views;
@@ -335,7 +338,7 @@
 			files = (
 				933A5AA828F090F300F8A35E /* WebContentsViewModel.swift in Sources */,
 				93AB331628EE165300F3C470 /* CardGridViewModel.swift in Sources */,
-				933A5A9A28F00EED00F8A35E /* ShowTabsView.swift in Sources */,
+				933A5A9A28F00EED00F8A35E /* ShowCardsView.swift in Sources */,
 				933A5A9828F00DDD00F8A35E /* UrlFieldView.swift in Sources */,
 				933A5AA428F08E9F00F8A35E /* WebContentsCardModel.swift in Sources */,
 				933A5AAA28F0DC6100F8A35E /* ScrollViewObserver.swift in Sources */,
@@ -352,6 +355,7 @@
 				933A5A9C28F00F3B00F8A35E /* ShowMenuView.swift in Sources */,
 				933A5AA628F0907200F8A35E /* WebContentsView.swift in Sources */,
 				93AB330528EDFAA600F3C470 /* CardGridView.swift in Sources */,
+				933A5AAC28F249AB00F8A35E /* NewCardView.swift in Sources */,
 				93AB330728EDFAA600F3C470 /* SmallCardView.swift in Sources */,
 				93AB32E228EDF92400F3C470 /* BrowserView.swift in Sources */,
 				933A5A8A28EFDA9900F8A35E /* OmniBarViewModel.swift in Sources */,

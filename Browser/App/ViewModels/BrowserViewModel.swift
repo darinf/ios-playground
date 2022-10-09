@@ -14,8 +14,13 @@ class BrowserViewModel: ObservableObject {
 
     @Published private(set) var showZeroQuery = false
 
-    func presentZeroQuery() {
-        zeroQueryViewModel.urlFieldViewModel.input = omniBarViewModel.urlFieldViewModel.input
+    func presentZeroQuery(target: ZeroQueryViewModel.Target) {
+        zeroQueryViewModel.target = target
+        if case .existingCard = target {
+            zeroQueryViewModel.urlFieldViewModel.input = omniBarViewModel.urlFieldViewModel.input
+        } else {
+            zeroQueryViewModel.urlFieldViewModel.input = ""
+        }
         withAnimation {
             showZeroQuery = true
         }
@@ -27,25 +32,37 @@ class BrowserViewModel: ObservableObject {
         }
     }
 
-    var selectedCard: WebContentsCardModel? {
-        cardGridViewModel.selectedCardDetails?.model.card
-    }
+    func handleZeroQueryAction(_ action: ZeroQueryView.Action) {
+        switch action {
+        case .cancel:
+            dismissZeroQuery()
+        case .navigate(let input):
+            print(">>> navigate to \(input)")
 
-    init() {
-        let initialCards: [WebContentsCardModel] = [
-            .init(url: URL(string: "https://news.ycombinator.com/")!)
-        ]
-        self.cardGridViewModel = .init(cards: initialCards)
+            omniBarViewModel.urlFieldViewModel.input = input
+            dismissZeroQuery()
 
-        // Observe selected card's URL.
-        self.selectedCardIdSubscription = self.cardGridViewModel.$selectedCardId.sink { [weak self] id in
-            guard let self = self else { return }
-            if let id = id {
-                self.observe(cardDetails: self.cardGridViewModel.cardDetails(for: id))
-            } else {
-                self.observe(cardDetails: nil)
+            let url = URL(string: input)
+
+            if case .newCard = zeroQueryViewModel.target {
+                // Create new card and select it.
+                let newCard = WebContentsCardModel(url: url)
+                cardGridViewModel.appendCard(card: newCard)
+                cardGridViewModel.selectedCardId = newCard.id
+            }
+
+            if let selectedCard = selectedCard {
+                if let url = url {
+                    selectedCard.navigate(to: url)
+                } else {
+                    //selectedCard.navigate(to: URL(string: "https://neeva.com/search?q=\(input)")!)
+                }
             }
         }
+    }
+
+    var selectedCard: WebContentsCardModel? {
+        cardGridViewModel.selectedCardDetails?.model.card
     }
 
     func observe(cardDetails: CardGridViewModel<WebContentsCardModel>.CardDetails?) {
@@ -68,5 +85,22 @@ class BrowserViewModel: ObservableObject {
             }
         }.store(in: &selectedCardSubscriptions)
 
+    }
+
+    init() {
+        let initialCards: [WebContentsCardModel] = [
+            .init(url: URL(string: "https://news.ycombinator.com/")!)
+        ]
+        self.cardGridViewModel = .init(cards: initialCards)
+
+        // Observe selected card's URL.
+        self.selectedCardIdSubscription = self.cardGridViewModel.$selectedCardId.sink { [weak self] id in
+            guard let self = self else { return }
+            if let id = id {
+                self.observe(cardDetails: self.cardGridViewModel.cardDetails(for: id))
+            } else {
+                self.observe(cardDetails: nil)
+            }
+        }
     }
 }

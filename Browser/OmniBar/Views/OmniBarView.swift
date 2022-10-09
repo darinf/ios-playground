@@ -5,11 +5,12 @@ import SwiftUI
 enum OmniBarUX {
     static let shadowRadius: CGFloat = 2
     static let transitionAnimation = Animation.interactiveSpring()
+    static let textColor = Color(uiColor: .label)
 }
 
 struct OmniBarView: View {
     enum Action {
-        case urlField, showTabs, showMenu
+        case urlField, newCard, showCards, showMenu
     }
 
     @ObservedObject var model: OmniBarViewModel
@@ -23,8 +24,13 @@ struct OmniBarView: View {
     }
 
     @ViewBuilder
-    var showTabs: some View {
-        ShowTabsView(namespace: namespace)
+    var newCard: some View {
+        NewCardView(namespace: namespace)
+    }
+
+    @ViewBuilder
+    var showCards: some View {
+        ShowCardsView(namespace: namespace)
     }
 
     @ViewBuilder
@@ -60,9 +66,15 @@ struct OmniBarView: View {
                 .padding(.leading, 25)
 
                 Button {
-                    handler(.showTabs)
+                    handler(.newCard)
                 } label: {
-                    showTabs
+                    newCard
+                }
+
+                Button {
+                    handler(.showCards)
+                } label: {
+                    showCards
                 }
 
                 Button {
@@ -89,7 +101,8 @@ struct OmniBarView: View {
                 ZStack {
                     urlField
                         .frame(width: 40)
-                    showTabs
+                    newCard
+                    showCards
                     showMenu
                     expando
                 }
@@ -109,7 +122,7 @@ struct OmniBarView: View {
                 }
             }
             .padding(.bottom, 50)
-            .offset(y: zoomed && !model.hidden ? 0 : 150)
+            .offset(y: model.hidden ? 150 : 0)
         }
     }
 }

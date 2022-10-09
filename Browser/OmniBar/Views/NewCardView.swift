@@ -2,20 +2,20 @@
 
 import SwiftUI
 
-struct ShowMenuView: View {
+struct NewCardView: View {
     let namespace: Namespace.ID
     var height: CGFloat = 40
 
     var body: some View {
         Circle()
             .fill(Color(uiColor: .systemBackground))
-            .matchedGeometryEffect(id: "menu.circle", in: namespace)
+            .matchedGeometryEffect(id: "startSearch.circle", in: namespace)
             .frame(height: height)
             .shadow(radius: OmniBarUX.shadowRadius)
             .overlay(
-                Image(systemName: "ellipsis")
+                Image(systemName: "plus")
                     .foregroundColor(OmniBarUX.textColor)
-                    .matchedGeometryEffect(id: "menu.icon", in: namespace)
+                    .matchedGeometryEffect(id: "startSearch.icon", in: namespace)
             )
     }
 }
