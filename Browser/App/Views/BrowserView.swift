@@ -10,21 +10,7 @@ struct BrowserView: View {
     func overlay(zoomed: Bool) -> some View {
         if !model.showZeroQuery {
             OmniBarView(model: model.omniBarViewModel, namespace: namespace, zoomed: zoomed) { action in
-                switch action {
-                case .urlField:
-                    model.presentZeroQuery(target: .existingCard)
-                case .newCard:
-                    model.presentZeroQuery(target: .newCard)
-                    break
-                case .showCards:
-                    if zoomed {
-                        model.cardGridViewModel.zoomOut()
-                    } else {
-                        model.cardGridViewModel.zoomIn()
-                    }
-                case .showMenu:
-                    print(">>> showMenu")
-                }
+                model.handleOmniBarAction(action)
             }
         }
     }

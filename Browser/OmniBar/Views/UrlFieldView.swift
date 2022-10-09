@@ -43,6 +43,7 @@ struct UrlFieldView: View {
                             }
                     } else {
                         Text(displayText)
+                            .font(.footnote)
                             .lineLimit(1)
                             .truncationMode(.head)
                             .matchedGeometryEffect(id: "urlField.text", in: namespace)
