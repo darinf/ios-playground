@@ -39,8 +39,8 @@ struct OmniBarView: View {
     }
 
     @ViewBuilder
-    var expando: some View {
-        ExpandoView(namespace: namespace)
+    func expando(height: CGFloat) -> some View {
+        ExpandoView(namespace: namespace, height: height)
     }
 
     @ViewBuilder
@@ -53,7 +53,6 @@ struct OmniBarView: View {
                 } label: {
                     showMenu
                 }
-                .padding(.trailing, 5)
             }
             HStack {
                 Button {
@@ -82,7 +81,7 @@ struct OmniBarView: View {
                         model.expanded.toggle()
                     }
                 } label: {
-                    expando
+                    expando(height: 40)
                 }
             }
         }
@@ -104,10 +103,10 @@ struct OmniBarView: View {
                     newCard
                     showCards
                     showMenu
-                    expando
+                    expando(height: 50)
                 }
             }
-            .padding(.trailing, 25)
+            .padding(.trailing, 20)
         }
     }
 
