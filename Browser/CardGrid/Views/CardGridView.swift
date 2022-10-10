@@ -52,6 +52,7 @@ struct CardGridView<Card, ZoomedContent, OverlayContent>: View where Card: CardM
                     .frame(height: geom.safeAreaInsets.top)
                     .offset(y: model.zoomed ? 0 : -geom.safeAreaInsets.top)
                     .ignoresSafeArea()
+                    .zIndex(2)
 
                 if let details = model.selectedCardDetails {
                     if model.zoomed {
