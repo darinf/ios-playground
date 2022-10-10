@@ -61,6 +61,7 @@ struct OmniBarView: View {
                     urlField
                 }
                 .zIndex(1)
+                .opacity(model.canEditCurrentUrl ? 1 : 0)
                 .frame(maxWidth: .infinity)
                 .padding(.leading, 25)
 

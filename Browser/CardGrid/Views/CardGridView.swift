@@ -26,10 +26,13 @@ struct CardGridView<Card, ZoomedContent, OverlayContent>: View where Card: CardM
                         model: cardDetail.model,
                         selected: selected,
                         zoomed: model.zoomed
-                    ) {
-                        if model.zoomed { return }
-                        model.selectedCardId = cardDetail.id
-                        model.zoomIn()
+                    ) { action in
+                        switch action {
+                        case .activated:
+                            model.activateCard(id: cardDetail.id)
+                        case .closed:
+                            model.closeCard(id: cardDetail.id)
+                        }
                     }
                 }
             }

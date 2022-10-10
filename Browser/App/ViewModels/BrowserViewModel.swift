@@ -21,10 +21,14 @@ class BrowserViewModel: ObservableObject {
     private func observe(cardDetails: CardGridViewModel<WebContentsCardModel>.CardDetails?) {
         guard let details = cardDetails else {
             self.selectedCardSubscriptions = []
+            self.omniBarViewModel.urlFieldViewModel.input = ""
+            self.omniBarViewModel.canEditCurrentUrl = false
             return
         }
 
         let card = details.model.card
+
+        self.omniBarViewModel.canEditCurrentUrl = true
 
         card.$url.sink { url in
             DispatchQueue.main.async {

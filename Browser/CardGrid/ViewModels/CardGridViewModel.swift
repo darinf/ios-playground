@@ -64,4 +64,31 @@ class CardGridViewModel<Card>: ObservableObject where Card: CardModel {
             startAnimation()
         }
     }
+
+    func activateCard(id: String) {
+        selectedCardId = id
+        if !zoomed {
+            zoomIn()
+        }
+    }
+
+    func closeCard(id: String) {
+        if let doomedIndex = allDetails.firstIndex(where: { $0.id == id }) {
+            allDetails.remove(at: doomedIndex)
+            if id == selectedCardId {
+                // Choose another card to select
+                var indexToSelect = doomedIndex
+                if allDetails.count == 0 {
+                    indexToSelect = -1
+                } else if indexToSelect == allDetails.count {
+                    indexToSelect -= 1
+                }
+                if indexToSelect < 0 {
+                    selectedCardId = nil
+                } else {
+                    selectedCardId = allDetails[indexToSelect].id
+                }
+            }
+        }
+    }
 }

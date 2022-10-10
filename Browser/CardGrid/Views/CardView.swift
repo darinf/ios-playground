@@ -16,10 +16,13 @@ enum CardUX {
 }
 
 struct CardView<Card>: View where Card: CardModel {
+    enum Action { case closed }
+
     let namespace: Namespace.ID
     @ObservedObject var model: CardViewModel<Card>
     let selected: Bool
     let zoomed: Bool
+    var handler: ((_ action: Action) -> Void)? = nil
 
     var card: Card {
         model.card
@@ -32,6 +35,30 @@ struct CardView<Card>: View where Card: CardModel {
     }
     var shadowRadius: CGFloat {
         showDecorations ? CardUX.shadowRadius : 0
+    }
+
+    var closeButton: some View {
+        VStack {
+            HStack {
+                Spacer()
+                Button {
+                    handler?(.closed)
+                } label: {
+                    Circle()
+                        .fill(Color(uiColor: .systemGroupedBackground))
+                        .matchedGeometryEffect(id: "\(card.id).closebutton", in: namespace)
+                        .frame(height: 22)
+                        .overlay(
+                            Image(systemName: "multiply")
+                                .foregroundColor(Color(uiColor: .label))
+                                .matchedGeometryEffect(id: "\(card.id).closebutton-icon", in: namespace)
+                        )
+                        .opacity(showDecorations ? 1 : 0)
+                        .padding([.top, .trailing], 6)
+                }
+            }
+            Spacer()
+        }
     }
 
     var body: some View {
@@ -55,6 +82,8 @@ struct CardView<Card>: View where Card: CardModel {
                         .stroke(Color(UIColor.label).opacity(selected && showDecorations ? 1 : 0), lineWidth: 3)
                         .matchedGeometryEffect(id: "\(card.id).selection-border", in: namespace)
                 )
+
+            closeButton
 
             HStack {
                 Image(uiImage: card.favicon)
