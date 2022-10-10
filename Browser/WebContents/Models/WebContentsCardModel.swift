@@ -10,8 +10,8 @@ class WebContentsCardModel: CardModel {
     // CardModel fields:
     let id = UUID().uuidString
     @Published private(set) var title: String = ""
-    @Published private(set) var thumbnail = UIImage(systemName: "plus")!
-    @Published private(set) var favicon = UIImage(systemName: "plus")!
+    @Published private(set) var thumbnail = pixelFromColor(.white)
+    @Published private(set) var favicon = UIImage(systemName: "globe")!
 
     @Published private(set) var url: URL?
 
@@ -28,6 +28,8 @@ class WebContentsCardModel: CardModel {
     private static var configuration = {
         let configuration = WKWebViewConfiguration()
         configuration.processPool = WKProcessPool()
+        configuration.ignoresViewportScaleLimits = true
+        configuration.allowsInlineMediaPlayback = true
         return configuration
     }()
 

@@ -109,7 +109,8 @@ extension BrowserViewModel {
             omniBarViewModel.urlFieldViewModel.input = input
             dismissZeroQuery()
 
-            let url = URL(string: input)
+            let url = UrlFixup.fromUser(input: input)
+            print(">>> loading url: \(url?.absoluteString ?? "(nil)")")
 
             if case .newCard = zeroQueryViewModel.target {
                 // Create new card and select it.
@@ -117,6 +118,8 @@ extension BrowserViewModel {
                 cardGridViewModel.appendCard(card: newCard)
                 cardGridViewModel.selectedCardId = newCard.id
             }
+
+            cardGridViewModel.zoomIn()
 
             if let selectedCard = selectedCard {
                 if let url = url {

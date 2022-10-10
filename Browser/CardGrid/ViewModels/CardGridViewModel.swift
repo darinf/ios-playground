@@ -38,6 +38,8 @@ class CardGridViewModel<Card>: ObservableObject where Card: CardModel {
     }
 
     func zoomIn() {
+        guard !zoomed else { return }
+
         // Update showContent immediately to hide the content overlay
         showContent = false
         withAnimation(CardUX.transitionAnimation) {
@@ -46,6 +48,8 @@ class CardGridViewModel<Card>: ObservableObject where Card: CardModel {
     }
 
     func zoomOut() {
+        guard zoomed else { return }
+
         // showContent updated after the animation completes
 
         let startAnimation = {
