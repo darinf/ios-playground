@@ -20,28 +20,32 @@ class BrowserViewModel: ObservableObject {
 
     private func observe(cardDetails: CardGridViewModel<WebContentsCardModel>.CardDetails?) {
         guard let details = cardDetails else {
-            self.selectedCardSubscriptions = []
-            self.omniBarViewModel.urlFieldViewModel.input = ""
-            self.omniBarViewModel.canEditCurrentUrl = false
+            selectedCardSubscriptions = []
+            omniBarViewModel.urlFieldViewModel.input = ""
+            omniBarViewModel.canEditCurrentUrl = false
             return
         }
 
         let card = details.model.card
 
-        self.omniBarViewModel.canEditCurrentUrl = true
+        omniBarViewModel.canEditCurrentUrl = true
 
-        card.$url.sink { url in
+        card.$url.sink { [weak self] url in
             DispatchQueue.main.async {
-                self.omniBarViewModel.urlFieldViewModel.input = url?.absoluteString ?? ""
+                self?.omniBarViewModel.urlFieldViewModel.input = url?.absoluteString ?? ""
             }
         }.store(in: &selectedCardSubscriptions)
 
-        card.$hideOverlays.sink { hideOverlays in
+        card.$hideOverlays.sink { [weak self] hideOverlays in
             DispatchQueue.main.async {
-                self.omniBarViewModel.update(hidden: hideOverlays)
+                self?.omniBarViewModel.update(hidden: hideOverlays)
             }
         }.store(in: &selectedCardSubscriptions)
 
+        card.childCardPublisher.sink { [weak self] newCard in
+            self?.cardGridViewModel.appendCard(card: newCard)
+            self?.cardGridViewModel.selectedCardId = newCard.id
+        }.store(in: &selectedCardSubscriptions)
     }
 
     init() {

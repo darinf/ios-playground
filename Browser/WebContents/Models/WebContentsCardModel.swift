@@ -6,23 +6,32 @@ import UIKit
 import WebKit
 
 // One of these per tab
-class WebContentsCardModel: CardModel {
+class WebContentsCardModel: NSObject, CardModel {
     // CardModel fields:
     let id = UUID().uuidString
     @Published private(set) var title: String = ""
     @Published private(set) var thumbnail = pixelFromColor(.white)
     @Published private(set) var favicon = UIImage(systemName: "globe")!
 
-    @Published private(set) var url: URL?
+    @Published private(set) var url: URL? = nil
 
     // If overlays should be hidden b/c the content is being scrolled
     @Published private(set) var hideOverlays: Bool = false
 
+    // Notifies on creation of a new child card (WebView).
+    let childCardPublisher = PassthroughSubject<WebContentsCardModel, Never>()
+
     private var subscriptions: Set<AnyCancellable> = []
     private var scrollViewObserver: ScrollViewObserver?
+    private let configuration: WKWebViewConfiguration
 
     init(url: URL? = nil) {
         self.url = url
+        self.configuration = Self.configuration
+    }
+
+    init(withConfiguration configuration: WKWebViewConfiguration) {
+        self.configuration = configuration
     }
 
     private static var configuration = {
@@ -34,18 +43,19 @@ class WebContentsCardModel: CardModel {
     }()
 
     lazy var webView: WKWebView = {
-        let webView = WKWebView(frame: .zero, configuration: Self.configuration)
+        let webView = WKWebView(frame: .zero, configuration: configuration)
+        webView.uiDelegate = self  // weak reference
         webView.allowsBackForwardNavigationGestures = true
 
-        webView.publisher(for: \.url, options: .new).sink { url in
+        webView.publisher(for: \.url, options: .new).sink { [weak self] url in
             DispatchQueue.main.async {
-                self.url = url
+                self?.url = url
             }
         }.store(in: &subscriptions)
 
-        webView.publisher(for: \.title, options: .new).sink { title in
+        webView.publisher(for: \.title, options: .new).sink { [weak self] title in
             DispatchQueue.main.async {
-                self.title = title ?? ""
+                self?.title = title ?? ""
             }
         }.store(in: &subscriptions)
 
@@ -92,5 +102,15 @@ class WebContentsCardModel: CardModel {
             })
         webView.scrollView.refreshControl = rc
         webView.scrollView.bringSubviewToFront(rc)
+    }
+}
+
+extension WebContentsCardModel: WKUIDelegate {
+    func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration, for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
+
+        let newCard = WebContentsCardModel(withConfiguration: configuration)
+        childCardPublisher.send(newCard)
+
+        return newCard.webView
     }
 }
