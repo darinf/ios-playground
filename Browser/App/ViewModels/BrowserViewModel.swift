@@ -18,6 +18,14 @@ class BrowserViewModel: ObservableObject {
         cardGridViewModel.selectedCardDetails?.model.card
     }
 
+    private func updateThumbnailForSelectedCard(completion: @escaping () -> Void) {
+        if let selectedCard = selectedCard {
+            selectedCard.updateThumbnail(completion: completion)
+        } else {
+            DispatchQueue.main.async(execute: completion)
+        }
+    }
+
     private func observe(cardDetails: CardGridViewModel<WebContentsCardModel>.CardDetails?) {
         selectedCardSubscriptions = []
 
@@ -45,8 +53,10 @@ class BrowserViewModel: ObservableObject {
 
         card.childCardPublisher.sink { [weak self] newCard in
             guard let self = self else { return }
-            self.cardGridViewModel.selectCardDetails(
-                details: self.cardGridViewModel.appendCard(card: newCard))
+            self.updateThumbnailForSelectedCard {
+                self.cardGridViewModel.selectCardDetails(
+                    details: self.cardGridViewModel.appendCard(card: newCard))
+            }
         }.store(in: &selectedCardSubscriptions)
     }
 
@@ -75,7 +85,9 @@ extension BrowserViewModel {
         case .urlField:
             presentZeroQuery(target: .existingCard)
         case .newCard:
-            presentZeroQuery(target: .newCard)
+            updateThumbnailForSelectedCard { [self] in
+                presentZeroQuery(target: .newCard)
+            }
         case .showCards:
             if cardGridViewModel.zoomed {
                 cardGridViewModel.zoomOut()
@@ -95,7 +107,6 @@ extension BrowserViewModel {
         if case .existingCard = target {
             zeroQueryViewModel.urlFieldViewModel.input = omniBarViewModel.urlFieldViewModel.input
         } else {
-            cardGridViewModel.selectedCardDetails?.model.card.updateThumbnail {}
             zeroQueryViewModel.urlFieldViewModel.input = ""
         }
         withAnimation {

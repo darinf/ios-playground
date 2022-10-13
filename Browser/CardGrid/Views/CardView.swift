@@ -16,7 +16,7 @@ enum CardUX {
 }
 
 struct CardView<Card>: View where Card: CardModel {
-    enum Action { case closed }
+    enum Action { case activated, closed }
 
     let namespace: Namespace.ID
     @ObservedObject var model: CardViewModel<Card>
@@ -35,6 +35,37 @@ struct CardView<Card>: View where Card: CardModel {
     }
     var shadowRadius: CGFloat {
         showDecorations ? CardUX.shadowRadius : 0
+    }
+
+    var thumbnail: some View {
+        // Image thumbnail as background so we can clip it.
+        Button {
+            handler?(.activated)
+        } label: {
+            Color.clear
+                .matchedGeometryEffect(id: "\(card.id).thumbnail-container", in: namespace)
+                .background(alignment: .topLeading) {
+                    Image(uiImage: card.thumbnail)
+                        .resizable()
+                        .scaledToFill()
+                        .matchedGeometryEffect(id: "\(card.id).thumbnail", in: namespace)
+                }
+                .clipped()
+                .matchedGeometryEffect(id: "\(card.id).thumbnail-clip", in: namespace)
+                .cornerRadius(cardRadius)
+                .matchedGeometryEffect(id: "\(card.id).thumbnail-corners", in: namespace)
+                .shadow(radius: shadowRadius)
+                .overlay(
+                    RoundedRectangle(cornerRadius: cardRadius)
+                        .stroke(Color(UIColor.label).opacity(selected && showDecorations ? 1 : 0), lineWidth: 3)
+                        .matchedGeometryEffect(id: "\(card.id).selection-border", in: namespace)
+                )
+                // Prevent the clipped part of the thumbnail from contributing to the hit box.
+                .contentShape(RoundedRectangle(cornerRadius: cardRadius))
+                .matchedGeometryEffect(id: "\(card.id).content-shape", in: namespace)
+        }
+        .buttonStyle(.reportsPresses(pressed: $model.pressed))
+        .matchedGeometryEffect(id: "\(card.id).thumbnail-button", in: namespace)        
     }
 
     var closeButton: some View {
@@ -63,26 +94,7 @@ struct CardView<Card>: View where Card: CardModel {
 
     var body: some View {
         ZStack(alignment: .bottom) {
-            // Image thumbnail as background so we can clip it.
-            Color.clear
-                .matchedGeometryEffect(id: "\(card.id).thumbnail-container", in: namespace)
-                .background(alignment: .topLeading) {
-                    Image(uiImage: card.thumbnail)
-                        .resizable()
-                        .scaledToFill()
-                        .matchedGeometryEffect(id: "\(card.id).thumbnail", in: namespace)
-                }
-                .clipped()
-                .matchedGeometryEffect(id: "\(card.id).thumbnail-clip", in: namespace)
-                .cornerRadius(cardRadius)
-                .matchedGeometryEffect(id: "\(card.id).thumbnail-corners", in: namespace)
-                .shadow(radius: shadowRadius)
-                .overlay(
-                    RoundedRectangle(cornerRadius: cardRadius)
-                        .stroke(Color(UIColor.label).opacity(selected && showDecorations ? 1 : 0), lineWidth: 3)
-                        .matchedGeometryEffect(id: "\(card.id).selection-border", in: namespace)
-                )
-
+            thumbnail
             closeButton
 
             HStack {

@@ -3,34 +3,22 @@
 import SwiftUI
 
 struct SmallCardView<Card>: View where Card: CardModel {
-    enum Action { case activated, closed }
-
     let namespace: Namespace.ID
     @ObservedObject var model: CardViewModel<Card>
     let selected: Bool
     let zoomed: Bool
-    let handler: (_ action: Action) -> Void
+    let handler: (_ action: CardView<Card>.Action) -> Void
 
     var body: some View {
-        Button() {
-            handler(.activated)
-        } label: {
-            Group {
-                if selected && zoomed {
-                    Color.clear
-                } else {
-                    CardView(namespace: namespace, model: model, selected: selected, zoomed: false) {
-                        switch $0 {
-                        case .closed:
-                            handler(.closed)
-                        }
-                    }
-                }
+        Group {
+            if selected && zoomed {
+                Color.clear
+            } else {
+                CardView(namespace: namespace, model: model, selected: selected, zoomed: false, handler: handler)
             }
-            .transition(.identity.animation(.default))
-            .aspectRatio(CardUX.aspectRatio, contentMode: .fill)
         }
-        .buttonStyle(.reportsPresses(pressed: $model.pressed))
+        .transition(.identity.animation(.default))
+        .aspectRatio(CardUX.aspectRatio, contentMode: .fill)
         .zIndex(selected ? 1 : 0)
     }
 }

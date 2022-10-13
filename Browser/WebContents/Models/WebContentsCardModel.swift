@@ -114,12 +114,12 @@ class WebContentsCardModel: NSObject, CardModel {
 // MARK: WebViewDelegates
 
 extension WebContentsCardModel: WKUIDelegate {
-    func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration, for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
-        updateThumbnail {}
-
+    func webView(_ webView: WKWebView,
+                 createWebViewWith configuration: WKWebViewConfiguration,
+                 for navigationAction: WKNavigationAction,
+                 windowFeatures: WKWindowFeatures) -> WKWebView? {
         let newCard = WebContentsCardModel(url: nil, withConfiguration: configuration)
         childCardPublisher.send(newCard)
-
         return newCard.webView
     }
 }
