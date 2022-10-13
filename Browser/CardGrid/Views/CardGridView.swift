@@ -79,7 +79,7 @@ struct CardGridView<Card, ZoomedContent, OverlayContent>: View where Card: CardM
             }
             .onAppear {
                 if !model.allDetails.isEmpty {
-                    model.selectedCardId = model.allDetails[0].id
+                    model.selectCardDetails(details: model.allDetails[0])
                 }
             }
         }

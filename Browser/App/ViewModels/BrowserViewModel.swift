@@ -43,8 +43,9 @@ class BrowserViewModel: ObservableObject {
         }.store(in: &selectedCardSubscriptions)
 
         card.childCardPublisher.sink { [weak self] newCard in
-            self?.cardGridViewModel.appendCard(card: newCard)
-            self?.cardGridViewModel.selectedCardId = newCard.id
+            guard let self = self else { return }
+            self.cardGridViewModel.selectCardDetails(
+                details: self.cardGridViewModel.appendCard(card: newCard))
         }.store(in: &selectedCardSubscriptions)
     }
 
@@ -74,7 +75,6 @@ extension BrowserViewModel {
             presentZeroQuery(target: .existingCard)
         case .newCard:
             presentZeroQuery(target: .newCard)
-            break
         case .showCards:
             if cardGridViewModel.zoomed {
                 cardGridViewModel.zoomOut()
@@ -94,6 +94,7 @@ extension BrowserViewModel {
         if case .existingCard = target {
             zeroQueryViewModel.urlFieldViewModel.input = omniBarViewModel.urlFieldViewModel.input
         } else {
+            cardGridViewModel.selectedCardDetails?.model.card.updateThumbnail {}
             zeroQueryViewModel.urlFieldViewModel.input = ""
         }
         withAnimation {
@@ -112,29 +113,22 @@ extension BrowserViewModel {
         case .cancel:
             dismissZeroQuery()
         case .navigate(let input):
-            print(">>> navigate to \(input)")
-
             omniBarViewModel.urlFieldViewModel.input = input
             dismissZeroQuery()
 
             let url = UrlFixup.fromUser(input: input)
-            print(">>> loading url: \(url?.absoluteString ?? "(nil)")")
 
             if case .newCard = zeroQueryViewModel.target {
                 // Create new card and select it.
                 let newCard = WebContentsCardModel(url: url)
-                cardGridViewModel.appendCard(card: newCard)
-                cardGridViewModel.selectedCardId = newCard.id
+                cardGridViewModel.selectCardDetails(
+                    details: cardGridViewModel.appendCard(card: newCard))
             }
 
             cardGridViewModel.zoomIn()
 
-            if let selectedCard = selectedCard {
-                if let url = url {
-                    selectedCard.navigate(to: url)
-                } else {
-                    //selectedCard.navigate(to: URL(string: "https://neeva.com/search?q=\(input)")!)
-                }
+            if let selectedCard = selectedCard, let url = url {
+                selectedCard.navigate(to: url)
             }
         }
     }

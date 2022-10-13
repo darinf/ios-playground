@@ -8,5 +8,5 @@ protocol CardModel: ObservableObject, Identifiable {
     var title: String { get }
     var thumbnail: UIImage { get }
     var favicon: UIImage { get }
-    func prepareToShowAsThumbnail(completion: @escaping () -> Void)
+    func updateThumbnail(completion: @escaping () -> Void)
 }

@@ -6,7 +6,7 @@ import SwiftUI
 class CardGridViewModel<Card>: ObservableObject where Card: CardModel {
     @Published private(set) var zoomed: Bool = true
     @Published var showContent: Bool = true
-    @Published var selectedCardId: String?
+    @Published private(set) var selectedCardId: String?
 
     struct CardDetails: Identifiable {
         let model: CardViewModel<Card>
@@ -29,8 +29,14 @@ class CardGridViewModel<Card>: ObservableObject where Card: CardModel {
         return cardDetails(for: id)
     }
 
-    func appendCard(card: Card) {
-        self.allDetails.append(CardDetails(card: card))
+    func selectCardDetails(details: CardDetails?) {
+        selectedCardId = details?.id ?? nil
+    }
+
+    func appendCard(card: Card) -> CardDetails {
+        let details = CardDetails(card: card)
+        self.allDetails.append(details)
+        return details
     }
 
     init(cards: [Card]) {
@@ -59,7 +65,7 @@ class CardGridViewModel<Card>: ObservableObject where Card: CardModel {
         }
 
         if showContent, let details = selectedCardDetails {
-            details.model.card.prepareToShowAsThumbnail() { startAnimation() }
+            details.model.card.updateThumbnail() { startAnimation() }
         } else {
             startAnimation()
         }
