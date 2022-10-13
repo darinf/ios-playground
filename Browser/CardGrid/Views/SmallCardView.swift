@@ -10,15 +10,20 @@ struct SmallCardView<Card>: View where Card: CardModel {
     let handler: (_ action: CardView<Card>.Action) -> Void
 
     var body: some View {
-        Group {
-            if selected && zoomed {
-                Color.clear
-            } else {
-                CardView(namespace: namespace, model: model, selected: selected, zoomed: false, handler: handler)
+        Button {
+            handler(.activated)
+        } label: {
+            Group {
+                if selected && zoomed {
+                    Color.clear
+                } else {
+                    CardView(namespace: namespace, model: model, selected: selected, zoomed: false, handler: handler)
+                }
             }
+            .transition(.identity.animation(.default))
+            .aspectRatio(CardUX.aspectRatio, contentMode: .fill)
         }
-        .transition(.identity.animation(.default))
-        .aspectRatio(CardUX.aspectRatio, contentMode: .fill)
+        .buttonStyle(.reportsPresses(pressed: $model.pressed))
         .zIndex(selected ? 1 : 0)
     }
 }
