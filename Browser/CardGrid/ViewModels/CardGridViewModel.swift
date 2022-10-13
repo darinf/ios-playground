@@ -34,6 +34,8 @@ class CardGridViewModel<Card>: ObservableObject where Card: CardModel {
     }
 
     func appendCard(card: Card) -> CardDetails {
+        assert(cardDetails(for: card.id) == nil)
+
         let details = CardDetails(card: card)
         self.allDetails.append(details)
         return details

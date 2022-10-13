@@ -30,12 +30,12 @@ class WebContentsCardModel: NSObject, CardModel {
     private var scrollViewObserver: ScrollViewObserver?
     private let configuration: WKWebViewConfiguration
 
-    init(url: URL? = nil) {
-        self.url = url
-        self.configuration = Self.configuration
+    convenience init(url: URL?) {
+        self.init(url: url, withConfiguration: Self.configuration)
     }
 
-    init(withConfiguration configuration: WKWebViewConfiguration) {
+    init(url: URL?, withConfiguration configuration: WKWebViewConfiguration) {
+        self.url = url
         self.configuration = configuration
     }
 
@@ -115,8 +115,9 @@ class WebContentsCardModel: NSObject, CardModel {
 
 extension WebContentsCardModel: WKUIDelegate {
     func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration, for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
+        updateThumbnail {}
 
-        let newCard = WebContentsCardModel(withConfiguration: configuration)
+        let newCard = WebContentsCardModel(url: nil, withConfiguration: configuration)
         childCardPublisher.send(newCard)
 
         return newCard.webView

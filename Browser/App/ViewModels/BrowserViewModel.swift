@@ -19,8 +19,9 @@ class BrowserViewModel: ObservableObject {
     }
 
     private func observe(cardDetails: CardGridViewModel<WebContentsCardModel>.CardDetails?) {
+        selectedCardSubscriptions = []
+
         guard let details = cardDetails else {
-            selectedCardSubscriptions = []
             omniBarViewModel.urlFieldViewModel.input = ""
             omniBarViewModel.canEditCurrentUrl = false
             return
