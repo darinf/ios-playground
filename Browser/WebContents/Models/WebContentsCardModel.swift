@@ -5,6 +5,11 @@ import Foundation
 import UIKit
 import WebKit
 
+fileprivate func userAgentString() -> String {
+    let version = UIDevice.current.systemVersion.replacingOccurrences(of: ".", with: "_")
+    return "Mozilla/5.0 (iPhone; CPU iPhone OS \(version) like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1"
+}
+
 // One of these per tab
 class WebContentsCardModel: NSObject, CardModel {
     // CardModel fields:
@@ -46,6 +51,7 @@ class WebContentsCardModel: NSObject, CardModel {
         let webView = WKWebView(frame: .zero, configuration: configuration)
         webView.uiDelegate = self  // weak reference
         webView.allowsBackForwardNavigationGestures = true
+        webView.customUserAgent = userAgentString()
 
         webView.publisher(for: \.url, options: .new).sink { [weak self] url in
             DispatchQueue.main.async {
@@ -104,6 +110,8 @@ class WebContentsCardModel: NSObject, CardModel {
         webView.scrollView.bringSubviewToFront(rc)
     }
 }
+
+// MARK: WebViewDelegates
 
 extension WebContentsCardModel: WKUIDelegate {
     func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration, for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
