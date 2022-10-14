@@ -109,8 +109,6 @@ extension BrowserViewModel {
             } else {
                 cardGridViewModel.zoomIn()
             }
-        case .showMenu:
-            print(">>> showMenu")
         }
     }
 }
