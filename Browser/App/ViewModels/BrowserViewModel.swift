@@ -47,6 +47,9 @@ class BrowserViewModel: ObservableObject {
 
         card.$isLoading.sink { [weak self] isLoading in
             DispatchQueue.main.async {
+                if isLoading {
+                    self?.omniBarViewModel.update(hidden: false)
+                }
                 self?.omniBarViewModel.urlFieldViewModel.update(isLoading: isLoading)
             }
         }.store(in: &selectedCardSubscriptions)
