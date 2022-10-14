@@ -29,6 +29,7 @@ struct UrlFieldView: View {
                         HStack(spacing: 0) {
                             Rectangle()
                                 .fill(Color.cyan)
+                                .matchedGeometryEffect(id: "urlField.progress", in: namespace)
                                 .frame(width: geom.size.width * model.progress)
                                 .opacity(model.isLoading ? 1 : 0)
                             Spacer()
