@@ -48,14 +48,14 @@ struct OmniBarView: View {
         VStack {
             HStack {
                 Spacer()
-                Button {
+                InteractiveButton {
                     handler(.showMenu)
                 } label: {
                     showMenu
                 }
             }
             HStack {
-                Button {
+                InteractiveButton {
                     handler(.urlField)
                 } label: {
                     urlField
@@ -65,19 +65,19 @@ struct OmniBarView: View {
                 .frame(maxWidth: .infinity)
                 .padding(.leading, 25)
 
-                Button {
+                InteractiveButton {
                     handler(.newCard)
                 } label: {
                     newCard
                 }
 
-                Button {
+                InteractiveButton {
                     handler(.showCards)
                 } label: {
                     showCards
                 }
 
-                Button {
+                InteractiveButton {
                     withAnimation(OmniBarUX.transitionAnimation) {
                         model.expanded.toggle()
                     }
@@ -93,7 +93,7 @@ struct OmniBarView: View {
     var compactLayout: some View {
         HStack {
             Spacer()
-            Button {
+            InteractiveButton {
                 withAnimation(OmniBarUX.transitionAnimation) {
                     model.expanded.toggle()
                 }
