@@ -87,11 +87,11 @@
 		933A5A8428EF570C00F8A35E /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				93AB330128EDFAA600F3C470 /* ReportsPressesButtonStyle.swift */,
 				933A5A8528EF9C6600F8A35E /* AnimationCompletionModifier.swift */,
+				933A5AB128F931E200F8A35E /* InteractiveButton.swift */,
+				93AB330128EDFAA600F3C470 /* ReportsPressesButtonStyle.swift */,
 				933A5AA928F0DC6100F8A35E /* ScrollViewObserver.swift */,
 				933A5AAD28F291D000F8A35E /* UrlFixup.swift */,
-				933A5AB128F931E200F8A35E /* InteractiveButton.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
