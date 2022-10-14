@@ -19,9 +19,26 @@ struct UrlFieldView: View {
     }
     
     var body: some View {
-        RoundedRectangle(cornerRadius: 25)
-            .fill(Color(uiColor: .systemBackground))
+        Color.clear
             .matchedGeometryEffect(id: "urlField", in: namespace)
+            .background(
+                GeometryReader { geom in
+                    ZStack {
+                        Color(uiColor: .systemBackground)
+                            .matchedGeometryEffect(id: "urlField.background", in: namespace)
+                        HStack(spacing: 0) {
+                            Rectangle()
+                                .fill(Color.cyan)
+                                .frame(width: geom.size.width * model.progress)
+                                .opacity(model.isLoading ? 1 : 0)
+                            Spacer()
+                        }
+                    }
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            )
+            .clipped()
+            .cornerRadius(25)
             .frame(height: 40)
             .shadow(radius: OmniBarUX.shadowRadius)
             .overlay(

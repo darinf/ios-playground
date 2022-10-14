@@ -30,7 +30,7 @@ class BrowserViewModel: ObservableObject {
         selectedCardSubscriptions = []
 
         guard let details = cardDetails else {
-            omniBarViewModel.urlFieldViewModel.input = ""
+            omniBarViewModel.urlFieldViewModel.reset()
             omniBarViewModel.canEditCurrentUrl = false
             return
         }
@@ -42,6 +42,18 @@ class BrowserViewModel: ObservableObject {
         card.$url.sink { [weak self] url in
             DispatchQueue.main.async {
                 self?.omniBarViewModel.urlFieldViewModel.input = url?.absoluteString ?? ""
+            }
+        }.store(in: &selectedCardSubscriptions)
+
+        card.$isLoading.sink { [weak self] isLoading in
+            DispatchQueue.main.async {
+                self?.omniBarViewModel.urlFieldViewModel.update(isLoading: isLoading)
+            }
+        }.store(in: &selectedCardSubscriptions)
+
+        card.$estimatedProgress.sink { [weak self] estimatedProgress in
+            DispatchQueue.main.async {
+                self?.omniBarViewModel.urlFieldViewModel.update(progress: estimatedProgress)
             }
         }.store(in: &selectedCardSubscriptions)
 

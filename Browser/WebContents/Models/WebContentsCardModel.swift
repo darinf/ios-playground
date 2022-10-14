@@ -19,6 +19,8 @@ class WebContentsCardModel: NSObject, CardModel {
     @Published private(set) var favicon = UIImage(systemName: "globe")!
 
     @Published private(set) var url: URL? = nil
+    @Published private(set) var isLoading: Bool = false
+    @Published private(set) var estimatedProgress: Double = 0.0
 
     // If overlays should be hidden b/c the content is being scrolled
     @Published private(set) var hideOverlays: Bool = false
@@ -62,6 +64,18 @@ class WebContentsCardModel: NSObject, CardModel {
         webView.publisher(for: \.title, options: .new).sink { [weak self] title in
             DispatchQueue.main.async {
                 self?.title = title ?? ""
+            }
+        }.store(in: &subscriptions)
+
+        webView.publisher(for: \.isLoading, options: .new).sink { [weak self] isLoading in
+            DispatchQueue.main.async {
+                self?.isLoading = isLoading
+            }
+        }.store(in: &subscriptions)
+
+        webView.publisher(for: \.estimatedProgress, options: .new).sink { [weak self] estimatedProgress in
+            DispatchQueue.main.async {
+                self?.estimatedProgress = estimatedProgress
             }
         }.store(in: &subscriptions)
 
