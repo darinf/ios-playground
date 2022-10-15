@@ -10,8 +10,8 @@ enum CardUX {
     static let shadowRadius: CGFloat = 2
     static let verticalSpacing: CGFloat = 10
     static let minimumCardWidth: CGFloat = 140
-    static let transitionAnimation = Animation.interactiveSpring(response: 0.25)
-    static let decorationAnimation = Animation.easeInOut(duration: 0.1)
+    static let transitionAnimation = Animation.interactiveSpring(response: 0.35)
+    static let decorationAnimation = Animation.easeInOut(duration: 0.25)
     static let pressAnimation = Animation.easeOut
 }
 
@@ -54,7 +54,7 @@ struct CardView<Card>: View where Card: CardModel {
             .shadow(radius: shadowRadius)
             .overlay(
                 RoundedRectangle(cornerRadius: cardRadius)
-                    .stroke(Color(UIColor.label).opacity(selected && showDecorations ? 1 : 0), lineWidth: 3)
+                    .stroke(Color.cyan.opacity(selected && showDecorations ? 1 : 0), lineWidth: 3)
                     .matchedGeometryEffect(id: "\(card.id).selection-border", in: namespace)
             )
             .contentShape(RoundedRectangle(cornerRadius: cardRadius))
