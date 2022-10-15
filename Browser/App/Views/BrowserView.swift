@@ -26,6 +26,7 @@ struct BrowserView: View {
 
     @ViewBuilder
     func zoomedCard(card: WebContentsCardModel) -> some View {
+        let _ = print(">>> zoomedCard for card.url: \(card.url?.absoluteString ?? "(nil)")")
         WebContentsView(model: model.webContentsViewModel, card: card)
     }
 

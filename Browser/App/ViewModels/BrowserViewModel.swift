@@ -4,7 +4,7 @@ import Combine
 import SwiftUI
 
 class BrowserViewModel: ObservableObject {
-    private var selectedCardIdSubscription: AnyCancellable?
+    private var subscriptions: Set<AnyCancellable> = []
     private var selectedCardSubscriptions: Set<AnyCancellable> = []
 
     let cardGridViewModel: CardGridViewModel<WebContentsCardModel>
@@ -40,30 +40,22 @@ class BrowserViewModel: ObservableObject {
         omniBarViewModel.canEditCurrentUrl = true
 
         card.$url.sink { [weak self] url in
-            DispatchQueue.main.async {
-                self?.omniBarViewModel.urlFieldViewModel.input = url?.absoluteString ?? ""
-            }
+            self?.omniBarViewModel.urlFieldViewModel.input = url?.absoluteString ?? ""
         }.store(in: &selectedCardSubscriptions)
 
         card.$isLoading.sink { [weak self] isLoading in
-            DispatchQueue.main.async {
-                if isLoading {
-                    self?.omniBarViewModel.update(hidden: false)
-                }
-                self?.omniBarViewModel.urlFieldViewModel.update(isLoading: isLoading)
+            if isLoading {
+                self?.omniBarViewModel.update(hidden: false)
             }
+            self?.omniBarViewModel.urlFieldViewModel.update(isLoading: isLoading)
         }.store(in: &selectedCardSubscriptions)
 
         card.$estimatedProgress.sink { [weak self] estimatedProgress in
-            DispatchQueue.main.async {
-                self?.omniBarViewModel.urlFieldViewModel.update(progress: estimatedProgress)
-            }
+            self?.omniBarViewModel.urlFieldViewModel.update(progress: estimatedProgress)
         }.store(in: &selectedCardSubscriptions)
 
         card.$hideOverlays.sink { [weak self] hideOverlays in
-            DispatchQueue.main.async {
-                self?.omniBarViewModel.update(hidden: hideOverlays)
-            }
+            self?.omniBarViewModel.update(hidden: hideOverlays)
         }.store(in: &selectedCardSubscriptions)
 
         card.childCardPublisher.sink { [weak self] newCard in
@@ -80,16 +72,19 @@ class BrowserViewModel: ObservableObject {
             .init(url: URL(string: "https://news.ycombinator.com/")!)
         ]
         self.cardGridViewModel = .init(cards: initialCards)
+        cardGridViewModel.$hideOverlays.sink { [weak self] hideOverlays in
+            self?.omniBarViewModel.update(hidden: hideOverlays)
+        }.store(in: &subscriptions)
 
-        // Observe selected card's URL.
-        self.selectedCardIdSubscription = self.cardGridViewModel.$selectedCardId.sink { [weak self] id in
+        // Observe selected card's URL. Observe asynchronously to let other updates happen first.
+        self.cardGridViewModel.$selectedCardId.receive(on: DispatchQueue.main).sink { [weak self] id in
             guard let self = self else { return }
             if let id = id {
                 self.observe(cardDetails: self.cardGridViewModel.cardDetails(for: id))
             } else {
                 self.observe(cardDetails: nil)
             }
-        }
+        }.store(in: &subscriptions)
     }
 }
 

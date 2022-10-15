@@ -1,5 +1,6 @@
 // Copyright 2022 Darin Fisher. All rights reserved.
 
+import Introspect
 import SwiftUI
 
 enum CardGridUX {
@@ -38,6 +39,9 @@ struct CardGridView<Card, ZoomedContent, OverlayContent>: View where Card: CardM
             }
             .padding(CardGridUX.spacing)
         }
+        .introspectScrollView { scrollView in
+            model.observe(scrollView: scrollView)
+        }
         .background(Color(uiColor: .systemBackground))
     }
 
@@ -46,9 +50,7 @@ struct CardGridView<Card, ZoomedContent, OverlayContent>: View where Card: CardM
             ZStack(alignment: .top) {
                 grid
                     .onAnimationCompleted(for: model.zoomed) {
-                        if model.zoomed {
-                            model.showContent = true
-                        }
+                        model.onZoomCompleted()
                     }
 
                 Color(uiColor: .systemBackground)

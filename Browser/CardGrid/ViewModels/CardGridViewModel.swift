@@ -4,10 +4,6 @@ import Combine
 import SwiftUI
 
 class CardGridViewModel<Card>: ObservableObject where Card: CardModel {
-    @Published private(set) var zoomed: Bool = true
-    @Published var showContent: Bool = true
-    @Published private(set) var selectedCardId: String?
-
     struct CardDetails: Identifiable {
         let model: CardViewModel<Card>
         var id: String { model.card.id }
@@ -17,6 +13,14 @@ class CardGridViewModel<Card>: ObservableObject where Card: CardModel {
     }
 
     @Published private(set) var allDetails: [CardDetails]
+    @Published private(set) var zoomed: Bool = true
+    @Published private(set) var showContent: Bool = true
+    @Published private(set) var selectedCardId: String?
+    @Published private(set) var hideOverlays = false
+
+    private var scrollView: UIScrollView?
+    private var scrollViewObserver: ScrollViewObserver?
+    private var scrollViewDirectionSub: AnyCancellable?
 
     func cardDetails(for id: String) -> CardDetails? {
         allDetails.first(where: { $0.id == id })
@@ -45,6 +49,18 @@ class CardGridViewModel<Card>: ObservableObject where Card: CardModel {
         self.allDetails = cards.map { CardDetails(card: $0) }
     }
 
+    func observe(scrollView: UIScrollView) {
+        guard self.scrollView !== scrollView else {
+            return
+        }
+        self.scrollView = scrollView
+
+        scrollViewObserver = ScrollViewObserver(scrollView: scrollView)
+        scrollViewDirectionSub = scrollViewObserver?.$direction.sink { [weak self] direction in
+            self?.hideOverlays = (direction == .down)
+        }
+    }
+
     func zoomIn() {
         guard !zoomed else { return }
 
@@ -70,6 +86,12 @@ class CardGridViewModel<Card>: ObservableObject where Card: CardModel {
             details.model.card.updateThumbnail() { startAnimation() }
         } else {
             startAnimation()
+        }
+    }
+
+    func onZoomCompleted() {
+        if zoomed {
+            showContent = true
         }
     }
 
