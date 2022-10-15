@@ -15,29 +15,38 @@ struct CardGridView<Card, ZoomedContent, OverlayContent>: View where Card: CardM
 
     var grid: some View {
         ScrollView(showsIndicators: false) {
-            let columns = [
-                GridItem(.adaptive(minimum: CardUX.minimumCardWidth),
-                         spacing: CardGridUX.spacing)
-            ]
-            LazyVGrid(columns: columns, spacing: CardGridUX.spacing + CardUX.titleHeight + CardUX.verticalSpacing) {
-                ForEach(model.allDetails) { cardDetail in
-                    let selected = model.selectedCardId == cardDetail.id
-                    SmallCardView(
-                        namespace: namespace,
-                        model: cardDetail.model,
-                        selected: selected,
-                        zoomed: model.zoomed
-                    ) { action in
-                        switch action {
-                        case .activated:
-                            model.activateCard(id: cardDetail.id)
-                        case .closed:
-                            model.closeCard(id: cardDetail.id)
+            ScrollViewReader { scroller in
+                let columns = [
+                    GridItem(.adaptive(minimum: CardUX.minimumCardWidth),
+                             spacing: CardGridUX.spacing)
+                ]
+                LazyVGrid(columns: columns, spacing: CardGridUX.spacing + CardUX.titleHeight + CardUX.verticalSpacing) {
+                    ForEach(model.allDetails) { cardDetail in
+                        let selected = model.selectedCardId == cardDetail.id
+                        SmallCardView(
+                            namespace: namespace,
+                            model: cardDetail.model,
+                            selected: selected,
+                            zoomed: model.zoomed
+                        ) { action in
+                            switch action {
+                            case .activated:
+                                model.activateCard(id: cardDetail.id)
+                            case .closed:
+                                model.closeCard(id: cardDetail.id)
+                            }
                         }
+                        .id(cardDetail.id)
                     }
                 }
+                .padding(CardGridUX.spacing)
+                .onChange(of: model.selectedCardId) { id in
+                    scroller.scrollTo(id)
+                }
+                .onChange(of: model.scrollToSelectedCardId) { _ in
+                    scroller.scrollTo(model.selectedCardId)
+                }
             }
-            .padding(CardGridUX.spacing)
         }
         .introspectScrollView { scrollView in
             model.observe(scrollView: scrollView)

@@ -17,6 +17,7 @@ class CardGridViewModel<Card>: ObservableObject where Card: CardModel {
     @Published private(set) var showContent: Bool = true
     @Published private(set) var selectedCardId: String?
     @Published private(set) var hideOverlays = false
+    @Published private(set) var scrollToSelectedCardId: Int = 0
 
     private var scrollView: UIScrollView?
     private var scrollViewObserver: ScrollViewObserver?
@@ -64,10 +65,13 @@ class CardGridViewModel<Card>: ObservableObject where Card: CardModel {
     func zoomIn() {
         guard !zoomed else { return }
 
-        // Update showContent immediately to hide the content overlay
-        showContent = false
-        withAnimation(CardUX.transitionAnimation) {
-            zoomed = true
+        scrollToSelectedCardId += 1
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { [self] in
+            // Update showContent immediately to hide the content overlay
+            showContent = false
+            withAnimation(CardUX.transitionAnimation) {
+                zoomed = true
+            }
         }
     }
 
@@ -83,7 +87,7 @@ class CardGridViewModel<Card>: ObservableObject where Card: CardModel {
         }
 
         if showContent, let details = selectedCardDetails {
-            details.model.card.updateThumbnail() { startAnimation() }
+            details.model.card.updateThumbnail(completion: startAnimation)
         } else {
             startAnimation()
         }
