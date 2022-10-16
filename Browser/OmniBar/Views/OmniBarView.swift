@@ -54,10 +54,10 @@ struct OmniBarView: View {
         } label: {
             urlFieldView
         }
+        .matchedGeometryEffect(id: "test", in: namespace)
         .zIndex(1)
         .opacity(model.canEditCurrentUrl ? 1 : 0)
         .frame(maxWidth: .infinity)
-        .padding(.leading, 25)
     }
 
     @ViewBuilder
@@ -80,12 +80,19 @@ struct OmniBarView: View {
 
     @ViewBuilder
     var showMenuButtonView: some View {
-        Menu {
-            Toggle("Docked", isOn: $model.docked)
+//        Menu {
+//            Toggle("Docked", isOn: $model.docked)
+//        } label: {
+//            showMenuView
+//        }
+//        .menuStyle(.button)
+        InteractiveButton {
+            withAnimation {
+                model.docked.toggle()
+            }
         } label: {
             showMenuView
         }
-        .menuStyle(.button)
     }
 
     @ViewBuilder
@@ -115,7 +122,7 @@ struct OmniBarView: View {
                 expandoButtonView
             }
         }
-        .padding(.trailing, 25)
+        .padding([.leading, .trailing], 25)
     }
 
     @ViewBuilder
@@ -136,6 +143,7 @@ struct OmniBarView: View {
                     expandoView(height: 50)
                 }
             }
+            .padding(.leading, 25)
             .padding(.trailing, 20)
         }
     }
@@ -146,9 +154,13 @@ struct OmniBarView: View {
             urlFieldButtonView
             newCardButtonView
             showCardsButtonView
-            showMenuButtonView
+            ZStack {
+                expandoView(height: 30)
+                    .opacity(0)
+                showMenuButtonView
+            }
         }
-        .padding(.trailing, 25)
+        .padding([.leading, .trailing], 25)
         .frame(maxWidth: .infinity)
     }
 
@@ -170,11 +182,11 @@ struct OmniBarView: View {
             .padding(.top, model.docked ? 12 : 0)
             .background(
                 Group {
-                    if model.docked {
-                        Color(uiColor: .systemBackground)
-                            .opacity(0.7)
-                            .shadow(radius: 2)
-                    }
+                    Color(uiColor: .systemBackground)
+                        .matchedGeometryEffect(id: "omniBar.background", in: namespace)
+                        .opacity(model.docked ? 0.7 : 0)
+                        .animation(.default, value: model.docked)
+                        .shadow(radius: 2)
                 }
             )
             .offset(y: model.hidden ? 150 : 0)

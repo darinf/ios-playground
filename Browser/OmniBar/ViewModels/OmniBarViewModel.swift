@@ -5,7 +5,7 @@ import SwiftUI
 
 class OmniBarViewModel: ObservableObject {
     let urlFieldViewModel = UrlFieldViewModel()
-    @Published var expanded: Bool = false
+    @Published var expanded: Bool = true
     @Published var docked: Bool = true
     @Published private(set) var hidden: Bool = false
     @Published var canEditCurrentUrl: Bool = true
