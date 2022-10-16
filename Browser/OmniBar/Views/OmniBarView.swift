@@ -94,9 +94,6 @@ struct OmniBarView: View {
                 .menuStyle(.button)
             }
         }
-        .onAnimationCompleted(for: model.hidden) {
-            model.doneAnimating = true
-        }
     }
 
     @ViewBuilder
@@ -194,6 +191,9 @@ struct OmniBarView: View {
                 }
             )
             .offset(y: model.hidden ? 150 : 0)
+        }
+        .onAnimationCompleted(for: model.hidden) {
+            model.doneAnimating = true
         }
     }
 }
