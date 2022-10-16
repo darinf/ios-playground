@@ -80,18 +80,22 @@ struct OmniBarView: View {
 
     @ViewBuilder
     var showMenuButtonView: some View {
-//        Menu {
-//            Toggle("Docked", isOn: $model.docked)
-//        } label: {
-//            showMenuView
-//        }
-//        .menuStyle(.button)
-        InteractiveButton {
-            withAnimation {
-                model.docked.toggle()
+        Group {
+            // This is a workaround for Menu not animating offscreen correctly.
+            // Only wrap with Menu when done animating to the non-hidden state.
+            if model.hidden || !model.doneAnimating {
+                showMenuView
+            } else {
+                Menu {
+                    Toggle("Docked", isOn: $model.docked)
+                } label: {
+                    showMenuView
+                }
+                .menuStyle(.button)
             }
-        } label: {
-            showMenuView
+        }
+        .onAnimationCompleted(for: model.hidden) {
+            model.doneAnimating = true
         }
     }
 
