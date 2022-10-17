@@ -9,11 +9,11 @@ class OmniBarViewModel: ObservableObject {
     @Published var docked: Bool = true
     @Published private(set) var hidden: Bool = false
     @Published var canEditCurrentUrl: Bool = true
-    @Published var doneAnimating: Bool = true
+    @Published var doneAnimatingHidden: Bool = true
 
     func update(hidden: Bool) {
         guard self.hidden != hidden else { return }
-        doneAnimating = false
+        doneAnimatingHidden = false
         withAnimation {
             self.hidden = hidden
         }

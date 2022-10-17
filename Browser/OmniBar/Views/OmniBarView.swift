@@ -83,7 +83,7 @@ struct OmniBarView: View {
         Group {
             // This is a workaround for Menu not animating offscreen correctly.
             // Only wrap with Menu when done animating to the non-hidden state.
-            if model.hidden || !model.doneAnimating {
+            if model.hidden || !model.doneAnimatingHidden {
                 showMenuView
             } else {
                 Menu {
@@ -193,7 +193,7 @@ struct OmniBarView: View {
             .offset(y: model.hidden ? 150 : 0)
         }
         .onAnimationCompleted(for: model.hidden) {
-            model.doneAnimating = true
+            model.doneAnimatingHidden = true
         }
     }
 }

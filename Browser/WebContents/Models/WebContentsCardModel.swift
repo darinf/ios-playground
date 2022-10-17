@@ -46,12 +46,14 @@ class WebContentsCardModel: NSObject, CardModel {
         configuration.processPool = WKProcessPool()
         configuration.ignoresViewportScaleLimits = true
         configuration.allowsInlineMediaPlayback = true
+        configuration.upgradeKnownHostsToHTTPS = true
         return configuration
     }()
 
     lazy var webView: WKWebView = {
         let webView = WKWebView(frame: .zero, configuration: configuration)
         webView.uiDelegate = self  // weak reference
+        webView.navigationDelegate = self  // weak reference
         webView.allowsBackForwardNavigationGestures = true
         webView.customUserAgent = userAgentString()
 
@@ -135,5 +137,11 @@ extension WebContentsCardModel: WKUIDelegate {
         let newCard = WebContentsCardModel(url: nil, withConfiguration: configuration)
         childCardPublisher.send(newCard)
         return newCard.webView
+    }
+}
+
+extension WebContentsCardModel: WKNavigationDelegate {
+    func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+        print(">>> error: \(error.localizedDescription)")
     }
 }
