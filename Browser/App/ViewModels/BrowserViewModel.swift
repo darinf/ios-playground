@@ -10,7 +10,6 @@ class BrowserViewModel: ObservableObject {
     let cardGridViewModel: CardGridViewModel<WebContentsCardModel>
     let omniBarViewModel = OmniBarViewModel()
     let zeroQueryViewModel = ZeroQueryViewModel()
-    let webContentsViewModel = WebContentsViewModel()
 
     @Published private(set) var showZeroQuery = false
 

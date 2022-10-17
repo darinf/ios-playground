@@ -26,7 +26,7 @@ struct BrowserView: View {
 
     @ViewBuilder
     func zoomedCard(card: WebContentsCardModel) -> some View {
-        WebContentsView(model: model.webContentsViewModel, card: card)
+        WebContentsView(card: card)
     }
 
     var body: some View {

@@ -27,7 +27,6 @@ struct WebViewContainerView: UIViewRepresentable {
 }
 
 struct WebContentsView: View {
-    @ObservedObject var model: WebContentsViewModel
     @ObservedObject var card: WebContentsCardModel
 
     var body: some View {
