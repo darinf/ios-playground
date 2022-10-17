@@ -28,7 +28,6 @@ class WebContentsCardModel: NSObject, CardModel {
     // Notifies on creation of a new child card (WebView).
     let childCardPublisher = PassthroughSubject<WebContentsCardModel, Never>()
 
-    private var subscriptions: Set<AnyCancellable> = []
     private var scrollViewObserver: ScrollViewObserver?
     private let configuration: WKWebViewConfiguration
 
@@ -57,42 +56,24 @@ class WebContentsCardModel: NSObject, CardModel {
         webView.allowsBackForwardNavigationGestures = true
         webView.customUserAgent = userAgentString()
 
-        webView.publisher(for: \.url, options: .new).sink { [weak self] url in
-            DispatchQueue.main.async {
-                self?.url = url
-            }
-        }.store(in: &subscriptions)
-
-        webView.publisher(for: \.title, options: .new).sink { [weak self] title in
-            DispatchQueue.main.async {
-                self?.title = title ?? ""
-            }
-        }.store(in: &subscriptions)
-
-        webView.publisher(for: \.isLoading, options: .new).sink { [weak self] isLoading in
-            DispatchQueue.main.async {
-                self?.isLoading = isLoading
-            }
-        }.store(in: &subscriptions)
-
-        webView.publisher(for: \.estimatedProgress, options: .new).sink { [weak self] estimatedProgress in
-            DispatchQueue.main.async {
-                self?.estimatedProgress = estimatedProgress
-            }
-        }.store(in: &subscriptions)
-
-        if let url = url {
-            webView.load(URLRequest(url: url))
-        }
+        webView.publisher(for: \.url, options: .new).receive(on: DispatchQueue.main)
+            .assign(to: &$url)
+        webView.publisher(for: \.title, options: .new).receive(on: DispatchQueue.main)
+            .map { $0 != nil ? $0! : "" }.assign(to: &$title)
+        webView.publisher(for: \.isLoading, options: .new).receive(on: DispatchQueue.main)
+            .assign(to: &$isLoading)
+        webView.publisher(for: \.estimatedProgress, options: .new).receive(on: DispatchQueue.main)
+            .assign(to: &$estimatedProgress)
 
         Self.addRefreshControl(to: webView)
 
         scrollViewObserver = .init(scrollView: webView.scrollView)
-        scrollViewObserver?.$direction.sink { [weak self] direction in
-            DispatchQueue.main.async {
-                self?.hideOverlays = (direction == .down)
-            }
-        }.store(in: &subscriptions)
+        scrollViewObserver?.$direction.receive(on: DispatchQueue.main)
+            .map { $0 == .down }.assign(to: &$hideOverlays)
+
+        if let url = url {
+            webView.load(URLRequest(url: url))
+        }
 
         return webView
     }()

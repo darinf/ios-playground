@@ -28,7 +28,7 @@ class ScrollViewObserver: NSObject, ObservableObject {
         super.init()
 
         self.scrollView.addGestureRecognizer(self.panGesture)
-        self.scrollView.delegate = self
+        self.scrollView.delegate = self  // weak reference
     }
 
     @objc private func handlePan(_ gesture: UIPanGestureRecognizer) {
