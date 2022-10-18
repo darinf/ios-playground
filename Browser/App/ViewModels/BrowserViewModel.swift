@@ -19,14 +19,6 @@ class BrowserViewModel: ObservableObject {
         cardGridViewModel.selectedCardDetails?.model.card
     }
 
-    private func updateThumbnailForSelectedCard(completion: @escaping () -> Void) {
-        if let selectedCard = selectedCard {
-            selectedCard.updateThumbnail(completion: completion)
-        } else {
-            DispatchQueue.main.async(execute: completion)
-        }
-    }
-
     private func observe(cardDetails: CardGridViewModel<WebContentsCardModel>.CardDetails?) {
         selectedCardSubscriptions = []
 
@@ -40,52 +32,48 @@ class BrowserViewModel: ObservableObject {
 
         omniBarViewModel.canEditCurrentUrl = true
 
-        card.$url.sink { [weak self] url in
-            self?.omniBarViewModel.urlFieldViewModel.input = url?.absoluteString ?? ""
-        }.store(in: &selectedCardSubscriptions)
+        card.$url
+            .map { $0?.absoluteString ?? "" }
+            .assign(to: \.input, on: omniBarViewModel.urlFieldViewModel)
+            .store(in: &selectedCardSubscriptions)
 
-        card.$isLoading.sink { [weak self] isLoading in
-            if isLoading {
-                self?.omniBarViewModel.update(hidden: false)
-            }
-            self?.omniBarViewModel.urlFieldViewModel.update(isLoading: isLoading)
-        }.store(in: &selectedCardSubscriptions)
+        card.$isLoading
+            .sink(receiveValue: omniBarViewModel.update(isLoading:))
+            .store(in: &selectedCardSubscriptions)
 
-        card.$estimatedProgress.sink { [weak self] estimatedProgress in
-            self?.omniBarViewModel.urlFieldViewModel.update(progress: estimatedProgress)
-        }.store(in: &selectedCardSubscriptions)
+        card.$estimatedProgress
+            .sink(receiveValue: omniBarViewModel.urlFieldViewModel.update(progress:))
+            .store(in: &selectedCardSubscriptions)
 
-        card.$hideOverlays.sink { [weak self] hideOverlays in
-            self?.omniBarViewModel.update(hidden: hideOverlays)
-        }.store(in: &selectedCardSubscriptions)
+        card.$hideOverlays
+            .sink(receiveValue: omniBarViewModel.update(hidden:))
+            .store(in: &selectedCardSubscriptions)
 
-        card.childCardPublisher.sink { [weak self] newCard in
-            guard let self = self else { return }
-            self.updateThumbnailForSelectedCard {
-                self.cardGridViewModel.selectCardDetails(
-                    details: self.cardGridViewModel.appendCard(card: newCard))
-            }
-        }.store(in: &selectedCardSubscriptions)
+        card.childCardPublisher
+            .sink(receiveValue: cardGridViewModel.insert(childCard:))
+            .store(in: &selectedCardSubscriptions)
     }
 
     init() {
-        let initialCards: [WebContentsCardModel] = [
+        self.cardGridViewModel = .init(cards: [
             .init(url: URL(string: "https://news.ycombinator.com/")!)
-        ]
-        self.cardGridViewModel = .init(cards: initialCards)
-        cardGridViewModel.$hideOverlays.sink { [weak self] hideOverlays in
-            self?.omniBarViewModel.update(hidden: hideOverlays)
-        }.store(in: &subscriptions)
+        ])
+
+        cardGridViewModel.$hideOverlays
+            .sink(receiveValue: omniBarViewModel.update(hidden:))
+            .store(in: &subscriptions)
 
         // Observe selected card's URL. Observe asynchronously to let other updates happen first.
-        self.cardGridViewModel.$selectedCardId.receive(on: DispatchQueue.main).sink { [weak self] id in
-            guard let self = self else { return }
-            if let id = id {
-                self.observe(cardDetails: self.cardGridViewModel.cardDetails(for: id))
-            } else {
-                self.observe(cardDetails: nil)
+        self.cardGridViewModel.$selectedCardId
+            .receive(on: DispatchQueue.main)
+            .map { [cardGridViewModel] id in
+                guard let id = id else { return nil }
+                return cardGridViewModel.cardDetails(for: id)
             }
-        }.store(in: &subscriptions)
+            .sink { [weak self] cardDetails in
+                self?.observe(cardDetails: cardDetails)
+            }
+            .store(in: &subscriptions)
     }
 }
 
@@ -96,7 +84,7 @@ extension BrowserViewModel {
         case .urlField:
             presentZeroQuery(target: .existingCard)
         case .newCard:
-            updateThumbnailForSelectedCard { [self] in
+            cardGridViewModel.updateThumbnailForSelectedCard { [self] in
                 presentZeroQuery(target: .newCard)
             }
         case .showCards:
@@ -143,7 +131,7 @@ extension BrowserViewModel {
                 // Create new card and select it.
                 let newCard = WebContentsCardModel(url: url)
                 cardGridViewModel.selectCardDetails(
-                    details: cardGridViewModel.appendCard(card: newCard))
+                    details: cardGridViewModel.append(card: newCard))
             }
 
             cardGridViewModel.zoomIn()

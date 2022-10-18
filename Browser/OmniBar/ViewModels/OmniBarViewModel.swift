@@ -18,4 +18,11 @@ class OmniBarViewModel: ObservableObject {
             self.hidden = hidden
         }
     }
+
+    func update(isLoading: Bool) {
+        if isLoading {
+            update(hidden: false)
+        }
+        urlFieldViewModel.update(isLoading: isLoading)
+    }
 }

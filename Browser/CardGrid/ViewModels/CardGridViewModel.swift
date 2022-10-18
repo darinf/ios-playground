@@ -38,12 +38,18 @@ class CardGridViewModel<Card>: ObservableObject where Card: CardModel {
         selectedCardId = details?.id ?? nil
     }
 
-    func appendCard(card: Card) -> CardDetails {
+    func append(card: Card) -> CardDetails {
         assert(cardDetails(for: card.id) == nil)
 
         let details = CardDetails(card: card)
         self.allDetails.append(details)
         return details
+    }
+
+    func insert(childCard: Card) {
+        updateThumbnailForSelectedCard { [self] in
+            selectCardDetails(details: append(card: childCard))
+        }
     }
 
     init(cards: [Card]) {
@@ -123,6 +129,14 @@ class CardGridViewModel<Card>: ObservableObject where Card: CardModel {
                     selectedCardId = allDetails[indexToSelect].id
                 }
             }
+        }
+    }
+
+    func updateThumbnailForSelectedCard(completion: @escaping () -> Void) {
+        if let details = selectedCardDetails {
+            details.model.card.updateThumbnail(completion: completion)
+        } else {
+            DispatchQueue.main.async(execute: completion)
         }
     }
 }
