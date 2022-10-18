@@ -31,6 +31,10 @@ class CardGridViewModel<Card>: ObservableObject where Card: CardModel {
         allDetails.first(where: { $0.id == id })
     }
 
+    func cardIndex(for id: Card.ID) -> Int? {
+        allDetails.firstIndex(where: { $0.id == id })
+    }
+
     var selectedCardDetails: CardDetails? {
         guard let id = selectedCardId else {
             return nil
@@ -78,7 +82,7 @@ extension CardGridViewModel {
         assert(cardDetails(for: card.id) == nil)
         assert(cardDetails(for: parentId) != nil)  // Parent must exist!
 
-        let parentIndex = allDetails.firstIndex(where: { $0.id == parentId })!
+        let parentIndex = cardIndex(for: parentId)!
 
         let details = CardDetails(card: card)
         allDetails.insert(details, at: parentIndex + 1)
@@ -147,7 +151,7 @@ extension CardGridViewModel {
     }
 
     func closeCard(byId id: Card.ID) {
-        guard let doomedIndex = allDetails.firstIndex(where: { $0.id == id }) else {
+        guard let doomedIndex = cardIndex(for: id) else {
             return
         }
         allDetails.remove(at: doomedIndex)
