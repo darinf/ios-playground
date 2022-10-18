@@ -13,7 +13,7 @@ fileprivate func userAgentString() -> String {
 // One of these per tab
 class WebContentsCardModel: NSObject, CardModel {
     // CardModel fields:
-    let id = UUID().uuidString
+    let id = UUID()
     @Published private(set) var title: String = ""
     @Published private(set) var thumbnail = pixelFromColor(.white)
     @Published private(set) var favicon = UIImage(systemName: "globe")!

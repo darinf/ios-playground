@@ -25,6 +25,7 @@
 		933A5AAE28F291D000F8A35E /* UrlFixup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A5AAD28F291D000F8A35E /* UrlFixup.swift */; };
 		933A5AB228F931E200F8A35E /* InteractiveButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A5AB128F931E200F8A35E /* InteractiveButton.swift */; };
 		933A5AB728FA68B900F8A35E /* Introspect in Frameworks */ = {isa = PBXBuildFile; productRef = 933A5AB628FA68B900F8A35E /* Introspect */; };
+		933A5ABE28FDFF1700F8A35E /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 933A5ABC28FDFF1700F8A35E /* DataModel.xcdatamodeld */; };
 		93AB32E028EDF92400F3C470 /* BrowserApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AB32DF28EDF92400F3C470 /* BrowserApp.swift */; };
 		93AB32E228EDF92400F3C470 /* BrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AB32E128EDF92400F3C470 /* BrowserView.swift */; };
 		93AB32E428EDF92400F3C470 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 93AB32E328EDF92400F3C470 /* Assets.xcassets */; };
@@ -58,6 +59,7 @@
 		933A5AAD28F291D000F8A35E /* UrlFixup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UrlFixup.swift; sourceTree = "<group>"; };
 		933A5AB128F931E200F8A35E /* InteractiveButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveButton.swift; sourceTree = "<group>"; };
 		933A5ABA28FD358B00F8A35E /* Browser-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Browser-Info.plist"; sourceTree = "<group>"; };
+		933A5ABD28FDFF1700F8A35E /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		93AB32DC28EDF92400F3C470 /* Browser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Browser.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		93AB32DF28EDF92400F3C470 /* BrowserApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserApp.swift; sourceTree = "<group>"; };
 		93AB32E128EDF92400F3C470 /* BrowserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserView.swift; sourceTree = "<group>"; };
@@ -178,15 +180,24 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		933A5ABB28FDFEEA00F8A35E /* Storage */ = {
+			isa = PBXGroup;
+			children = (
+				933A5ABC28FDFF1700F8A35E /* DataModel.xcdatamodeld */,
+			);
+			path = Storage;
+			sourceTree = "<group>";
+		};
 		93AB32D328EDF92400F3C470 = {
 			isa = PBXGroup;
 			children = (
-				933A5ABA28FD358B00F8A35E /* Browser-Info.plist */,
 				93AB330A28EDFAC500F3C470 /* App */,
 				93AB32E328EDF92400F3C470 /* Assets.xcassets */,
+				933A5ABA28FD358B00F8A35E /* Browser-Info.plist */,
 				93AB32ED28EDF9C200F3C470 /* CardGrid */,
 				933A5A8B28EFFBDE00F8A35E /* OmniBar */,
 				93AB32DD28EDF92400F3C470 /* Products */,
+				933A5ABB28FDFEEA00F8A35E /* Storage */,
 				933A5A8428EF570C00F8A35E /* Utils */,
 				933A5A8E28F0073E00F8A35E /* WebContents */,
 				933A5A9228F00AB200F8A35E /* ZeroQuery */,
@@ -369,6 +380,7 @@
 				93AB32FD28EDFA9D00F3C470 /* CardModel.swift in Sources */,
 				93AB330928EDFAA600F3C470 /* FullCardView.swift in Sources */,
 				933A5A9628F00C1300F8A35E /* ZeroQueryView.swift in Sources */,
+				933A5ABE28FDFF1700F8A35E /* DataModel.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -590,6 +602,19 @@
 			productName = Introspect;
 		};
 /* End XCSwiftPackageProductDependency section */
+
+/* Begin XCVersionGroup section */
+		933A5ABC28FDFF1700F8A35E /* DataModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				933A5ABD28FDFF1700F8A35E /* Model.xcdatamodel */,
+			);
+			currentVersion = 933A5ABD28FDFF1700F8A35E /* Model.xcdatamodel */;
+			path = DataModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 93AB32D428EDF92400F3C470 /* Project object */;
 }

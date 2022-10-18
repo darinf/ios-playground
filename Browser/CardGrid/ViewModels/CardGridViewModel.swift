@@ -6,7 +6,7 @@ import SwiftUI
 class CardGridViewModel<Card>: ObservableObject where Card: CardModel {
     struct CardDetails: Identifiable {
         let model: CardViewModel<Card>
-        var id: String { model.card.id }
+        var id: Card.ID { model.card.id }
         init(card: Card) {
             self.model = .init(card: card)
         }
@@ -15,7 +15,7 @@ class CardGridViewModel<Card>: ObservableObject where Card: CardModel {
     @Published private(set) var allDetails: [CardDetails]
     @Published private(set) var zoomed: Bool = true
     @Published private(set) var showContent: Bool = true
-    @Published private(set) var selectedCardId: String?
+    @Published private(set) var selectedCardId: Card.ID?
     @Published private(set) var hideOverlays = false
     @Published private(set) var scrollToSelectedCardId: Int = 0
 
@@ -23,7 +23,7 @@ class CardGridViewModel<Card>: ObservableObject where Card: CardModel {
     private var scrollViewObserver: ScrollViewObserver?
     private var scrollViewDirectionSub: AnyCancellable?
 
-    func cardDetails(for id: String) -> CardDetails? {
+    func cardDetails(for id: Card.ID) -> CardDetails? {
         allDetails.first(where: { $0.id == id })
     }
 
@@ -99,14 +99,14 @@ class CardGridViewModel<Card>: ObservableObject where Card: CardModel {
         }
     }
 
-    func activateCard(id: String) {
+    func activateCard(id: Card.ID) {
         selectedCardId = id
         if !zoomed {
             zoomIn()
         }
     }
 
-    func closeCard(id: String) {
+    func closeCard(id: Card.ID) {
         if let doomedIndex = allDetails.firstIndex(where: { $0.id == id }) {
             allDetails.remove(at: doomedIndex)
             if id == selectedCardId {

@@ -3,8 +3,8 @@
 import Combine
 import UIKit
 
-protocol CardModel: ObservableObject, Identifiable {
-    var id: String { get }
+protocol CardModel: ObservableObject, Identifiable where ID == UUID {
+    var id: ID { get }
     var title: String { get }
     var thumbnail: UIImage { get }
     var favicon: UIImage { get }
