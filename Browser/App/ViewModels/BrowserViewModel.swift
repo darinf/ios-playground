@@ -11,6 +11,8 @@ class BrowserViewModel: ObservableObject {
     let omniBarViewModel = OmniBarViewModel()
     let zeroQueryViewModel = ZeroQueryViewModel()
 
+    let storageManager = StorageManager()
+
     @Published private(set) var showZeroQuery = false
 
     var selectedCard: WebContentsCardModel? {
