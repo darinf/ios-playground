@@ -46,6 +46,8 @@ class CardGridViewModel<Card>: ObservableObject where Card: CardModel {
         if let details = selectedCardDetails {
             details.model.card.updateThumbnail(completion: completion)
         } else {
+            // Run completion asynchronously here to simulate code path for when
+            // a snapshot is actually taken.
             DispatchQueue.main.async(execute: completion)
         }
     }
@@ -57,9 +59,7 @@ class CardGridViewModel<Card>: ObservableObject where Card: CardModel {
         self.scrollView = scrollView
 
         scrollViewObserver = ScrollViewObserver(scrollView: scrollView)
-        scrollViewDirectionSub = scrollViewObserver?.$direction.sink { [weak self] direction in
-            self?.hideOverlays = (direction == .down)
-        }
+        scrollViewObserver?.$direction.map { $0 == .down }.assign(to: &$hideOverlays)
     }
 }
 
