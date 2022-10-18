@@ -44,6 +44,7 @@ struct UrlFieldView: View {
                     TextField("Search or enter address", text: $model.input)
                         .textInputAutocapitalization(.never)
                         .disableAutocorrection(true)
+                        .keyboardType(.webSearch)
                         .focused($hasFocus)
                         .matchedGeometryEffect(id: "urlField.text", in: namespace)
                         .onReceive(model.$hasFocus) {
