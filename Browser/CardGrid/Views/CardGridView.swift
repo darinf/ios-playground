@@ -31,9 +31,9 @@ struct CardGridView<Card, ZoomedContent, OverlayContent>: View where Card: CardM
                         ) { action in
                             switch action {
                             case .activated:
-                                model.activateCard(id: cardDetail.id)
+                                model.activateCard(byId: cardDetail.id)
                             case .closed:
-                                model.closeCard(id: cardDetail.id)
+                                model.closeCard(byId: cardDetail.id)
                             }
                         }
                         .id(cardDetail.id)
@@ -90,7 +90,7 @@ struct CardGridView<Card, ZoomedContent, OverlayContent>: View where Card: CardM
             }
             .onAppear {
                 if !model.allDetails.isEmpty {
-                    model.selectCardDetails(details: model.allDetails[0])
+                    model.selectCard(byId: model.allDetails[0].id)
                 }
             }
         }

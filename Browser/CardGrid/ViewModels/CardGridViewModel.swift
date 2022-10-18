@@ -23,6 +23,10 @@ class CardGridViewModel<Card>: ObservableObject where Card: CardModel {
     private var scrollViewObserver: ScrollViewObserver?
     private var scrollViewDirectionSub: AnyCancellable?
 
+    init(cards: [Card]) {
+        self.allDetails = cards.map { CardDetails(card: $0) }
+    }
+
     func cardDetails(for id: Card.ID) -> CardDetails? {
         allDetails.first(where: { $0.id == id })
     }
@@ -34,26 +38,12 @@ class CardGridViewModel<Card>: ObservableObject where Card: CardModel {
         return cardDetails(for: id)
     }
 
-    func selectCardDetails(details: CardDetails?) {
-        selectedCardId = details?.id ?? nil
-    }
-
-    func append(card: Card) -> CardDetails {
-        assert(cardDetails(for: card.id) == nil)
-
-        let details = CardDetails(card: card)
-        self.allDetails.append(details)
-        return details
-    }
-
-    func insert(childCard: Card) {
-        updateThumbnailForSelectedCard { [self] in
-            selectCardDetails(details: append(card: childCard))
+    func updateThumbnailForSelectedCard(completion: @escaping () -> Void) {
+        if let details = selectedCardDetails {
+            details.model.card.updateThumbnail(completion: completion)
+        } else {
+            DispatchQueue.main.async(execute: completion)
         }
-    }
-
-    init(cards: [Card]) {
-        self.allDetails = cards.map { CardDetails(card: $0) }
     }
 
     func observe(scrollView: UIScrollView) {
@@ -67,7 +57,47 @@ class CardGridViewModel<Card>: ObservableObject where Card: CardModel {
             self?.hideOverlays = (direction == .down)
         }
     }
+}
 
+// MARK: Mutation
+
+extension CardGridViewModel {
+    func selectCard(byId id: Card.ID) {
+        selectedCardId = id
+    }
+
+    private func append(card: Card) -> CardDetails {
+        assert(cardDetails(for: card.id) == nil)
+
+        let details = CardDetails(card: card)
+        allDetails.append(details)
+        return details
+    }
+
+    private func insert(card: Card, after parentId: Card.ID) -> CardDetails {
+        assert(cardDetails(for: card.id) == nil)
+        assert(cardDetails(for: parentId) != nil)  // Parent must exist!
+
+        let parentIndex = allDetails.firstIndex(where: { $0.id == parentId })!
+
+        let details = CardDetails(card: card)
+        allDetails.insert(details, at: parentIndex + 1)
+        return details
+    }
+
+    func appendAndSelect(card: Card) {
+        selectCard(byId: append(card: card).id)
+    }
+
+    func insertAndSelect(childCard: Card) {
+        assert(selectedCardId != nil)  // A child must have a parent!
+        selectCard(byId: insert(card: childCard, after: selectedCardId!).id)
+    }
+}
+
+// MARK: Zoom
+
+extension CardGridViewModel {
     func zoomIn() {
         guard !zoomed else { return }
 
@@ -104,39 +134,42 @@ class CardGridViewModel<Card>: ObservableObject where Card: CardModel {
             showContent = true
         }
     }
+}
 
-    func activateCard(id: Card.ID) {
-        selectedCardId = id
+// MARK: Card actions
+
+extension CardGridViewModel {
+    func activateCard(byId id: Card.ID) {
+        selectCard(byId: id)
         if !zoomed {
             zoomIn()
         }
     }
 
-    func closeCard(id: Card.ID) {
-        if let doomedIndex = allDetails.firstIndex(where: { $0.id == id }) {
-            allDetails.remove(at: doomedIndex)
-            if id == selectedCardId {
-                // Choose another card to select
-                var indexToSelect = doomedIndex
-                if allDetails.count == 0 {
-                    indexToSelect = -1
-                } else if indexToSelect == allDetails.count {
-                    indexToSelect -= 1
-                }
-                if indexToSelect < 0 {
-                    selectedCardId = nil
-                } else {
-                    selectedCardId = allDetails[indexToSelect].id
-                }
+    func closeCard(byId id: Card.ID) {
+        guard let doomedIndex = allDetails.firstIndex(where: { $0.id == id }) else {
+            return
+        }
+        allDetails.remove(at: doomedIndex)
+        if id == selectedCardId {
+            // Choose another card to select
+            var indexToSelect = doomedIndex
+            if allDetails.count == 0 {
+                indexToSelect = -1
+            } else if indexToSelect == allDetails.count {
+                indexToSelect -= 1
+            }
+            if indexToSelect < 0 {
+                selectedCardId = nil
+            } else {
+                selectedCardId = allDetails[indexToSelect].id
             }
         }
     }
 
-    func updateThumbnailForSelectedCard(completion: @escaping () -> Void) {
-        if let details = selectedCardDetails {
-            details.model.card.updateThumbnail(completion: completion)
-        } else {
-            DispatchQueue.main.async(execute: completion)
+    func onCreated(childCard: Card) {
+        updateThumbnailForSelectedCard { [self] in
+            insertAndSelect(childCard: childCard)
         }
     }
 }
