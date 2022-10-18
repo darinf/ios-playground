@@ -13,10 +13,11 @@ class CardViewModel<Card>: ObservableObject where Card: CardModel {
     init(card: Card) {
         self.card = card
 
-        self.subscription = self.card.objectWillChange.sink { [weak self] _ in
-            DispatchQueue.main.async {
+        // Forward card updates.
+        self.subscription = self.card.objectWillChange
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
                 self?.objectWillChange.send()
             }
-        }
     }
 }
