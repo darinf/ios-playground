@@ -182,13 +182,7 @@ struct OmniBarView: View {
             .padding(.bottom, 40)
             .padding(.top, model.docked ? 12 : 0)
             .background(
-                Group {
-                    Color(uiColor: .systemBackground)
-                        .matchedGeometryEffect(id: "omniBar.background", in: namespace)
-                        .opacity(model.docked ? 0.7 : 0)
-                        .animation(.default, value: model.docked)
-                        .shadow(radius: 2)
-                }
+                .ultraThinMaterial.opacity(model.docked ? 1 : 0)
             )
             .offset(y: model.hidden ? 150 : 0)
         }
