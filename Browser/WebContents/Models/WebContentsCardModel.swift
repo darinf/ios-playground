@@ -119,6 +119,10 @@ extension WebContentsCardModel: WKUIDelegate {
                  windowFeatures: WKWindowFeatures) -> WKWebView? {
         let newCard = WebContentsCardModel(url: nil, withConfiguration: configuration)
         childCardPublisher.send(newCard)
+
+        // Reset to show overlays for when it is next selected.
+        hideOverlays = false
+
         return newCard.webView
     }
 }
