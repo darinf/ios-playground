@@ -5,6 +5,7 @@ import SwiftUI
 struct UrlFieldView: View {
     @ObservedObject var model: UrlFieldViewModel
     let namespace: Namespace.ID
+    let height: CGFloat
     var editable = false
     var submit: (() -> Void)? = nil
 

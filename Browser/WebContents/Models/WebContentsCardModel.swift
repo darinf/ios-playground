@@ -67,6 +67,8 @@ class WebContentsCardModel: NSObject, CardModel {
 
         Self.addRefreshControl(to: webView)
 
+        webView.scrollView.clipsToBounds = false
+
         scrollViewObserver = .init(scrollView: webView.scrollView)
         scrollViewObserver?.$direction.receive(on: DispatchQueue.main)
             .map { $0 == .down }.assign(to: &$hideOverlays)

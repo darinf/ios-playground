@@ -31,5 +31,6 @@ struct WebContentsView: View {
 
     var body: some View {
         WebViewContainerView(webView: card.webView)
+            .padding(.bottom, card.hideOverlays ? 0 : OmniBarUX.dockedHeight)
     }
 }

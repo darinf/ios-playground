@@ -4,7 +4,7 @@ import SwiftUI
 
 struct ShowMenuView: View {
     let namespace: Namespace.ID
-    var height: CGFloat = 40
+    let height: CGFloat
 
     var body: some View {
         Circle()

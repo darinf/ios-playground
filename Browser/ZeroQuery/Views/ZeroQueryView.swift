@@ -32,9 +32,15 @@ struct ZeroQueryView: View {
                         ExpandoView(namespace: namespace, height: 20)
                     }
                     .padding(.trailing, 5)
-                    UrlFieldView(model: model.urlFieldViewModel, namespace: namespace, editable: true, submit: {
-                        handler(.navigate(input: model.urlFieldViewModel.input))
-                    })
+                    UrlFieldView(
+                        model: model.urlFieldViewModel,
+                        namespace: namespace,
+                        height: OmniBarUX.buttonHeight,
+                        editable: true,
+                        submit: {
+                            handler(.navigate(input: model.urlFieldViewModel.input))
+                        }
+                    )
                 }
                 .padding(.trailing, 15)
             }

@@ -6,6 +6,10 @@ enum OmniBarUX {
     static let shadowRadius: CGFloat = 2
     static let transitionAnimation = Animation.interactiveSpring()
     static let textColor = Color(uiColor: .label)
+    static let buttonHeight: CGFloat = 40
+    static let paddingBottom: CGFloat = 40
+    static let dockedTopPadding: CGFloat = 12
+    static let dockedHeight: CGFloat = buttonHeight + paddingBottom + dockedTopPadding
 }
 
 struct OmniBarView: View {
@@ -22,22 +26,22 @@ struct OmniBarView: View {
 
     @ViewBuilder
     var urlFieldView: some View {
-        UrlFieldView(model: model.urlFieldViewModel, namespace: namespace)
+        UrlFieldView(model: model.urlFieldViewModel, namespace: namespace, height: OmniBarUX.buttonHeight)
     }
 
     @ViewBuilder
     var newCardView: some View {
-        NewCardView(namespace: namespace)
+        NewCardView(namespace: namespace, height: OmniBarUX.buttonHeight)
     }
 
     @ViewBuilder
     var showCardsView: some View {
-        ShowCardsView(namespace: namespace)
+        ShowCardsView(namespace: namespace, height: OmniBarUX.buttonHeight)
     }
 
     @ViewBuilder
     var showMenuView: some View {
-        ShowMenuView(namespace: namespace)
+        ShowMenuView(namespace: namespace, height: OmniBarUX.buttonHeight)
     }
 
     @ViewBuilder
@@ -137,7 +141,7 @@ struct OmniBarView: View {
             } label: {
                 ZStack {
                     urlFieldView
-                        .frame(width: 40)
+                        .frame(width: OmniBarUX.buttonHeight)
                     newCardView
                     showCardsView
                     showMenuView
@@ -179,10 +183,10 @@ struct OmniBarView: View {
                     }
                 }
             }
-            .padding(.bottom, 40)
-            .padding(.top, model.docked ? 12 : 0)
+            .padding(.bottom, OmniBarUX.paddingBottom)
+            .padding(.top, model.docked ? OmniBarUX.dockedTopPadding : 0)
             .background(
-                .ultraThinMaterial.opacity(model.docked ? 1 : 0)
+                .regularMaterial.opacity(model.docked ? 1 : 0)
             )
             .offset(y: model.hidden ? 150 : 0)
         }
