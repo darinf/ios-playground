@@ -14,6 +14,7 @@ class ScrollViewObserver: NSObject, ObservableObject {
 
     private let scrollView: UIScrollView
     private var lastContentOffset: CGFloat = 0
+    private var cumulativeDelta: CGFloat = 0
 
     private lazy var panGesture: UIPanGestureRecognizer = {
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan))
@@ -39,10 +40,17 @@ class ScrollViewObserver: NSObject, ObservableObject {
         let translation = gesture.translation(in: containerView)
         let delta = lastContentOffset - translation.y
 
-        if delta > 0 {
-            direction = .down
-        } else if delta < 0 {
-            direction = .up
+        // Require some cumulative scrolling in a particular direction to
+        // effect the reported direction. This provides some dampening
+        // against small fluctuations.
+        cumulativeDelta += delta
+        if abs(cumulativeDelta) > 20 {
+            if cumulativeDelta > 0 {
+                direction = .down
+            } else if cumulativeDelta < 0 {
+                direction = .up
+            }
+            cumulativeDelta = 0
         }
 
         lastContentOffset = translation.y

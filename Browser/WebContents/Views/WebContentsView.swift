@@ -28,9 +28,15 @@ struct WebViewContainerView: UIViewRepresentable {
 
 struct WebContentsView: View {
     @ObservedObject var card: WebContentsCardModel
+    @State var bottomPadding: CGFloat = OmniBarUX.dockedHeight
 
     var body: some View {
         WebViewContainerView(webView: card.webView)
-            .padding(.bottom, card.hideOverlays ? 0 : OmniBarUX.dockedHeight)
+            .padding(.bottom, bottomPadding)
+            .onReceive(card.$hideOverlays) {
+                // Using `card.hideOverlays` directly as a state variable doesn't
+                // seem to trigger an update. Hmm...
+                bottomPadding = $0 ? 0 : OmniBarUX.dockedHeight
+            }
     }
 }
