@@ -53,7 +53,7 @@ struct OmniBarView: View {
 
     @ViewBuilder
     var urlFieldButtonView: some View {
-        InteractiveButton {
+        Button {
             handler(.urlField)
         } label: {
             urlFieldView
@@ -66,7 +66,7 @@ struct OmniBarView: View {
 
     @ViewBuilder
     var newCardButtonView: some View {
-        InteractiveButton {
+        Button {
             handler(.newCard)
         } label: {
             newCardView
@@ -75,7 +75,7 @@ struct OmniBarView: View {
 
     @ViewBuilder
     var showCardsButtonView: some View {
-        InteractiveButton {
+        Button {
             handler(.showCards)
         } label: {
             showCardsView
