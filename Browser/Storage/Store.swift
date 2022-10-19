@@ -3,25 +3,31 @@
 import CoreData
 import Foundation
 
-class StorageManager {
+class Store {
     let container: NSPersistentContainer
-
-    var storedCards: [StoredCard] = []
 
     init() {
         container = .init(name: "StorageModel")
+        container.loadPersistentStores() { description, error in
+            if let error = error {
+                print(">>> Error loading StorageModel: \(error.localizedDescription)")
+            }
+        }
     }
 
-    func fetch() {
+    func fetchStoredCards() -> [StoredCard] {
         let managedContext = container.viewContext
 
         let fetchRequest = NSFetchRequest<StoredCard>(entityName: "StoredCard")
 
+        var storedCards: [StoredCard]
         do {
             storedCards = try managedContext.fetch(fetchRequest)
         } catch let error as NSError {
             print(">>> Fetch failed: \(error.localizedDescription)")
+            storedCards = []
         }
+        return storedCards
     }
 
     func save() {
@@ -31,5 +37,11 @@ class StorageManager {
         } catch let error as NSError {
             print(">>> Save failed: \(error.localizedDescription)")
         }
+    }
+}
+
+extension StoredCard {
+    convenience init(store: Store) {
+        self.init(context: store.container.viewContext)
     }
 }

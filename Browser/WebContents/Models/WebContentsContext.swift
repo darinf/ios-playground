@@ -1,11 +1,21 @@
 // Copyright 2022 Darin Fisher. All rights reserved.
 
 import Foundation
+import WebKit
 
 class WebContentsContext {
-    let storageManager: StorageManager
+    let store: Store
 
-    init(storageManager: StorageManager) {
-        self.storageManager = storageManager
+    lazy var defaultConfiguration = {
+        let configuration = WKWebViewConfiguration()
+        configuration.processPool = WKProcessPool()
+        configuration.ignoresViewportScaleLimits = true
+        configuration.allowsInlineMediaPlayback = true
+        configuration.upgradeKnownHostsToHTTPS = true
+        return configuration
+    }()
+
+    init(store: Store) {
+        self.store = store
     }
 }

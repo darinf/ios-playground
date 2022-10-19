@@ -6,7 +6,7 @@ import SwiftUI
 class BrowserViewModel: ObservableObject {
     private var subscriptions: Set<AnyCancellable> = []
     private var selectedCardSubscriptions: Set<AnyCancellable> = []
-    private let storageManager = StorageManager()
+    private let store = Store()
     private let webContentsContext: WebContentsContext
 
     let cardGridViewModel: CardGridViewModel<WebContentsCardModel>
@@ -16,13 +16,14 @@ class BrowserViewModel: ObservableObject {
     @Published private(set) var showZeroQuery = false
 
     init() {
-        webContentsContext = .init(storageManager: storageManager)
+        webContentsContext = .init(store: store)
 
-        cardGridViewModel = .init(cards: [
-            .init(context: webContentsContext,
-                  url: URL(string: "https://news.ycombinator.com/")!
-            )
-        ])
+        // TODO: consider reading data asynchronously at startup?
+        cardGridViewModel = .init(
+            cards: store.fetchStoredCards().map { [webContentsContext] in
+                .init(context: webContentsContext, storedCard: $0)
+            }
+        )
 
         cardGridViewModel.$hideOverlays
             .sink(receiveValue: omniBarViewModel.update(hidden:))

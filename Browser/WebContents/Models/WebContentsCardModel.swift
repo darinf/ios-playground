@@ -13,7 +13,7 @@ fileprivate func userAgentString() -> String {
 // One of these per tab
 class WebContentsCardModel: NSObject, CardModel {
     // CardModel fields:
-    let id = UUID()
+    var id: UUID
     @Published private(set) var title: String = ""
     @Published private(set) var thumbnail = pixelFromColor(.white)
     @Published private(set) var favicon = UIImage(systemName: "globe")!
@@ -31,28 +31,55 @@ class WebContentsCardModel: NSObject, CardModel {
     private let context: WebContentsContext
     private var scrollViewObserver: ScrollViewObserver?
     private let configuration: WKWebViewConfiguration
+    private var subscription: AnyCancellable?
 
-    convenience init(context: WebContentsContext, url: URL?) {
-        self.init(context: context, url: url, withConfiguration: Self.configuration)
-    }
+    private let storedCard: StoredCard
 
-    init(context: WebContentsContext,
-         url: URL?,
-         withConfiguration configuration: WKWebViewConfiguration
+    init(
+        context: WebContentsContext,
+        url: URL?,
+        withConfiguration configuration: WKWebViewConfiguration? = nil
     ) {
+        self.id = UUID()
         self.context = context
         self.url = url
-        self.configuration = configuration
+        self.configuration = configuration ?? context.defaultConfiguration
+        self.storedCard = StoredCard(store: context.store)
+        super.init()
+
+        storedCard.id = id
+        context.store.save()
+
+        keepStoredCardUpdated()
     }
 
-    private static var configuration = {
-        let configuration = WKWebViewConfiguration()
-        configuration.processPool = WKProcessPool()
-        configuration.ignoresViewportScaleLimits = true
-        configuration.allowsInlineMediaPlayback = true
-        configuration.upgradeKnownHostsToHTTPS = true
-        return configuration
-    }()
+    init(
+        context: WebContentsContext,
+        storedCard: StoredCard
+    ) {
+        if storedCard.id == nil {
+            print(">>> Warning: StoredCard.id was nil")
+            storedCard.id = UUID()
+        }
+
+        var thumbnailImage = pixelFromColor(.white)
+        if let thumbnailData = storedCard.thumbnail {
+            if let image = UIImage(data: thumbnailData) {
+                thumbnailImage = image
+            }
+        }
+
+        self.id = storedCard.id!
+        self.title = storedCard.title ?? ""
+        self.url = storedCard.url != nil ? URL(string: storedCard.url!) : nil
+        self.thumbnail = thumbnailImage
+        self.context = context
+        self.configuration = context.defaultConfiguration
+        self.storedCard = storedCard
+        super.init()
+
+        keepStoredCardUpdated()
+    }
 
     lazy var webView: WKWebView = {
         let webView = WKWebView(frame: .zero, configuration: configuration)
@@ -112,6 +139,18 @@ class WebContentsCardModel: NSObject, CardModel {
             })
         webView.scrollView.refreshControl = rc
         webView.scrollView.bringSubviewToFront(rc)
+    }
+
+    private func keepStoredCardUpdated() {
+        let store = context.store
+        subscription = $url
+            .combineLatest($title, $thumbnail)
+            .sink { [storedCard, store] url, title, thumbnail in
+                storedCard.url = url?.absoluteString ?? ""
+                storedCard.title = title
+                storedCard.thumbnail = thumbnail.pngData()
+                store.save()
+            }
     }
 }
 

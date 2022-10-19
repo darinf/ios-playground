@@ -26,7 +26,7 @@
 		933A5AB228F931E200F8A35E /* InteractiveButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A5AB128F931E200F8A35E /* InteractiveButton.swift */; };
 		933A5AB728FA68B900F8A35E /* Introspect in Frameworks */ = {isa = PBXBuildFile; productRef = 933A5AB628FA68B900F8A35E /* Introspect */; };
 		933A5ABE28FDFF1700F8A35E /* StorageModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 933A5ABC28FDFF1700F8A35E /* StorageModel.xcdatamodeld */; };
-		933A5AC028FE421500F8A35E /* StorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A5ABF28FE421500F8A35E /* StorageManager.swift */; };
+		933A5AC028FE421500F8A35E /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A5ABF28FE421500F8A35E /* Store.swift */; };
 		933B707A2900A227003325F2 /* WebContentsContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933B70792900A227003325F2 /* WebContentsContext.swift */; };
 		93AB32E028EDF92400F3C470 /* BrowserApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AB32DF28EDF92400F3C470 /* BrowserApp.swift */; };
 		93AB32E228EDF92400F3C470 /* BrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AB32E128EDF92400F3C470 /* BrowserView.swift */; };
@@ -62,7 +62,7 @@
 		933A5AB128F931E200F8A35E /* InteractiveButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveButton.swift; sourceTree = "<group>"; };
 		933A5ABA28FD358B00F8A35E /* Browser-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Browser-Info.plist"; sourceTree = "<group>"; };
 		933A5ABD28FDFF1700F8A35E /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
-		933A5ABF28FE421500F8A35E /* StorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageManager.swift; sourceTree = "<group>"; };
+		933A5ABF28FE421500F8A35E /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 		933B70792900A227003325F2 /* WebContentsContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebContentsContext.swift; sourceTree = "<group>"; };
 		93AB32DC28EDF92400F3C470 /* Browser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Browser.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		93AB32DF28EDF92400F3C470 /* BrowserApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserApp.swift; sourceTree = "<group>"; };
@@ -189,7 +189,7 @@
 			isa = PBXGroup;
 			children = (
 				933A5ABC28FDFF1700F8A35E /* StorageModel.xcdatamodeld */,
-				933A5ABF28FE421500F8A35E /* StorageManager.swift */,
+				933A5ABF28FE421500F8A35E /* Store.swift */,
 			);
 			path = Storage;
 			sourceTree = "<group>";
@@ -386,7 +386,7 @@
 				93AB32E028EDF92400F3C470 /* BrowserApp.swift in Sources */,
 				93AB32FD28EDFA9D00F3C470 /* CardModel.swift in Sources */,
 				93AB330928EDFAA600F3C470 /* FullCardView.swift in Sources */,
-				933A5AC028FE421500F8A35E /* StorageManager.swift in Sources */,
+				933A5AC028FE421500F8A35E /* Store.swift in Sources */,
 				933A5A9628F00C1300F8A35E /* ZeroQueryView.swift in Sources */,
 				933A5ABE28FDFF1700F8A35E /* StorageModel.xcdatamodeld in Sources */,
 			);
