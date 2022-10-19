@@ -7,6 +7,7 @@ class BrowserViewModel: ObservableObject {
     private var subscriptions: Set<AnyCancellable> = []
     private var selectedCardSubscriptions: Set<AnyCancellable> = []
     private let storageManager = StorageManager()
+    private let webContentsContext: WebContentsContext
 
     let cardGridViewModel: CardGridViewModel<WebContentsCardModel>
     let omniBarViewModel = OmniBarViewModel()
@@ -15,8 +16,12 @@ class BrowserViewModel: ObservableObject {
     @Published private(set) var showZeroQuery = false
 
     init() {
-        self.cardGridViewModel = .init(cards: [
-            .init(url: URL(string: "https://news.ycombinator.com/")!)
+        webContentsContext = .init(storageManager: storageManager)
+
+        cardGridViewModel = .init(cards: [
+            .init(context: webContentsContext,
+                  url: URL(string: "https://news.ycombinator.com/")!
+            )
         ])
 
         cardGridViewModel.$hideOverlays
@@ -122,7 +127,8 @@ extension BrowserViewModel {
             let url = UrlFixup.fromUser(input: input)
 
             if case .newCard = zeroQueryViewModel.target {
-                cardGridViewModel.appendAndSelect(card: WebContentsCardModel(url: url))
+                cardGridViewModel.appendAndSelect(
+                    card: WebContentsCardModel(context: webContentsContext, url: url))
             }
 
             cardGridViewModel.zoomIn()

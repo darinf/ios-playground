@@ -28,14 +28,19 @@ class WebContentsCardModel: NSObject, CardModel {
     // Notifies on creation of a new child card (WebView).
     let childCardPublisher = PassthroughSubject<WebContentsCardModel, Never>()
 
+    private let context: WebContentsContext
     private var scrollViewObserver: ScrollViewObserver?
     private let configuration: WKWebViewConfiguration
 
-    convenience init(url: URL?) {
-        self.init(url: url, withConfiguration: Self.configuration)
+    convenience init(context: WebContentsContext, url: URL?) {
+        self.init(context: context, url: url, withConfiguration: Self.configuration)
     }
 
-    init(url: URL?, withConfiguration configuration: WKWebViewConfiguration) {
+    init(context: WebContentsContext,
+         url: URL?,
+         withConfiguration configuration: WKWebViewConfiguration
+    ) {
+        self.context = context
         self.url = url
         self.configuration = configuration
     }
@@ -117,7 +122,8 @@ extension WebContentsCardModel: WKUIDelegate {
                  createWebViewWith configuration: WKWebViewConfiguration,
                  for navigationAction: WKNavigationAction,
                  windowFeatures: WKWindowFeatures) -> WKWebView? {
-        let newCard = WebContentsCardModel(url: nil, withConfiguration: configuration)
+        let newCard = WebContentsCardModel(
+            context: context, url: nil, withConfiguration: configuration)
         childCardPublisher.send(newCard)
 
         // Reset to show overlays for when it is next selected.
@@ -128,7 +134,11 @@ extension WebContentsCardModel: WKUIDelegate {
 }
 
 extension WebContentsCardModel: WKNavigationDelegate {
-    func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+    func webView(
+        _ webView: WKWebView,
+        didFailProvisionalNavigation navigation: WKNavigation!,
+        withError error: Error
+    ) {
         print(">>> error: \(error.localizedDescription)")
     }
 }
