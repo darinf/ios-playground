@@ -29,29 +29,17 @@ struct WebViewContainerView: UIViewRepresentable {
 struct WebContentsView: View {
     @ObservedObject var card: WebContentsCardModel
 
-    @State var hideOverlays: Bool = false
     @State var bottomPadding: CGFloat = OmniBarUX.dockedHeight
 
     var body: some View {
         WebViewContainerView(webView: card.webView)
             .padding(.bottom, bottomPadding)
-            .onReceive(card.$hideOverlays) {
-                // Defer expanding bottomPadding until after the animation to show
-                // the overlay completes. Do that by using a local `hideOverlays`
-                // state variable. Don't directly animate `bottomPadding` as the
-                // web page may struggle to keep up with the animation. This way
-                // we just update the web page once after our animation completes.
-                if $0 {
-                    hideOverlays = true
+            .onReceive(card.$hideOverlays) { hideOverlays in
+                if hideOverlays {
                     bottomPadding = 0
                 } else {
-                    withAnimation {
-                        hideOverlays = false
-                    }
+                    bottomPadding = OmniBarUX.dockedHeight
                 }
-            }
-            .onAnimationCompleted(for: hideOverlays) {
-                bottomPadding = OmniBarUX.dockedHeight
             }
     }
 }
