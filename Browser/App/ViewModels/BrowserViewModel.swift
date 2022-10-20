@@ -22,7 +22,8 @@ class BrowserViewModel: ObservableObject {
         cardGridViewModel = .init(
             cards: store.fetchStoredCards().map { [webContentsContext] in
                 .init(context: webContentsContext, storedCard: $0)
-            }
+            },
+            selectedCardId: Prefs[.selectedCardId]
         )
 
         cardGridViewModel.$hideOverlays
@@ -33,6 +34,7 @@ class BrowserViewModel: ObservableObject {
         self.cardGridViewModel.$selectedCardId
             .receive(on: DispatchQueue.main)
             .map { [cardGridViewModel] id in
+                Prefs[.selectedCardId] = id
                 guard let id = id else { return nil }
                 return cardGridViewModel.cardDetails(for: id)
             }

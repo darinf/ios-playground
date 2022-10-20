@@ -88,11 +88,6 @@ struct CardGridView<Card, ZoomedContent, OverlayContent>: View where Card: CardM
                     .ignoresSafeArea(edges: [.top, .bottom])
                     .zIndex(2)
             }
-            .onAppear {
-                if !model.allDetails.isEmpty {
-                    model.selectCard(byId: model.allDetails[0].id)
-                }
-            }
         }
     }
 }

@@ -23,8 +23,9 @@ class CardGridViewModel<Card>: ObservableObject where Card: CardModel {
     private var scrollViewObserver: ScrollViewObserver?
     private var scrollViewDirectionSub: AnyCancellable?
 
-    init(cards: [Card]) {
+    init(cards: [Card], selectedCardId: Card.ID?) {
         self.allDetails = cards.map { CardDetails(card: $0) }
+        self.selectedCardId = selectedCardId
     }
 
     func cardDetails(for id: Card.ID) -> CardDetails? {
