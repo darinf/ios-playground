@@ -95,9 +95,7 @@ class WebContentsCardModel: NSObject, CardModel {
         scrollViewObserver?.$direction.receive(on: DispatchQueue.main)
             .map { $0 == .down }.assign(to: &$hideOverlays)
 
-        if let url = url {
-            webView.load(URLRequest(url: url))
-        }
+        webView.interactionState = storedCard.interactionState
 
         return webView
     }()
@@ -153,23 +151,28 @@ extension WebContentsCardModel {
     private func keepStoredCardUpdated() {
         // TODO: Consider batching calls to store.save()
 
+        let storedCard = self.storedCard
+        let store = context.store
+
+        // Snapshot the interactionState as well whenever the url changes.
         $url
             .dropFirst()
             .map { $0?.absoluteString ?? "" }
-            .sink { [storedCard, context] url in
+            .sink { [weak self] url in
                 if url != storedCard.url {
                     storedCard.url = url
-                    context.store.save()
+                    storedCard.interactionState = self?.webView.interactionState as? Data
+                    store.save()
                 }
             }
             .store(in: &subscriptions)
 
         $title
             .dropFirst()
-            .sink { [storedCard, context] title in
+            .sink { title in
                 if title != storedCard.title {
                     storedCard.title = title
-                    context.store.save()
+                    store.save()
                 }
             }
             .store(in: &subscriptions)
@@ -180,9 +183,9 @@ extension WebContentsCardModel {
             .receive(on: backgroundQueue)
             .map { $0.pngData() }
             .receive(on: DispatchQueue.main)
-            .sink { [storedCard, context] thumbnail in
+            .sink { thumbnail in
                 storedCard.thumbnail = thumbnail
-                context.store.save()
+                store.save()
             }
             .store(in: &subscriptions)
     }
