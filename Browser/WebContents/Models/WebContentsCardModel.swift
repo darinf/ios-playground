@@ -217,5 +217,6 @@ extension WebContentsCardModel: WKNavigationDelegate {
         withError error: Error
     ) {
         print(">>> error: \(error.localizedDescription)")
+        // TODO: Show error page
     }
 }
