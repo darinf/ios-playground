@@ -37,12 +37,12 @@ class BrowserViewModel: ObservableObject {
                 return cardGridViewModel.cardDetails(for: id)
             }
             .sink { [weak self] cardDetails in
-                self?.observe(cardDetails: cardDetails)
+                self?.onSelect(cardDetails: cardDetails)
             }
             .store(in: &subscriptions)
     }
 
-    private func observe(cardDetails: CardGridViewModel<WebContentsCardModel>.CardDetails?) {
+    private func onSelect(cardDetails: CardGridViewModel<WebContentsCardModel>.CardDetails?) {
         selectedCardSubscriptions = []
 
         guard let details = cardDetails else {

@@ -31,8 +31,8 @@ class WebContentsCardModel: NSObject, CardModel {
     private let context: WebContentsContext
     private var scrollViewObserver: ScrollViewObserver?
     private let configuration: WKWebViewConfiguration
-    private var subscription: AnyCancellable?
-
+    private var subscriptions: Set<AnyCancellable> = []
+    private let backgroundQueue = DispatchQueue(label: "background-queue")
     private let storedCard: StoredCard
 
     init(
@@ -47,32 +47,22 @@ class WebContentsCardModel: NSObject, CardModel {
         self.storedCard = StoredCard(store: context.store)
         super.init()
 
-        storedCard.id = id
-        context.store.save()
-
+        initializeStoredCard()
         keepStoredCardUpdated()
     }
 
+    // Called as part of session restore. OK to block on image decoding.
+    // TODO: Consider performing image decoding on the background queue instead.
     init(
         context: WebContentsContext,
         storedCard: StoredCard
     ) {
-        if storedCard.id == nil {
-            print(">>> Warning: StoredCard.id was nil")
-            storedCard.id = UUID()
-        }
-
-        var thumbnailImage = pixelFromColor(.white)
-        if let thumbnailData = storedCard.thumbnail {
-            if let image = UIImage(data: thumbnailData) {
-                thumbnailImage = image
-            }
-        }
+        precondition(storedCard.id != nil)
 
         self.id = storedCard.id!
         self.title = storedCard.title ?? ""
-        self.url = storedCard.url != nil ? URL(string: storedCard.url!) : nil
-        self.thumbnail = thumbnailImage
+        self.url = URL(string: storedCard.url)
+        self.thumbnail = Self.decodeImage(from: storedCard.thumbnail)
         self.context = context
         self.configuration = context.defaultConfiguration
         self.storedCard = storedCard
@@ -140,19 +130,64 @@ class WebContentsCardModel: NSObject, CardModel {
         webView.scrollView.refreshControl = rc
         webView.scrollView.bringSubviewToFront(rc)
     }
+}
+
+// MARK: Storage
+
+extension WebContentsCardModel {
+    private static func decodeImage(from data: Data?, fallback: (() -> UIImage) = { pixelFromColor(.white) }) -> UIImage {
+        let result: UIImage
+        if let data = data, let image = UIImage(data: data) {
+            result = image
+        } else {
+            result = fallback()
+        }
+        return result
+    }
+
+    private func initializeStoredCard() {
+        storedCard.id = id
+        context.store.save()
+    }
 
     private func keepStoredCardUpdated() {
-        let store = context.store
-        subscription = $url
-            .combineLatest($title, $thumbnail)
-            .sink { [storedCard, store] url, title, thumbnail in
-                storedCard.url = url?.absoluteString ?? ""
-                storedCard.title = title
-                storedCard.thumbnail = thumbnail.pngData()
-                store.save()
+        // TODO: Consider batching calls to store.save()
+
+        $url
+            .dropFirst()
+            .map { $0?.absoluteString ?? "" }
+            .sink { [storedCard, context] url in
+                if url != storedCard.url {
+                    storedCard.url = url
+                    context.store.save()
+                }
             }
+            .store(in: &subscriptions)
+
+        $title
+            .dropFirst()
+            .sink { [storedCard, context] title in
+                if title != storedCard.title {
+                    storedCard.title = title
+                    context.store.save()
+                }
+            }
+            .store(in: &subscriptions)
+
+        // Run image encoding off the main thread.
+        $thumbnail
+            .dropFirst()
+            .receive(on: backgroundQueue)
+            .map { $0.pngData() }
+            .receive(on: DispatchQueue.main)
+            .sink { [storedCard, context] thumbnail in
+                storedCard.thumbnail = thumbnail
+                context.store.save()
+            }
+            .store(in: &subscriptions)
     }
 }
+
 
 // MARK: WebViewDelegates
 
