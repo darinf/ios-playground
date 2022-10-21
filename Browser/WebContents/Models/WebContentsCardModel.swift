@@ -12,7 +12,7 @@ fileprivate func userAgentString() -> String {
 }
 
 // One of these per tab
-class WebContentsCardModel: NSObject, CardModel {
+class WebContentsCardModel: NSObject {
     // CardModel fields:
     var id: UUID
     @Published private(set) var title: String = ""
@@ -32,6 +32,27 @@ class WebContentsCardModel: NSObject, CardModel {
     private var subscriptions: Set<AnyCancellable> = []
     private let backgroundQueue = DispatchQueue(label: "background-queue")
     private let storedCard: StoredCard
+
+    lazy var webView: WKWebView = {
+        let webView = WKWebView(frame: .zero, configuration: configuration)
+        webView.uiDelegate = self  // weak reference
+        webView.navigationDelegate = self  // weak reference
+        webView.allowsBackForwardNavigationGestures = true
+        webView.customUserAgent = userAgentString()
+
+        webView.publisher(for: \.url, options: .new).receive(on: DispatchQueue.main)
+            .assign(to: &$url)
+        webView.publisher(for: \.title, options: .new).receive(on: DispatchQueue.main)
+            .map { $0 != nil ? $0! : "" }.assign(to: &$title)
+        webView.publisher(for: \.isLoading, options: .new).receive(on: DispatchQueue.main)
+            .assign(to: &$isLoading)
+        webView.publisher(for: \.estimatedProgress, options: .new).receive(on: DispatchQueue.main)
+            .assign(to: &$estimatedProgress)
+
+        webView.interactionState = storedCard.interactionState
+
+        return webView
+    }()
 
     init(
         context: WebContentsContext,
@@ -69,29 +90,14 @@ class WebContentsCardModel: NSObject, CardModel {
         keepStoredCardUpdated()
     }
 
-    lazy var webView: WKWebView = {
-        let webView = WKWebView(frame: .zero, configuration: configuration)
-        webView.uiDelegate = self  // weak reference
-        webView.navigationDelegate = self  // weak reference
-        webView.allowsBackForwardNavigationGestures = true
-        webView.customUserAgent = userAgentString()
-
-        webView.publisher(for: \.url, options: .new).receive(on: DispatchQueue.main)
-            .assign(to: &$url)
-        webView.publisher(for: \.title, options: .new).receive(on: DispatchQueue.main)
-            .map { $0 != nil ? $0! : "" }.assign(to: &$title)
-        webView.publisher(for: \.isLoading, options: .new).receive(on: DispatchQueue.main)
-            .assign(to: &$isLoading)
-        webView.publisher(for: \.estimatedProgress, options: .new).receive(on: DispatchQueue.main)
-            .assign(to: &$estimatedProgress)
-
-        webView.interactionState = storedCard.interactionState
-
-        return webView
-    }()
-
     func navigate(to url: URL) {
         webView.load(URLRequest(url: url))
+    }
+}
+
+extension WebContentsCardModel: CardModel {
+    func close() {
+        deleteStoredCard()
     }
 
     func updateThumbnail(completion: @escaping () -> Void) {
@@ -123,6 +129,11 @@ extension WebContentsCardModel {
 
     private func initializeStoredCard() {
         storedCard.id = id
+        context.store.save()
+    }
+
+    private func deleteStoredCard() {
+        context.store.container.viewContext.delete(storedCard)
         context.store.save()
     }
 

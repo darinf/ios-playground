@@ -17,6 +17,9 @@ class ColorCardModel: CardModel {
     let thumbnail: UIImage
     let favicon: UIImage
 
+    func close() {
+    }
+
     func updateThumbnail(completion: @escaping () -> Void) {
         DispatchQueue.main.async(execute: completion)
     }

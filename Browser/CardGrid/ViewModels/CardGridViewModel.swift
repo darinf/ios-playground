@@ -160,6 +160,7 @@ extension CardGridViewModel {
         guard let doomedIndex = cardIndex(for: id) else {
             return
         }
+        allDetails[doomedIndex].model.card.close()
         allDetails.remove(at: doomedIndex)
         if id == selectedCardId {
             // Choose another card to select

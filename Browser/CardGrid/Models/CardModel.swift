@@ -8,5 +8,6 @@ protocol CardModel: ObservableObject, Identifiable where ID == UUID {
     var title: String { get }
     var thumbnail: UIImage { get }
     var favicon: UIImage { get }
+    func close()
     func updateThumbnail(completion: @escaping () -> Void)
 }
