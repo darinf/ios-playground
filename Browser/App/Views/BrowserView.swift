@@ -38,5 +38,6 @@ struct BrowserView: View {
             )
             zeroQuery()
         }
+        .environmentObject(model.overlayModel)
     }
 }

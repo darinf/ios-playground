@@ -30,6 +30,7 @@
 		933B707A2900A227003325F2 /* WebContentsContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933B70792900A227003325F2 /* WebContentsContext.swift */; };
 		933B707D29010805003325F2 /* URLExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933B707C29010805003325F2 /* URLExtensions.swift */; };
 		933B707F29010B62003325F2 /* Prefs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933B707E29010B62003325F2 /* Prefs.swift */; };
+		933B708329026FB8003325F2 /* OverlayModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933B708229026FB8003325F2 /* OverlayModel.swift */; };
 		93AB32E028EDF92400F3C470 /* BrowserApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AB32DF28EDF92400F3C470 /* BrowserApp.swift */; };
 		93AB32E228EDF92400F3C470 /* BrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AB32E128EDF92400F3C470 /* BrowserView.swift */; };
 		93AB32E428EDF92400F3C470 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 93AB32E328EDF92400F3C470 /* Assets.xcassets */; };
@@ -68,6 +69,7 @@
 		933B70792900A227003325F2 /* WebContentsContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebContentsContext.swift; sourceTree = "<group>"; };
 		933B707C29010805003325F2 /* URLExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLExtensions.swift; sourceTree = "<group>"; };
 		933B707E29010B62003325F2 /* Prefs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Prefs.swift; sourceTree = "<group>"; };
+		933B708229026FB8003325F2 /* OverlayModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayModel.swift; sourceTree = "<group>"; };
 		93AB32DC28EDF92400F3C470 /* Browser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Browser.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		93AB32DF28EDF92400F3C470 /* BrowserApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserApp.swift; sourceTree = "<group>"; };
 		93AB32E128EDF92400F3C470 /* BrowserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserView.swift; sourceTree = "<group>"; };
@@ -98,7 +100,6 @@
 		933A5A8428EF570C00F8A35E /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				933B707B290107F8003325F2 /* Extensions */,
 				933A5A8528EF9C6600F8A35E /* AnimationCompletionModifier.swift */,
 				933A5AB128F931E200F8A35E /* InteractiveButton.swift */,
 				93AB330128EDFAA600F3C470 /* ReportsPressesButtonStyle.swift */,
@@ -208,6 +209,24 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
+		933B708029026F5E003325F2 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				933B707B290107F8003325F2 /* Extensions */,
+				933B708129026F6D003325F2 /* Models */,
+				933A5A8428EF570C00F8A35E /* Utils */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		933B708129026F6D003325F2 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				933B708229026FB8003325F2 /* OverlayModel.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		93AB32D328EDF92400F3C470 = {
 			isa = PBXGroup;
 			children = (
@@ -216,9 +235,9 @@
 				933A5ABA28FD358B00F8A35E /* Browser-Info.plist */,
 				93AB32ED28EDF9C200F3C470 /* CardGrid */,
 				933A5A8B28EFFBDE00F8A35E /* OmniBar */,
+				933B708029026F5E003325F2 /* Shared */,
 				93AB32DD28EDF92400F3C470 /* Products */,
 				933A5ABB28FDFEEA00F8A35E /* Storage */,
-				933A5A8428EF570C00F8A35E /* Utils */,
 				933A5A8E28F0073E00F8A35E /* WebContents */,
 				933A5A9228F00AB200F8A35E /* ZeroQuery */,
 			);
@@ -398,6 +417,7 @@
 				933A5AAC28F249AB00F8A35E /* NewCardView.swift in Sources */,
 				93AB330728EDFAA600F3C470 /* SmallCardView.swift in Sources */,
 				93AB32E228EDF92400F3C470 /* BrowserView.swift in Sources */,
+				933B708329026FB8003325F2 /* OverlayModel.swift in Sources */,
 				933A5A8A28EFDA9900F8A35E /* OmniBarViewModel.swift in Sources */,
 				93AB32E028EDF92400F3C470 /* BrowserApp.swift in Sources */,
 				93AB32FD28EDFA9D00F3C470 /* CardModel.swift in Sources */,

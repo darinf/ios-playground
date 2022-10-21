@@ -11,6 +11,7 @@ class BrowserViewModel: ObservableObject {
 
     let cardGridViewModel: CardGridViewModel<WebContentsCardModel>
     let omniBarViewModel = OmniBarViewModel()
+    let overlayModel = OverlayModel(defaultHeight: OmniBarUX.dockedHeight)
     let zeroQueryViewModel = ZeroQueryViewModel()
 
     @Published private(set) var showZeroQuery = false
@@ -23,12 +24,9 @@ class BrowserViewModel: ObservableObject {
             cards: store.fetchStoredCards().map { [webContentsContext] in
                 .init(context: webContentsContext, storedCard: $0)
             },
-            selectedCardId: Prefs[.selectedCardId]
+            selectedCardId: Prefs[.selectedCardId],
+            overlayModel: overlayModel
         )
-
-        cardGridViewModel.$hideOverlays
-            .sink(receiveValue: omniBarViewModel.update(hidden:))
-            .store(in: &subscriptions)
 
         // Observe selected card's URL. Observe asynchronously to let other updates happen first.
         self.cardGridViewModel.$selectedCardId
@@ -63,15 +61,14 @@ class BrowserViewModel: ObservableObject {
             .store(in: &selectedCardSubscriptions)
 
         card.$isLoading
-            .sink(receiveValue: omniBarViewModel.update(isLoading:))
+            .sink { [weak self] in
+                self?.omniBarViewModel.urlFieldViewModel.update(isLoading: $0)
+                self?.overlayModel.resetHeight()
+            }
             .store(in: &selectedCardSubscriptions)
 
         card.$estimatedProgress
             .sink(receiveValue: omniBarViewModel.urlFieldViewModel.update(progress:))
-            .store(in: &selectedCardSubscriptions)
-
-        card.$hideOverlays
-            .sink(receiveValue: omniBarViewModel.update(hidden:))
             .store(in: &selectedCardSubscriptions)
 
         card.childCardPublisher

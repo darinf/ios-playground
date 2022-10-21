@@ -11,10 +11,13 @@ class ScrollViewObserver: NSObject, ObservableObject {
     }
 
     @Published private(set) var direction: ScrollDirection = .none
+    @Published private(set) var panDelta: CGFloat = 0
+    @Published private(set) var panning: Bool = false
+    @Published private(set) var scrolledToTop: Bool = false
 
-    private let scrollView: UIScrollView
+    private var scrollView: UIScrollView
     private var lastContentOffset: CGFloat = 0
-    private var cumulativeDelta: CGFloat = 0
+    private var lastDirection: ScrollDirection = .none
 
     private lazy var panGesture: UIPanGestureRecognizer = {
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan))
@@ -28,8 +31,12 @@ class ScrollViewObserver: NSObject, ObservableObject {
         self.scrollView = scrollView
         super.init()
 
-        self.scrollView.addGestureRecognizer(self.panGesture)
-        self.scrollView.delegate = self  // weak reference
+        scrollView.addGestureRecognizer(self.panGesture)
+        scrollView.delegate = self  // weak reference
+    }
+
+    deinit {
+        scrollView.removeGestureRecognizer(self.panGesture)
     }
 
     @objc private func handlePan(_ gesture: UIPanGestureRecognizer) {
@@ -37,23 +44,26 @@ class ScrollViewObserver: NSObject, ObservableObject {
             return
         }
 
+        if scrolledToTop {
+            scrolledToTop = false
+        }
+        if !panning {
+            panning = true
+        }
+
         let translation = gesture.translation(in: containerView)
         let delta = lastContentOffset - translation.y
 
-        // Require some cumulative scrolling in a particular direction to
-        // effect the reported direction. This provides some dampening
-        // against small fluctuations.
-        cumulativeDelta += delta
-        if abs(cumulativeDelta) > 20 {
-            if cumulativeDelta > 0 {
-                direction = .down
-            } else if cumulativeDelta < 0 {
-                direction = .up
-            }
-            cumulativeDelta = 0
+        if delta > 0 {
+            direction = .down
+        } else if delta < 0 {
+            direction = .up
         }
 
+        panDelta = delta
+
         lastContentOffset = translation.y
+        lastDirection = direction
 
         if gesture.state == .ended || gesture.state == .cancelled {
             lastContentOffset = 0
@@ -72,7 +82,11 @@ extension ScrollViewObserver: UIGestureRecognizerDelegate {
 
 extension ScrollViewObserver: UIScrollViewDelegate {
     func scrollViewShouldScrollToTop(_ scrollView: UIScrollView) -> Bool {
-        direction = .up
+        scrolledToTop = true
         return true
+    }
+
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        panning = false
     }
 }

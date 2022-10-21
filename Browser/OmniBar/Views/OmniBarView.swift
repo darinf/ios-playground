@@ -22,6 +22,8 @@ struct OmniBarView: View {
     let zoomed: Bool
     let handler: (_ action: Action) -> Void
 
+    @EnvironmentObject var overlayModel: OverlayModel
+
     // Raw Views
 
     @ViewBuilder
@@ -87,8 +89,9 @@ struct OmniBarView: View {
         Group {
             // This is a workaround for Menu not animating offscreen correctly.
             // Only wrap with Menu when done animating to the non-hidden state.
-            if model.hidden || !model.doneAnimatingHidden {
+            if overlayModel.height != overlayModel.defaultHeight {
                 showMenuView
+                    .transition(.identity)
             } else {
                 Menu {
                     Toggle("Docked", isOn: $model.docked)
@@ -188,10 +191,7 @@ struct OmniBarView: View {
             .background(
                 .regularMaterial.opacity(model.docked ? 1 : 0)
             )
-            .offset(y: model.hidden ? 150 : 0)
-        }
-        .onAnimationCompleted(for: model.hidden) {
-            model.doneAnimatingHidden = true
+            .offset(y: OmniBarUX.dockedHeight - overlayModel.height)
         }
     }
 }

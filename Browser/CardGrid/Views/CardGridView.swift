@@ -49,7 +49,7 @@ struct CardGridView<Card, ZoomedContent, OverlayContent>: View where Card: CardM
             }
         }
         .introspectScrollView { scrollView in
-            model.observe(scrollView: scrollView)
+            model.observeScrollView(scrollView)
         }
         .background(Color(uiColor: .systemBackground))
     }

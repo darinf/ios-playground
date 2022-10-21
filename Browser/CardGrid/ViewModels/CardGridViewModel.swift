@@ -16,16 +16,16 @@ class CardGridViewModel<Card>: ObservableObject where Card: CardModel {
     @Published private(set) var zoomed: Bool = true
     @Published private(set) var showContent: Bool = true
     @Published private(set) var selectedCardId: Card.ID?
-    @Published private(set) var hideOverlays = false
     @Published private(set) var scrollToSelectedCardId: Int = 0
 
+    private var overlayModel: OverlayModel
+    private var overlayUpdater: OverlayUpdater?
     private var scrollView: UIScrollView?
-    private var scrollViewObserver: ScrollViewObserver?
-    private var scrollViewDirectionSub: AnyCancellable?
 
-    init(cards: [Card], selectedCardId: Card.ID?) {
+    init(cards: [Card], selectedCardId: Card.ID?, overlayModel: OverlayModel) {
         self.allDetails = cards.map { CardDetails(card: $0) }
         self.selectedCardId = selectedCardId
+        self.overlayModel = overlayModel
     }
 
     func cardDetails(for id: Card.ID) -> CardDetails? {
@@ -53,14 +53,19 @@ class CardGridViewModel<Card>: ObservableObject where Card: CardModel {
         }
     }
 
-    func observe(scrollView: UIScrollView) {
+    func setScrollView(_ scrollView: UIScrollView) {
         guard self.scrollView !== scrollView else {
             return
         }
         self.scrollView = scrollView
+    }
 
-        scrollViewObserver = ScrollViewObserver(scrollView: scrollView)
-        scrollViewObserver?.$direction.map { $0 == .down }.assign(to: &$hideOverlays)
+    func observeScrollView(_ scrollView: UIScrollView) {
+        guard self.scrollView !== scrollView else {
+            return
+        }
+        self.scrollView = scrollView
+        overlayUpdater = .init(scrollView: scrollView, overlayModel: overlayModel)
     }
 }
 

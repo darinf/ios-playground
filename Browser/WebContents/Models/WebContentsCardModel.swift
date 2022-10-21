@@ -2,6 +2,7 @@
 
 import Combine
 import Foundation
+import SwiftUI
 import UIKit
 import WebKit
 
@@ -22,14 +23,11 @@ class WebContentsCardModel: NSObject, CardModel {
     @Published private(set) var isLoading: Bool = false
     @Published private(set) var estimatedProgress: Double = 0.0
 
-    // If overlays should be hidden b/c the content is being scrolled
-    @Published private(set) var hideOverlays: Bool = false
-
     // Notifies on creation of a new child card (WebView).
     let childCardPublisher = PassthroughSubject<WebContentsCardModel, Never>()
 
     private let context: WebContentsContext
-    private var scrollViewObserver: ScrollViewObserver?
+    private(set) var scrollViewObserver: ScrollViewObserver?
     private let configuration: WKWebViewConfiguration
     private var subscriptions: Set<AnyCancellable> = []
     private let backgroundQueue = DispatchQueue(label: "background-queue")
@@ -87,14 +85,6 @@ class WebContentsCardModel: NSObject, CardModel {
         webView.publisher(for: \.estimatedProgress, options: .new).receive(on: DispatchQueue.main)
             .assign(to: &$estimatedProgress)
 
-        Self.addRefreshControl(to: webView)
-
-        webView.scrollView.clipsToBounds = false
-
-        scrollViewObserver = .init(scrollView: webView.scrollView)
-        scrollViewObserver?.$direction.receive(on: DispatchQueue.main)
-            .map { $0 == .down }.assign(to: &$hideOverlays)
-
         webView.interactionState = storedCard.interactionState
 
         return webView
@@ -115,18 +105,6 @@ class WebContentsCardModel: NSObject, CardModel {
                 completion()
             }
         }
-    }
-
-    private static func addRefreshControl(to webView: WKWebView) {
-        let rc = UIRefreshControl(
-            frame: .zero,
-            primaryAction: UIAction { [weak webView] _ in
-                webView?.reload()
-                // Dismiss refresh control now as the regular progress bar will soon appear.
-                webView?.scrollView.refreshControl?.endRefreshing()
-            })
-        webView.scrollView.refreshControl = rc
-        webView.scrollView.bringSubviewToFront(rc)
     }
 }
 
@@ -191,7 +169,6 @@ extension WebContentsCardModel {
     }
 }
 
-
 // MARK: WebViewDelegates
 
 extension WebContentsCardModel: WKUIDelegate {
@@ -202,9 +179,6 @@ extension WebContentsCardModel: WKUIDelegate {
         let newCard = WebContentsCardModel(
             context: context, url: nil, withConfiguration: configuration)
         childCardPublisher.send(newCard)
-
-        // Reset to show overlays for when it is next selected.
-        hideOverlays = false
 
         return newCard.webView
     }
