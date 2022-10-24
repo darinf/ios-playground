@@ -40,6 +40,11 @@ struct CardGridView<Card, ZoomedContent, OverlayContent>: View where Card: CardM
                     }
                 }
                 .padding(CardGridUX.spacing)
+                .onAppear {
+                    if let id = model.selectedCardId {
+                        scroller.scrollTo(id)
+                    }
+                }
                 .onChange(of: model.selectedCardId) { id in
                     scroller.scrollTo(id)
                 }
