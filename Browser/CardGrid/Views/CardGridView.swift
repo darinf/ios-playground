@@ -62,9 +62,8 @@ struct CardGridView<Card, ZoomedContent, OverlayContent>: View where Card: CardM
                         model.onZoomCompleted()
                     }
 
-                Color(uiColor: .systemBackground)
+                Color.clear.background(.regularMaterial)
                     .frame(height: geom.safeAreaInsets.top)
-                    .offset(y: model.zoomed ? 0 : -geom.safeAreaInsets.top)
                     .ignoresSafeArea()
                     .zIndex(2)
 
