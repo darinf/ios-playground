@@ -65,6 +65,8 @@ class CardGridViewModel<Card>: ObservableObject where Card: CardModel {
             return
         }
         self.scrollView = scrollView
+
+        scrollView.scrollsToTop = true
         overlayUpdater = .init(scrollView: scrollView, overlayModel: overlayModel)
     }
 }
