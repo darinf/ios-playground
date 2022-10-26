@@ -160,20 +160,22 @@ extension CardGridViewModel {
         guard let doomedIndex = cardIndex(for: id) else {
             return
         }
-        allDetails[doomedIndex].model.card.close()
-        allDetails.remove(at: doomedIndex)
-        if id == selectedCardId {
-            // Choose another card to select
-            var indexToSelect = doomedIndex
-            if allDetails.count == 0 {
-                indexToSelect = -1
-            } else if indexToSelect == allDetails.count {
-                indexToSelect -= 1
-            }
-            if indexToSelect < 0 {
-                selectedCardId = nil
-            } else {
-                selectedCardId = allDetails[indexToSelect].id
+        withAnimation {
+            allDetails[doomedIndex].model.card.close()
+            allDetails.remove(at: doomedIndex)
+            if id == selectedCardId {
+                // Choose another card to select
+                var indexToSelect = doomedIndex
+                if allDetails.count == 0 {
+                    indexToSelect = -1
+                } else if indexToSelect == allDetails.count {
+                    indexToSelect -= 1
+                }
+                if indexToSelect < 0 {
+                    selectedCardId = nil
+                } else {
+                    selectedCardId = allDetails[indexToSelect].id
+                }
             }
         }
     }
