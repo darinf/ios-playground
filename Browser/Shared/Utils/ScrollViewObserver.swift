@@ -44,11 +44,10 @@ class ScrollViewObserver: NSObject, ObservableObject {
             return
         }
 
+        panning = (gesture.state == .changed)
+
         if scrolledToTop {
             scrolledToTop = false
-        }
-        if !panning {
-            panning = true
         }
 
         let translation = gesture.translation(in: containerView)
