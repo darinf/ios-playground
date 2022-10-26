@@ -53,6 +53,7 @@ struct CardGridView<Card, ZoomedContent, OverlayContent>: View where Card: CardM
                 }
             }
         }
+        .ignoresSafeArea(.keyboard)
         .introspectScrollView { scrollView in
             model.observeScrollView(scrollView)
         }
