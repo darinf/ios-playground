@@ -16,7 +16,7 @@ class ScrollViewObserver: NSObject, ObservableObject {
     @Published private(set) var scrolledToTop: Bool = false
 
     private var scrollView: UIScrollView
-    private var lastContentOffset: CGFloat = 0
+    private var lastContentOffset: CGPoint = .zero
     private var lastDirection: ScrollDirection = .none
 
     private lazy var panGesture: UIPanGestureRecognizer = {
@@ -51,21 +51,25 @@ class ScrollViewObserver: NSObject, ObservableObject {
         }
 
         let translation = gesture.translation(in: containerView)
-        let delta = lastContentOffset - translation.y
+        let dy = lastContentOffset.y - translation.y
 
-        if delta > 0 {
-            direction = .down
-        } else if delta < 0 {
-            direction = .up
+        if abs(translation.x) > abs(translation.y) {
+            direction = .none
+            panDelta = 0
+        } else {
+            if dy > 0 {
+                direction = .down
+            } else if dy < 0 {
+                direction = .up
+            }
+            panDelta = dy
         }
 
-        panDelta = delta
-
-        lastContentOffset = translation.y
+        lastContentOffset = translation
         lastDirection = direction
 
         if gesture.state == .ended || gesture.state == .cancelled {
-            lastContentOffset = 0
+            lastContentOffset = .zero
         }
     }
 }
