@@ -57,13 +57,15 @@ class BrowserViewModel: ObservableObject {
 
         card.$url
             .map { $0?.absoluteString ?? "" }
-            .assign(to: \.input, on: omniBarViewModel.urlFieldViewModel)
+            .sink { [unowned self] in
+                omniBarViewModel.urlFieldViewModel.input = $0
+                overlayModel.resetHeight()
+            }
             .store(in: &selectedCardSubscriptions)
 
         card.$isLoading
-            .sink { [weak self] in
-                self?.omniBarViewModel.urlFieldViewModel.update(isLoading: $0)
-                self?.overlayModel.resetHeight()
+            .sink { [unowned self] in
+                omniBarViewModel.urlFieldViewModel.update(isLoading: $0)
             }
             .store(in: &selectedCardSubscriptions)
 

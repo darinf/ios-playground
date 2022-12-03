@@ -16,9 +16,7 @@ class OverlayModel: ObservableObject {
     }
 
     func resetHeight() {
-        withAnimation {
-            height = defaultHeight
-        }
+        height = defaultHeight
     }
 }
 
