@@ -1,17 +1,27 @@
 // Copyright 2022 Darin Fisher. All rights reserved.
 
+import Combine
 import SwiftUI
 import WebKit
+
+class OverlayManager: ObservableObject {
+    var updater: OverlayUpdater?
+    var subscription: AnyCancellable?
+
+    func setup(for webView: WKWebView, with overlayModel: OverlayModel) {
+        updater = .init(scrollView: webView.scrollView, overlayModel: overlayModel)
+
+        subscription = webView.publisher(for: \.url, options: .new).sink { _ in
+            overlayModel.resetHeight()
+        }
+    }
+}
 
 struct WebViewContainerView: UIViewRepresentable {
     let webView: WKWebView
     let overlayModel: OverlayModel
 
-    // Used to own the OverlayUpdater instance for this WebView.
-    private class OverlayUpdaterHandle: ObservableObject {
-        var overlayUpdater: OverlayUpdater?
-    }
-    @StateObject private var handle = OverlayUpdaterHandle()
+    @StateObject private var overlayManager = OverlayManager()
 
     func makeUIView(context: Context) -> UIView {
         return UIView()
@@ -32,7 +42,7 @@ struct WebViewContainerView: UIViewRepresentable {
 
             webView.scrollView.clipsToBounds = false
 
-            handle.overlayUpdater = .init(scrollView: webView.scrollView, overlayModel: overlayModel)
+            overlayManager.setup(for: webView, with: overlayModel)
 
             addRefreshControl(to: webView)
         }

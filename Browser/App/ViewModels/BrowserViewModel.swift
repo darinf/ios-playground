@@ -59,7 +59,6 @@ class BrowserViewModel: ObservableObject {
             .map { $0?.absoluteString ?? "" }
             .sink { [unowned self] in
                 omniBarViewModel.urlFieldViewModel.input = $0
-                overlayModel.resetHeight()
             }
             .store(in: &selectedCardSubscriptions)
 
