@@ -200,7 +200,7 @@ extension WebContentsCardModel {
     }
 }
 
-// MARK: WebViewDelegates
+// MARK: WKUIDelegate
 
 extension WebContentsCardModel: WKUIDelegate {
     func webView(_ webView: WKWebView,
@@ -214,6 +214,8 @@ extension WebContentsCardModel: WKUIDelegate {
         return newCard.webView
     }
 }
+
+// MARK: WKNavigationDelegate
 
 extension WebContentsCardModel: WKNavigationDelegate {
     func webView(
