@@ -1,3 +1,3 @@
-# swiftui-playground
+# ios-playground
 
-Just me playing around with SwiftUI
+Just me playing around with iOS / SwiftUI
