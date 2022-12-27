@@ -35,6 +35,7 @@ class OverlayUpdater {
             scrollViewObserver.$panDelta,
             scrollViewObserver.$scrolledToTop
         )
+        .dropFirst()
         .sink { [weak self] panning, panDelta, scrolledToTop in
             guard let self else { return }
             self.updateHeight(
