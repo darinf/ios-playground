@@ -30,8 +30,12 @@ class WebViewController: UIViewController {
             overlayModel.resetHeight()
         }.store(in: &subscriptions)
 
-        overlayModel.$height.sink { [unowned self] in
-            updateBottomInsets(height: $0)
+        Publishers.CombineLatest(
+            overlayModel.$docked,
+            overlayModel.$height
+        )
+        .sink { [unowned self] docked, height in
+            updateBottomInsets(docked: docked, height: height)
         }.store(in: &subscriptions)
     }
 
@@ -50,9 +54,10 @@ class WebViewController: UIViewController {
         webView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0).isActive = true
     }
 
-    func updateBottomInsets(height bottomBarHeight: CGFloat) {
+    func updateBottomInsets(docked: Bool, height: CGFloat) {
         guard let webView else { return }
 
+        let bottomBarHeight = docked ? height : 0
         let bottomSafeAreaInset = view.window?.safeAreaInsets.bottom ?? 0
 
         additionalSafeAreaInsets = .init(

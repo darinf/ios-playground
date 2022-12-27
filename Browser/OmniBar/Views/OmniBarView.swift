@@ -94,7 +94,7 @@ struct OmniBarView: View {
                     .transition(.identity)
             } else {
                 Menu {
-                    Toggle("Docked", isOn: $model.docked)
+                    Toggle("Docked", isOn: $overlayModel.docked)
                 } label: {
                     showMenuView
                 }
@@ -145,9 +145,13 @@ struct OmniBarView: View {
                 ZStack {
                     urlFieldView
                         .frame(width: OmniBarUX.buttonHeight)
+                        .opacity(0)
                     newCardView
+                        .opacity(0)
                     showCardsView
+                        .opacity(0)
                     showMenuView
+                        .opacity(0)
                     expandoView(height: 50)
                 }
             }
@@ -176,7 +180,7 @@ struct OmniBarView: View {
         VStack {
             Spacer()
             Group {
-                if model.docked {
+                if overlayModel.docked {
                     dockedLayout
                 } else {
                     if model.expanded {
@@ -187,11 +191,12 @@ struct OmniBarView: View {
                 }
             }
             .padding(.bottom, OmniBarUX.paddingBottom)
-            .padding(.top, model.docked ? OmniBarUX.dockedTopPadding : 0)
+            .padding(.top, overlayModel.docked ? OmniBarUX.dockedTopPadding : 0)
             .background(
-                .regularMaterial.opacity(model.docked ? 1 : 0)
+                .regularMaterial.opacity(overlayModel.docked ? 1 : 0)
             )
             .offset(y: OmniBarUX.dockedHeight - overlayModel.height)
+            .opacity(overlayModel.docked ? 1 : overlayModel.height / overlayModel.defaultHeight)
         }
     }
 }

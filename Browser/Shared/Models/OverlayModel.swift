@@ -8,6 +8,7 @@ import UIKit
 class OverlayModel: ObservableObject {
     let defaultHeight: CGFloat
     @Published var height: CGFloat = 0
+    @Published var docked = true
 
     private var observers: Set<ScrollViewObserver> = []
 
