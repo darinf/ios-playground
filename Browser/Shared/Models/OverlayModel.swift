@@ -13,6 +13,7 @@ class OverlayModel: ObservableObject {
 
     init(defaultHeight: CGFloat) {
         self.defaultHeight = defaultHeight
+        self.height = defaultHeight
     }
 
     func resetHeight() {
@@ -29,26 +30,23 @@ class OverlayUpdater {
     init(scrollView: UIScrollView, overlayModel: OverlayModel) {
         self.scrollViewObserver = .init(scrollView: scrollView)
         self.overlayModel = overlayModel
-        self.subscription = scrollViewObserver.$panning
-            .combineLatest(
-                scrollViewObserver.$direction,
-                scrollViewObserver.$panDelta,
-                scrollViewObserver.$scrolledToTop
+        self.subscription = Publishers.CombineLatest3(
+            scrollViewObserver.$panning,
+            scrollViewObserver.$panDelta,
+            scrollViewObserver.$scrolledToTop
+        )
+        .sink { [weak self] panning, panDelta, scrolledToTop in
+            guard let self else { return }
+            self.updateHeight(
+                panning: panning,
+                panDelta: panDelta,
+                scrolledToTop: scrolledToTop
             )
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] panning, direction, panDelta, scrolledToTop in
-                self?.updateHeight(
-                    panning: panning,
-                    direction: direction,
-                    panDelta: panDelta,
-                    scrolledToTop: scrolledToTop
-                )
-            }
+        }
     }
 
     private func updateHeight(
         panning: Bool,
-        direction: ScrollViewObserver.ScrollDirection,
         panDelta: CGFloat,
         scrolledToTop: Bool
     ) {
@@ -64,9 +62,9 @@ class OverlayUpdater {
         if panning {
             // We're already in an interactive state, so no need to animate.
             overlayModel.height = min(max(overlayModel.height - panDelta, 0), overlayModel.defaultHeight)
-        } else if overlayModel.height < overlayModel.defaultHeight {
+        } else if overlayModel.height > 0 {
             withAnimation(animation) {
-                overlayModel.height = direction == .down ? 0 : overlayModel.defaultHeight
+                overlayModel.height = overlayModel.defaultHeight
             }
         }
     }
