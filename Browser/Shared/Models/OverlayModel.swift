@@ -8,6 +8,7 @@ import UIKit
 class OverlayModel: ObservableObject {
     let defaultHeight: CGFloat
     @Published var height: CGFloat = 0
+    @Published var animatingHeight: Bool = false
     @Published var docked = true
 
     private var observers: Set<ScrollViewObserver> = []
@@ -19,6 +20,13 @@ class OverlayModel: ObservableObject {
 
     func resetHeight() {
         height = defaultHeight
+    }
+
+    func resetHeightWithAnimation() {
+        animatingHeight = true
+        withAnimation(Animation.easeInOut(duration: 0.2)) {
+            height = defaultHeight
+        }
     }
 }
 
@@ -52,12 +60,8 @@ class OverlayUpdater {
         panDelta: CGFloat,
         scrolledToTop: Bool
     ) {
-        let animation = Animation.easeInOut(duration: 0.2)
-
         if scrolledToTop {
-            withAnimation(animation) {
-                overlayModel.height = overlayModel.defaultHeight
-            }
+            overlayModel.resetHeightWithAnimation()
             return
         }
 
@@ -65,9 +69,7 @@ class OverlayUpdater {
             // We're already in an interactive state, so no need to animate.
             overlayModel.height = min(max(overlayModel.height - panDelta, 0), overlayModel.defaultHeight)
         } else if overlayModel.height > 0 {
-            withAnimation(animation) {
-                overlayModel.height = overlayModel.defaultHeight
-            }
+            overlayModel.resetHeightWithAnimation()
         }
     }
 }

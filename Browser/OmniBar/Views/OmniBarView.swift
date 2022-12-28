@@ -89,7 +89,7 @@ struct OmniBarView: View {
         Group {
             // This is a workaround for Menu not animating offscreen correctly.
             // Only wrap with Menu when done animating to the non-hidden state.
-            if overlayModel.height != overlayModel.defaultHeight {
+            if overlayModel.animatingHeight || overlayModel.height != overlayModel.defaultHeight {
                 showMenuView
                     .transition(.identity)
             } else {
@@ -197,6 +197,7 @@ struct OmniBarView: View {
             )
             .offset(y: OmniBarUX.dockedHeight - overlayModel.height)
             .opacity(overlayModel.docked ? 1 : overlayModel.height / overlayModel.defaultHeight)
+            .onAnimationActive(for: overlayModel.height, binding: $overlayModel.animatingHeight)
         }
     }
 }
