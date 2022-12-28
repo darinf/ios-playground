@@ -79,14 +79,12 @@ struct CardGridView<Card, ZoomedContent, OverlayContent>: View where Card: CardM
                             namespace: namespace,
                             model: details.model
                         )
+                        // Stacked behind the FullCardView during the zoom animation.
+                        zoomedCard(details.model.card)
+                            .ignoresSafeArea(edges: .bottom)
+                            .zIndex(model.showContent ? 1 : -1)
+                            .transition(.identity)
                     }
-
-                    // The selected tab is always loaded so we can seamlessly just
-                    // move it to the foreground when zoomed. This happens only
-                    // after the FullCardView transition completes via showContent.
-                    zoomedCard(details.model.card)
-                        .ignoresSafeArea(edges: .bottom)
-                        .zIndex(model.zoomed && model.showContent ? 1 : -1)
                 }
 
                 overlay(model.zoomed)
