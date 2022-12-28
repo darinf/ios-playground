@@ -10,7 +10,7 @@ class ScrollViewObserver: NSObject, ObservableObject {
 
     private var scrollView: UIScrollView
     private var lastContentOffset: CGPoint = .zero
- 
+
     private lazy var panGesture: UIPanGestureRecognizer = {
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan))
         panGesture.maximumNumberOfTouches = 1

@@ -19,10 +19,12 @@ class OverlayModel: ObservableObject {
     }
 
     func resetHeight() {
+        guard height != defaultHeight else { return }
         height = defaultHeight
     }
 
     func resetHeightWithAnimation() {
+        guard height != defaultHeight else { return }
         animatingHeight = true
         withAnimation(Animation.easeInOut(duration: 0.2)) {
             height = defaultHeight
