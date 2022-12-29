@@ -124,6 +124,8 @@ extension CardGridViewModel {
     func zoomOut() {
         guard zoomed else { return }
 
+        scrollToSelectedCardId += 1
+
         // showContent updated after the animation completes
 
         let startAnimation = {
