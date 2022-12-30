@@ -21,6 +21,7 @@ class CardGridViewModel<Card>: ObservableObject where Card: CardModel {
     private var overlayModel: OverlayModel
     private var overlayUpdater: OverlayUpdater?
     private var scrollView: UIScrollView?
+    private(set) var draggingModel: CardDraggingModel<Card> = .init()
 
     init(cards: [Card], selectedCardId: Card.ID?, overlayModel: OverlayModel) {
         self.allDetails = cards.map { CardDetails(card: $0) }
@@ -102,6 +103,17 @@ extension CardGridViewModel {
     func insertAndSelect(childCard: Card) {
         assert(selectedCardId != nil)  // A child must have a parent!
         selectCard(byId: insert(card: childCard, after: selectedCardId!).id)
+    }
+
+    func move(card: Card, before: Card?) {
+        let index = allDetails.firstIndex(where: { $0.id == card.id })!
+        let details = allDetails.remove(at: index)
+        if let before {
+            let newIndex = allDetails.firstIndex(where: { $0.id == before.id })!
+            allDetails.insert(details, at: newIndex)
+        } else {
+            allDetails.append(details)
+        }
     }
 }
 

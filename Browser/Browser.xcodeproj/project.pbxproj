@@ -32,6 +32,7 @@
 		933B707F29010B62003325F2 /* Prefs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933B707E29010B62003325F2 /* Prefs.swift */; };
 		933B708329026FB8003325F2 /* OverlayModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933B708229026FB8003325F2 /* OverlayModel.swift */; };
 		9355A0AE295BBF9300847361 /* AnimationActiveModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9355A0AD295BBF9300847361 /* AnimationActiveModifier.swift */; };
+		9355A0B0295F4DBA00847361 /* CardDraggingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9355A0AF295F4DBA00847361 /* CardDraggingModel.swift */; };
 		93AB32E028EDF92400F3C470 /* BrowserApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AB32DF28EDF92400F3C470 /* BrowserApp.swift */; };
 		93AB32E228EDF92400F3C470 /* BrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AB32E128EDF92400F3C470 /* BrowserView.swift */; };
 		93AB32E428EDF92400F3C470 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 93AB32E328EDF92400F3C470 /* Assets.xcassets */; };
@@ -72,6 +73,7 @@
 		933B707E29010B62003325F2 /* Prefs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Prefs.swift; sourceTree = "<group>"; };
 		933B708229026FB8003325F2 /* OverlayModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayModel.swift; sourceTree = "<group>"; };
 		9355A0AD295BBF9300847361 /* AnimationActiveModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationActiveModifier.swift; sourceTree = "<group>"; };
+		9355A0AF295F4DBA00847361 /* CardDraggingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardDraggingModel.swift; sourceTree = "<group>"; };
 		93AB32DC28EDF92400F3C470 /* Browser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Browser.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		93AB32DF28EDF92400F3C470 /* BrowserApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserApp.swift; sourceTree = "<group>"; };
 		93AB32E128EDF92400F3C470 /* BrowserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserView.swift; sourceTree = "<group>"; };
@@ -305,8 +307,9 @@
 		93AB331428EE154500F3C470 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
-				93AB32FB28EDFA9D00F3C470 /* CardViewModel.swift */,
+				9355A0AF295F4DBA00847361 /* CardDraggingModel.swift */,
 				93AB331528EE165300F3C470 /* CardGridViewModel.swift */,
+				93AB32FB28EDFA9D00F3C470 /* CardViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -422,6 +425,7 @@
 				93AB330728EDFAA600F3C470 /* SmallCardView.swift in Sources */,
 				93AB32E228EDF92400F3C470 /* BrowserView.swift in Sources */,
 				933B708329026FB8003325F2 /* OverlayModel.swift in Sources */,
+				9355A0B0295F4DBA00847361 /* CardDraggingModel.swift in Sources */,
 				933A5A8A28EFDA9900F8A35E /* OmniBarViewModel.swift in Sources */,
 				93AB32E028EDF92400F3C470 /* BrowserApp.swift in Sources */,
 				93AB32FD28EDFA9D00F3C470 /* CardModel.swift in Sources */,

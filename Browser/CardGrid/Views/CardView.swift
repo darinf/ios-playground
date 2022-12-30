@@ -114,12 +114,16 @@ struct CardView<Card>: View where Card: CardModel {
         // consistency as sometimes a view is not removed right away.
         .onAppear {
             withAnimation(CardUX.decorationAnimation) {
-                model.showDecorations = !zoomed
+                if !model.longPressed {
+                    model.showDecorations = !zoomed
+                }
             }
         }
         .onDisappear {
             withAnimation(CardUX.decorationAnimation) {
-                model.showDecorations = zoomed
+                if !model.longPressed {
+                    model.showDecorations = zoomed
+                }
             }
         }
     }

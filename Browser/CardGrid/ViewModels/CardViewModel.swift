@@ -7,6 +7,8 @@ class CardViewModel<Card>: ObservableObject where Card: CardModel {
     let card: Card
     @Published var showDecorations: Bool = true
     @Published var pressed: Bool = false
+    @Published var longPressed: Bool = false
+    @Published var dragTranslation: CGSize = .zero
 
     private var subscription: AnyCancellable?
 
