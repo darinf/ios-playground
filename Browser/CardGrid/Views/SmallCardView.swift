@@ -25,7 +25,7 @@ struct SmallCardView<Card>: View where Card: CardModel {
                 if model.longPressed {
                     longPressEnded()
                 } else {
-                    handler(.activated)
+                    handler(.activate)
                 }
             } label: {
                 Group {
@@ -41,29 +41,19 @@ struct SmallCardView<Card>: View where Card: CardModel {
             .highPriorityGesture(
                 DragGesture(coordinateSpace: .named("grid"))
                     .onChanged {
-//                        print(">>> Drag onChanged: \($0.translation), startLoc: \($0.startLocation), loc: \($0.location)")
-//                        let currentOrigin = geom.frame(in: .named("grid")).origin
-//                        let adjustedTranslation: CGSize = .init(
-//                            width: model.dragOrigin.x - currentOrigin.x + $0.translation.width,
-//                            height: model.dragOrigin.y - currentOrigin.y + $0.translation.height)
-//                        model.dragTranslation = adjustedTranslation
-
                         if let direction = translationToDirection($0.translation, geom: geom) {
                             handler(.move(direction))
                         }
                     }
                     .onEnded { _ in
-                        print(">>> Drag onEnded, card.title: \(model.card.title)")
                         longPressEnded()
                     }
                     .simultaneously(with: LongPressGesture()
                         .onEnded { _ in
-                            model.dragTranslation = .zero
-                            model.dragOrigin = geom.frame(in: .named("grid")).origin
                             model.lastTranslation = .zero
                             model.translationOrigin = .zero
                             model.longPressed = true
-                            handler(.pressed(geom.frame(in: .named("grid"))))
+                            handler(.press(geom.frame(in: .named("grid"))))
                         }
                         .sequenced(before: TapGesture()
                             .onEnded {
@@ -75,18 +65,9 @@ struct SmallCardView<Card>: View where Card: CardModel {
             .highPriorityGesture(TapGesture()
                 .onEnded {
                     longPressEnded()
-                    handler(.activated)
+                    handler(.activate)
                 }
             )
-//            .overlay(
-//                Group {
-//                    if model.longPressed {
-//                        CardView(namespace: namespace, model: .init(card: model.card), selected: selected, zoomed: false)
-//                            .opacity(0.7)
-//                            .offset(x: model.dragTranslation.width, y: model.dragTranslation.height)
-//                    }
-//                }
-//            )
         }
         .aspectRatio(CardUX.aspectRatio, contentMode: .fill)
         .zIndex(zIndex)
@@ -95,7 +76,7 @@ struct SmallCardView<Card>: View where Card: CardModel {
     func longPressEnded() {
         if model.longPressed {
             model.longPressed = false
-            handler(.pressedEnded)
+            handler(.pressEnded)
         }
     }
 

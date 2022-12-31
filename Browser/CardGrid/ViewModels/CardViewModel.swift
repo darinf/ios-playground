@@ -8,8 +8,6 @@ class CardViewModel<Card>: ObservableObject where Card: CardModel {
     @Published var showDecorations: Bool = true
     @Published var pressed: Bool
     @Published var longPressed: Bool = false
-    @Published var dragTranslation: CGSize = .zero  // Relative to current frame origin
-    var dragOrigin: CGPoint = .zero
     var lastTranslation: CGSize = .zero
     var translationOrigin: CGSize = .zero {
         didSet {

@@ -17,7 +17,7 @@ enum CardUX {
 
 struct CardView<Card>: View where Card: CardModel {
     enum Direction { case up, down, left, right }
-    enum Action { case activated, closed, move(Direction), pressed(CGRect), pressedEnded }
+    enum Action { case activate, close, move(Direction), press(CGRect), pressEnded }
 
     let namespace: Namespace.ID
     @ObservedObject var model: CardViewModel<Card>
@@ -66,7 +66,7 @@ struct CardView<Card>: View where Card: CardModel {
             HStack {
                 Spacer()
                 Button {
-                    handler?(.closed)
+                    handler?(.close)
                 } label: {
                     Circle()
                         .fill(Color(uiColor: .systemGroupedBackground))

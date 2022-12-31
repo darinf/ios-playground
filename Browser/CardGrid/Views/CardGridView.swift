@@ -31,21 +31,19 @@ struct CardGridView<Card, ZoomedContent, OverlayContent>: View where Card: CardM
                                 zoomed: model.zoomed
                             ) { action in
                                 switch action {
-                                case .activated:
+                                case .activate:
                                     model.activateCard(byId: cardDetail.id)
-                                case .closed:
+                                case .close:
                                     model.closeCard(byId: cardDetail.id)
                                 case .move(let direction):
                                     model.moveCard(cardDetail, direction: direction, geom: geom)
                                     withAnimation {
                                         scroller.scrollTo(cardDetail.id)
                                     }
-                                case .pressed(let frame):
-                                    print(">>> pressed")
+                                case .press(let frame):
                                     model.draggingModel.startDragging(card: cardDetail.model, frame: frame)
                                     break
-                                case .pressedEnded:
-                                    print(">>> pressedEnded")
+                                case .pressEnded:
                                     model.draggingModel.stopDragging()
                                     break
                                 }
