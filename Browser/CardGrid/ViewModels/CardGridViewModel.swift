@@ -104,17 +104,6 @@ extension CardGridViewModel {
         assert(selectedCardId != nil)  // A child must have a parent!
         selectCard(byId: insert(card: childCard, after: selectedCardId!).id)
     }
-
-    func move(card: Card, before: Card?) {
-        let index = allDetails.firstIndex(where: { $0.id == card.id })!
-        let details = allDetails.remove(at: index)
-        if let before {
-            let newIndex = allDetails.firstIndex(where: { $0.id == before.id })!
-            allDetails.insert(details, at: newIndex)
-        } else {
-            allDetails.append(details)
-        }
-    }
 }
 
 // MARK: Zoom
@@ -197,6 +186,75 @@ extension CardGridViewModel {
     func onCreated(childCard: Card) {
         updateThumbnailForSelectedCard { [self] in
             insertAndSelect(childCard: childCard)
+        }
+    }
+}
+
+// MARK: Re-ordering
+
+extension CardGridViewModel {
+    enum MoveTarget {
+        case existingCard(Card)
+        case end
+    }
+
+    func move(card: Card, to target: MoveTarget) {
+        var newAllDetails = allDetails
+        let index = newAllDetails.firstIndex(where: { $0.id == card.id })!
+        let details = newAllDetails.remove(at: index)
+        switch target {
+        case .existingCard(let targetCard):
+            let newIndex = newAllDetails.firstIndex(where: { $0.id == targetCard.id })!
+            newAllDetails.insert(details, at: newIndex)
+        case .end:
+            newAllDetails.append(details)
+        }
+        allDetails = newAllDetails
+    }
+
+    func numberOfColumns(geom: GeometryProxy) -> Int {
+        // viewWidth = ((ncols + 1) * spacing) + (ncols * cardWidth)
+        // viewWidth = ncols * spacing + spacing + ncols * cardWidth
+        // viewWidth = ncols * (spacing + cardWidth) + spacing
+        // ncols = (viewWidth - spacing) / (spacing + cardWidth)
+        Int((geom.size.width - CardGridUX.spacing) / (CardGridUX.spacing + CardUX.minimumCardWidth))
+    }
+
+    func getMoveTarget(_ sourceId: Card.ID, direction: CardView<Card>.Direction, geom: GeometryProxy) -> MoveTarget? {
+        let ncols = numberOfColumns(geom: geom)
+        let sourceIndex = allDetails.firstIndex(where: { $0.id == sourceId })!
+        let sourceCol = sourceIndex % ncols
+        let maxIndex = allDetails.count - 1
+
+        var targetIndex: Int? = nil
+        switch direction {
+        case .up:
+            break
+        case .down:
+            break
+        case .left:
+            if sourceCol > 0 && sourceIndex > 0 {
+                targetIndex = sourceIndex - 1
+            }
+            break
+        case .right:
+            if sourceCol < (ncols - 1) && sourceIndex < (maxIndex - 1) {
+                targetIndex = sourceIndex + 2
+            }
+            break
+        }
+
+        guard let targetIndex else { return nil }
+
+        return .existingCard(allDetails[targetIndex].model.card)
+    }
+
+    func moveCard(_ cardDetail: CardDetails, direction: CardView<Card>.Direction, geom: GeometryProxy) {
+        print(">>> moveCard, direction: \(direction)")
+        if let target = getMoveTarget(cardDetail.id, direction: direction, geom: geom) {
+            withAnimation {
+                move(card: cardDetail.model.card, to: target)
+            }
         }
     }
 }

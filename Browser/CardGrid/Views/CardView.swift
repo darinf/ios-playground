@@ -16,7 +16,8 @@ enum CardUX {
 }
 
 struct CardView<Card>: View where Card: CardModel {
-    enum Action { case activated, closed }
+    enum Direction { case up, down, left, right }
+    enum Action { case activated, closed, move(Direction) }
 
     let namespace: Namespace.ID
     @ObservedObject var model: CardViewModel<Card>

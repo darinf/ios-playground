@@ -14,50 +14,55 @@ struct CardGridView<Card, ZoomedContent, OverlayContent>: View where Card: CardM
     @ViewBuilder let zoomedCard: (_ card: Card) -> ZoomedContent
 
     var grid: some View {
-        ScrollView(showsIndicators: false) {
-            ScrollViewReader { scroller in
-                let columns = [
-                    GridItem(.adaptive(minimum: CardUX.minimumCardWidth),
-                             spacing: CardGridUX.spacing)
-                ]
-                LazyVGrid(columns: columns, spacing: CardGridUX.spacing + CardUX.titleHeight + CardUX.verticalSpacing) {
-                    ForEach(model.allDetails) { cardDetail in
-                        let selected = model.selectedCardId == cardDetail.id
-                        SmallCardView(
-                            namespace: namespace,
-                            model: cardDetail.model,
-                            selected: selected,
-                            zoomed: model.zoomed
-                        ) { action in
-                            switch action {
-                            case .activated:
-                                model.activateCard(byId: cardDetail.id)
-                            case .closed:
-                                model.closeCard(byId: cardDetail.id)
+        GeometryReader { geom in
+            ScrollView(showsIndicators: false) {
+                ScrollViewReader { scroller in
+                    let columns = [
+                        GridItem(.adaptive(minimum: CardUX.minimumCardWidth),
+                                 spacing: CardGridUX.spacing)
+                    ]
+                    LazyVGrid(columns: columns, spacing: CardGridUX.spacing + CardUX.titleHeight + CardUX.verticalSpacing) {
+                        ForEach(model.allDetails) { cardDetail in
+                            let selected = model.selectedCardId == cardDetail.id
+                            SmallCardView(
+                                namespace: namespace,
+                                model: cardDetail.model,
+                                selected: selected,
+                                zoomed: model.zoomed
+                            ) { action in
+                                switch action {
+                                case .activated:
+                                    model.activateCard(byId: cardDetail.id)
+                                case .closed:
+                                    model.closeCard(byId: cardDetail.id)
+                                case .move(let direction):
+                                    model.moveCard(cardDetail, direction: direction, geom: geom)
+                                }
                             }
+                            .id(cardDetail.id)
                         }
-                        .id(cardDetail.id)
                     }
-                }
-                .padding(CardGridUX.spacing)
-                .onAppear {
-                    if let id = model.selectedCardId {
+                    .coordinateSpace(name: "grid")
+                    .padding(CardGridUX.spacing)
+                    .onAppear {
+                        if let id = model.selectedCardId {
+                            scroller.scrollTo(id)
+                        }
+                    }
+                    .onChange(of: model.selectedCardId) { id in
                         scroller.scrollTo(id)
                     }
-                }
-                .onChange(of: model.selectedCardId) { id in
-                    scroller.scrollTo(id)
-                }
-                .onChange(of: model.scrollToSelectedCardId) { _ in
-                    scroller.scrollTo(model.selectedCardId)
+                    .onChange(of: model.scrollToSelectedCardId) { _ in
+                        scroller.scrollTo(model.selectedCardId)
+                    }
                 }
             }
+            .ignoresSafeArea(.keyboard)
+            .introspectScrollView { scrollView in
+                model.observeScrollView(scrollView)
+            }
+            .background(Color(uiColor: .systemBackground))
         }
-        .ignoresSafeArea(.keyboard)
-        .introspectScrollView { scrollView in
-            model.observeScrollView(scrollView)
-        }
-        .background(Color(uiColor: .systemBackground))
     }
 
     var body: some View {
