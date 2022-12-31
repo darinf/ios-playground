@@ -21,6 +21,7 @@ struct SmallCardView<Card>: View where Card: CardModel {
 
     var body: some View {
         GeometryReader { geom in
+            let hideCard = selected && zoomed || model.longPressed
             Button {
                 if model.longPressed {
                     longPressEnded()
@@ -29,7 +30,7 @@ struct SmallCardView<Card>: View where Card: CardModel {
                 }
             } label: {
                 Group {
-                    if selected && zoomed || model.longPressed {
+                    if hideCard {
                         Color.clear
                     } else {
                         CardView(namespace: namespace, model: model, selected: selected, zoomed: false, handler: handler)
@@ -66,6 +67,13 @@ struct SmallCardView<Card>: View where Card: CardModel {
                 .onEnded {
                     longPressEnded()
                     handler(.activate)
+                }
+            )
+            .overlay(
+                Group {
+                    if !hideCard {
+                        CloseButtonView<Card>(namespace: namespace, model: model, handler: { handler(.close) })
+                    }
                 }
             )
         }

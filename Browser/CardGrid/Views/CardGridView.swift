@@ -53,7 +53,6 @@ struct CardGridView<Card, ZoomedContent, OverlayContent>: View where Card: CardM
                     }
                     .overlay(
                         CardDraggingView<Card>(
-                            namespace: namespace,
                             model: model.draggingModel,
                             selectedCardId: model.selectedCardId
                         ),
@@ -123,19 +122,24 @@ struct CardGridView<Card, ZoomedContent, OverlayContent>: View where Card: CardM
 }
 
 struct CardDraggingView<Card>: View where Card: CardModel {
-    let namespace: Namespace.ID
+    // Use a custom namespace here since we don't want SwiftUI to link this `CardView`
+    // to the one used by `SmallCardView`. Let them be completely independent.
+    @Namespace var namespace
+
     @ObservedObject var model: CardDraggingModel<Card>
     let selectedCardId: Card.ID?
 
     var body: some View {
         if let card = model.draggingCard?.card {
+            let cardViewModel = CardViewModel(card: card, pressed: true)
             CardView(
                 namespace: namespace,
-                model: .init(card: card, pressed: true),
+                model: cardViewModel,
                 selected: model.draggingCard?.card.id == selectedCardId,
                 zoomed: false
             )
             .frame(width: model.frame.width, height: model.frame.height, alignment: .center)
+            .overlay(CloseButtonView<Card>(namespace: namespace, model: cardViewModel))
             .offset(
                 x: model.frame.minX + model.translation.width,
                 y: model.frame.minY + model.translation.height

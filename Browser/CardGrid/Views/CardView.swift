@@ -106,7 +106,7 @@ struct CardView<Card>: View where Card: CardModel {
     var body: some View {
         ZStack(alignment: .bottom) {
             thumbnail
-            closeButton
+//            closeButton
             iconAndLabel
         }
         .scaleEffect(model.pressed ? 0.95 : 1)
@@ -127,5 +127,44 @@ struct CardView<Card>: View where Card: CardModel {
                 }
             }
         }
+    }
+}
+
+struct CloseButtonView<Card>: View where Card: CardModel {
+    let namespace: Namespace.ID
+    @ObservedObject var model: CardViewModel<Card>
+    var handler: (() -> Void)? = nil
+
+    var card: Card {
+        model.card
+    }
+    var showDecorations: Bool {
+        model.showDecorations
+    }
+
+    var body: some View {
+        VStack {
+            HStack {
+                Spacer()
+                Button {
+                    handler?()
+                } label: {
+                    Circle()
+                        .fill(Color(uiColor: .systemGroupedBackground))
+                        .matchedGeometryEffect(id: "\(card.id).closebutton", in: namespace)
+                        .frame(height: 22)
+                        .overlay(
+                            Image(systemName: "multiply")
+                                .foregroundColor(Color(uiColor: .label))
+                                .matchedGeometryEffect(id: "\(card.id).closebutton-icon", in: namespace)
+                        )
+                        .opacity(showDecorations ? 1 : 0)
+                        .padding([.top, .trailing], 6)
+                }
+            }
+            Spacer()
+        }
+        .scaleEffect(model.pressed ? 0.95 : 1)
+        .animation(CardUX.pressAnimation, value: model.pressed)
     }
 }
