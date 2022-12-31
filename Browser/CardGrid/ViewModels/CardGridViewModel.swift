@@ -24,7 +24,7 @@ class CardGridViewModel<Card>: ObservableObject where Card: CardModel {
     private(set) var draggingModel: CardDraggingModel<Card> = .init()
 
     init(cards: [Card], selectedCardId: Card.ID?, overlayModel: OverlayModel) {
-        self.allDetails = cards.map { CardDetails(card: $0) }
+        self.allDetails = Self.buildAllDetails(cards: cards)
         self.selectedCardId = selectedCardId
         self.overlayModel = overlayModel
     }
@@ -67,6 +67,67 @@ class CardGridViewModel<Card>: ObservableObject where Card: CardModel {
         }
         self.scrollView = scrollView
         overlayUpdater = .init(scrollView: scrollView, overlayModel: overlayModel)
+    }
+}
+
+// MARK: Initialization
+
+extension CardGridViewModel {
+    static func buildAllDetails(cards: [Card]) -> [CardDetails] {
+        // The given array is not sorted by `nextId`. Our job is produce an array
+        // of `CardDetails` that are sorted by `nextId`. However, some cards may
+        // not have that field set yet.
+        //
+        // Step 1: Separate out the cards that have `nextId` set.
+        // Step 2: Order the set of cards with `nextId` set.
+        // Step 3: Append the remainder of the cards in the given order.
+
+        func getCardById(_ id: Card.ID) -> Card? {
+            cards.first(where: { $0.id == id })
+        }
+
+        // Separate out the cards that have `nextId` set, indexed by `nextId`.
+        let cardsWithNextId: [Card.ID: Card] = .init(
+            uniqueKeysWithValues: cards.compactMap { $0.nextId != nil ? ($0.nextId!, $0) : nil }
+        )
+
+        // Find the last card referenced by that set. Should be a card not in that set.
+        var lastReferencedCard: Card?
+        for card in cardsWithNextId {
+            if let next = getCardById(card.value.nextId!), next.nextId == nil {
+                lastReferencedCard = next
+                break
+            }
+        }
+        guard let lastReferencedCard else {
+            print(">>> Error: Could not find last referenced card!")
+            return cards.map { CardDetails(card: $0) }
+        }
+
+        var sortedCards: [Card] = []
+        sortedCards.append(lastReferencedCard)
+
+        var last: Card? = lastReferencedCard
+        while last != nil {
+            let previous = cardsWithNextId[last!.id]
+            if let previous {
+                sortedCards.insert(previous, at: 0)
+            }
+            last = previous
+        }
+
+        // Exclude lastReferencedCard here since it has already been handled.
+        let cardsWithoutNextId = cards.compactMap {
+            $0.id != lastReferencedCard.id && $0.nextId == nil ? $0 : nil
+        }
+        for card in cardsWithoutNextId {
+            if let last = sortedCards.last {
+                last.nextId = card.id
+            }
+            sortedCards.append(card)
+        }
+
+        return sortedCards.map { CardDetails(card: $0) }
     }
 }
 
