@@ -13,6 +13,7 @@ func pixelFromColor(_ color: UIColor) -> UIImage {
 
 class ColorCardModel: CardModel {
     let id: UUID
+    var nextId: UUID?
     let title: String
     let thumbnail: UIImage
     let favicon: UIImage

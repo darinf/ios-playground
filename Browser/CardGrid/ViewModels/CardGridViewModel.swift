@@ -77,11 +77,49 @@ extension CardGridViewModel {
         selectedCardId = id
     }
 
+    static func append(_ details: CardDetails, to all: inout [CardDetails]) {
+        let last = all.last
+
+        all.append(details)
+        details.model.card.nextId = nil
+
+        if let last {
+            last.model.card.nextId = details.id
+        }
+    }
+
+    static func insert(_ details: CardDetails, at index: Int, to all: inout [CardDetails]) {
+        assert(index < all.count)
+
+        let previous: CardDetails? = index > 0 ? all[index - 1] : nil
+        let current = all[index]
+
+        all.insert(details, at: index)
+        details.model.card.nextId = current.id
+
+        if let previous {
+            previous.model.card.nextId = details.id
+        }
+    }
+
+    @discardableResult
+    static func remove(at index: Int, from all: inout [CardDetails]) -> CardDetails {
+        let previous: CardDetails? = index > 0 ? all[index - 1] : nil
+        let doomed = all[index]
+
+        all.remove(at: index)
+
+        if let previous {
+            previous.model.card.nextId = doomed.model.card.nextId
+        }
+        return doomed
+    }
+
     private func append(card: Card) -> CardDetails {
         assert(cardDetails(for: card.id) == nil)
 
         let details = CardDetails(card: card)
-        allDetails.append(details)
+        Self.append(details, to: &allDetails)
         return details
     }
 
@@ -90,9 +128,10 @@ extension CardGridViewModel {
         assert(cardDetails(for: parentId) != nil)  // Parent must exist!
 
         let parentIndex = cardIndex(for: parentId)!
-
         let details = CardDetails(card: card)
-        allDetails.insert(details, at: parentIndex + 1)
+
+        Self.insert(details, at: parentIndex + 1, to: &allDetails)
+
         return details
     }
 
@@ -165,7 +204,7 @@ extension CardGridViewModel {
         }
         withAnimation {
             allDetails[doomedIndex].model.card.close()
-            allDetails.remove(at: doomedIndex)
+            Self.remove(at: doomedIndex, from: &allDetails)
             if id == selectedCardId {
                 // Choose another card to select
                 var indexToSelect = doomedIndex
@@ -201,13 +240,13 @@ extension CardGridViewModel {
     func move(card: Card, to target: MoveTarget) {
         var newAllDetails = allDetails
         let index = newAllDetails.firstIndex(where: { $0.id == card.id })!
-        let details = newAllDetails.remove(at: index)
+        let details = Self.remove(at: index, from: &newAllDetails)
         switch target {
         case .beforeCard(let targetCard):
             let newIndex = newAllDetails.firstIndex(where: { $0.id == targetCard.id })!
-            newAllDetails.insert(details, at: newIndex)
+            Self.insert(details, at: newIndex, to: &newAllDetails)
         case .atEnd:
-            newAllDetails.append(details)
+            Self.append(details, to: &newAllDetails)
         }
         allDetails = newAllDetails
     }
