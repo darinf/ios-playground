@@ -37,6 +37,9 @@ struct CardGridView<Card, ZoomedContent, OverlayContent>: View where Card: CardM
                                     model.closeCard(byId: cardDetail.id)
                                 case .move(let direction):
                                     model.moveCard(cardDetail, direction: direction, geom: geom)
+                                    withAnimation {
+                                        scroller.scrollTo(cardDetail.id, anchor: .center)
+                                    }
                                 }
                             }
                             .id(cardDetail.id)

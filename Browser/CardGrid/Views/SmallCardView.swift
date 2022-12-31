@@ -111,7 +111,11 @@ struct SmallCardView<Card>: View where Card: CardModel {
             width: translation.width - model.translationOrigin.width,
             height: translation.height - model.translationOrigin.height
         )
+        // Remember the current translation so it can become the new translationOrigin
+        // in case this move is accepted.
         model.lastTranslation = translation
+        // It's important for threshold to be the size of the card so we avoid the
+        // issue of moving from one cell to the next looking like we should move back.
         return relativeTranslationToDirection(adjustedTranslation, threshold: geom.size)
     }
 }

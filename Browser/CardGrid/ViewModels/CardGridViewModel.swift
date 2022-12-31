@@ -194,8 +194,8 @@ extension CardGridViewModel {
 
 extension CardGridViewModel {
     enum MoveTarget {
-        case existingCard(Card)
-        case end
+        case beforeCard(Card)
+        case atEnd
     }
 
     func move(card: Card, to target: MoveTarget) {
@@ -203,10 +203,10 @@ extension CardGridViewModel {
         let index = newAllDetails.firstIndex(where: { $0.id == card.id })!
         let details = newAllDetails.remove(at: index)
         switch target {
-        case .existingCard(let targetCard):
+        case .beforeCard(let targetCard):
             let newIndex = newAllDetails.firstIndex(where: { $0.id == targetCard.id })!
             newAllDetails.insert(details, at: newIndex)
-        case .end:
+        case .atEnd:
             newAllDetails.append(details)
         }
         allDetails = newAllDetails
@@ -234,8 +234,10 @@ extension CardGridViewModel {
             }
             break
         case .down:
-            if sourceIndex + ncols < maxIndex {
-                targetIndex = sourceIndex + ncols
+            if sourceIndex + ncols + 1 < maxIndex {
+                targetIndex = sourceIndex + ncols + 1
+            } else if sourceIndex + ncols + 1 >= maxIndex {
+                return .atEnd
             }
             break
         case .left:
@@ -246,6 +248,8 @@ extension CardGridViewModel {
         case .right:
             if sourceCol < (ncols - 1) && sourceIndex < (maxIndex - 1) {
                 targetIndex = sourceIndex + 2
+            } else if sourceIndex + 2 >= maxIndex {
+                return .atEnd
             }
             break
         }
@@ -254,7 +258,7 @@ extension CardGridViewModel {
 
         print(">>> new targetIndex: \(targetIndex), sourceIndex was \(sourceIndex)")
 
-        return .existingCard(allDetails[targetIndex].model.card)
+        return .beforeCard(allDetails[targetIndex].model.card)
     }
 
     func moveCard(_ cardDetail: CardDetails, direction: CardView<Card>.Direction, geom: GeometryProxy) {
