@@ -99,32 +99,41 @@ extension CardGridViewModel {
                 break
             }
         }
-        guard let lastReferencedCard else {
-            print(">>> Error: Could not find last referenced card!")
-            return cards.map { CardDetails(card: $0) }
-        }
 
         var sortedCards: [Card] = []
-        sortedCards.append(lastReferencedCard)
 
-        var last: Card? = lastReferencedCard
-        while last != nil {
-            let previous = cardsWithNextId[last!.id]
-            if let previous {
-                sortedCards.insert(previous, at: 0)
-            }
-            last = previous
-        }
+        if let lastReferencedCard {
+            sortedCards.append(lastReferencedCard)
 
-        // Exclude lastReferencedCard here since it has already been handled.
-        let cardsWithoutNextId = cards.compactMap {
-            $0.id != lastReferencedCard.id && $0.nextId == nil ? $0 : nil
-        }
-        for card in cardsWithoutNextId {
-            if let last = sortedCards.last {
-                last.nextId = card.id
+            var last: Card? = lastReferencedCard
+            while last != nil {
+                let previous = cardsWithNextId[last!.id]
+                if let previous {
+                    sortedCards.insert(previous, at: 0)
+                }
+                last = previous
             }
-            sortedCards.append(card)
+
+            // Exclude lastReferencedCard here since it has already been handled.
+            let cardsWithoutNextId = cards.compactMap {
+                $0.id != lastReferencedCard.id && $0.nextId == nil ? $0 : nil
+            }
+            for card in cardsWithoutNextId {
+                if let last = sortedCards.last {
+                    last.nextId = card.id
+                }
+                sortedCards.append(card)
+            }
+        } else {
+            // If there is no `lastReferencedCard`, then either we have no cards with `nextId`
+            // (migration case) or there is soemthing else broken. Just fallback to taking the
+            // cards in the given order.
+            for card in cards {
+                if let last = sortedCards.last {
+                    last.nextId = card.id
+                }
+                sortedCards.append(card)
+            }
         }
 
         return sortedCards.map { CardDetails(card: $0) }
