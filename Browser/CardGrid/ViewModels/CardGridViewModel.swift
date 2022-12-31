@@ -159,16 +159,18 @@ extension CardGridViewModel {
     }
 
     static func insert(_ details: CardDetails, at index: Int, to all: inout [CardDetails]) {
-        assert(index < all.count)
+        assert(index <= all.count)
 
         let previous: CardDetails? = index > 0 ? all[index - 1] : nil
-        let current = all[index]
+        let current: CardDetails? = index < all.count ? all[index] : nil
 
         all.insert(details, at: index)
-        details.model.card.nextId = current.id
 
         if let previous {
             previous.model.card.nextId = details.id
+        }
+        if let current {
+            details.model.card.nextId = current.id
         }
     }
 
@@ -302,22 +304,13 @@ extension CardGridViewModel {
 // MARK: Re-ordering
 
 extension CardGridViewModel {
-    enum MoveTarget {
-        case beforeCard(Card)
-        case atEnd
-    }
-
-    func move(card: Card, to target: MoveTarget) {
+    func moveCard(from fromIndex: Int, to toIndex: Int) {
         var newAllDetails = allDetails
-        let index = newAllDetails.firstIndex(where: { $0.id == card.id })!
-        let details = Self.remove(at: index, from: &newAllDetails)
-        switch target {
-        case .beforeCard(let targetCard):
-            let newIndex = newAllDetails.firstIndex(where: { $0.id == targetCard.id })!
-            Self.insert(details, at: newIndex, to: &newAllDetails)
-        case .atEnd:
-            Self.append(details, to: &newAllDetails)
-        }
+
+        let details = Self.remove(at: fromIndex, from: &newAllDetails)
+        Self.insert(details, at: toIndex, to: &newAllDetails)
+
+        // Mutate `allDetails` in one shot since it is a published property.
         allDetails = newAllDetails
     }
 
@@ -329,50 +322,39 @@ extension CardGridViewModel {
         Int((geom.size.width - CardGridUX.spacing) / (CardGridUX.spacing + CardUX.minimumCardWidth))
     }
 
-    func getMoveTarget(_ sourceId: Card.ID, direction: CardView<Card>.Direction, geom: GeometryProxy) -> MoveTarget? {
+    func determineMove(_ sourceId: Card.ID, direction: CardView<Card>.Direction, geom: GeometryProxy) -> (from: Int, to: Int)? {
         let ncols = numberOfColumns(geom: geom)
         let sourceIndex = allDetails.firstIndex(where: { $0.id == sourceId })!
-        let sourceCol = sourceIndex % ncols
         let maxIndex = allDetails.count - 1
 
-        var targetIndex: Int? = nil
+        var targetIndex: Int
         switch direction {
         case .up:
-            if sourceIndex - ncols >= 0 {
-                targetIndex = sourceIndex - ncols
-            }
+            targetIndex = sourceIndex - ncols
             break
         case .down:
-            if sourceIndex + ncols + 1 < maxIndex {
-                targetIndex = sourceIndex + ncols + 1
-            } else if sourceIndex + ncols + 1 >= maxIndex {
-                return .atEnd
-            }
+            targetIndex = sourceIndex + ncols
             break
         case .left:
-            if sourceCol > 0 && sourceIndex > 0 {
-                targetIndex = sourceIndex - 1
-            }
+            targetIndex = sourceIndex - 1
             break
         case .right:
-            if sourceCol < (ncols - 1) && sourceIndex < (maxIndex - 1) {
-                targetIndex = sourceIndex + 2
-            } else if sourceIndex + 2 >= maxIndex {
-                return .atEnd
-            }
+            targetIndex = sourceIndex + 1
             break
         }
 
-        guard let targetIndex else { return nil }
-
-        return .beforeCard(allDetails[targetIndex].model.card)
+        targetIndex = max(min(targetIndex, maxIndex), 0)
+        if targetIndex == sourceIndex {
+            return nil
+        }
+        return (from: sourceIndex, to: targetIndex)
     }
 
     func moveCard(_ cardDetail: CardDetails, direction: CardView<Card>.Direction, geom: GeometryProxy) {
-        if let target = getMoveTarget(cardDetail.id, direction: direction, geom: geom) {
+        if let (fromIndex, toIndex) = determineMove(cardDetail.id, direction: direction, geom: geom) {
             cardDetail.model.translationOrigin = cardDetail.model.lastTranslation
             withAnimation {
-                move(card: cardDetail.model.card, to: target)
+                moveCard(from: fromIndex, to: toIndex)
             }
         }
     }
