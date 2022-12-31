@@ -229,8 +229,14 @@ extension CardGridViewModel {
         var targetIndex: Int? = nil
         switch direction {
         case .up:
+            if sourceIndex - ncols >= 0 {
+                targetIndex = sourceIndex - ncols
+            }
             break
         case .down:
+            if sourceIndex + ncols < maxIndex {
+                targetIndex = sourceIndex + ncols
+            }
             break
         case .left:
             if sourceCol > 0 && sourceIndex > 0 {
@@ -246,12 +252,15 @@ extension CardGridViewModel {
 
         guard let targetIndex else { return nil }
 
+        print(">>> new targetIndex: \(targetIndex), sourceIndex was \(sourceIndex)")
+
         return .existingCard(allDetails[targetIndex].model.card)
     }
 
     func moveCard(_ cardDetail: CardDetails, direction: CardView<Card>.Direction, geom: GeometryProxy) {
         print(">>> moveCard, direction: \(direction)")
         if let target = getMoveTarget(cardDetail.id, direction: direction, geom: geom) {
+            cardDetail.model.translationOrigin = cardDetail.model.lastTranslation
             withAnimation {
                 move(card: cardDetail.model.card, to: target)
             }

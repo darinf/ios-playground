@@ -40,6 +40,11 @@ struct CardGridView<Card, ZoomedContent, OverlayContent>: View where Card: CardM
                                 }
                             }
                             .id(cardDetail.id)
+//                            .simultaneousGesture(DragGesture()
+//                                .onChanged { _ in
+//                                    print(">>> card drag, id: \(cardDetail.id)")
+//                                }
+//                            )
                         }
                     }
                     .coordinateSpace(name: "grid")
@@ -55,6 +60,11 @@ struct CardGridView<Card, ZoomedContent, OverlayContent>: View where Card: CardM
                     .onChange(of: model.scrollToSelectedCardId) { _ in
                         scroller.scrollTo(model.selectedCardId)
                     }
+//                    .simultaneousGesture(DragGesture()
+//                        .onChanged { _ in
+//                            print(">>> grid drag")
+//                        }
+//                    )
                 }
             }
             .ignoresSafeArea(.keyboard)

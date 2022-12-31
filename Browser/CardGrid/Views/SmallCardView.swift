@@ -41,14 +41,14 @@ struct SmallCardView<Card>: View where Card: CardModel {
             .highPriorityGesture(
                 DragGesture(coordinateSpace: .named("grid"))
                     .onChanged {
-                        print(">>> Drag onChanged: \($0.translation)")
-                        let currentOrigin = geom.frame(in: .named("grid")).origin
-//                        let offset = currentOrigin - model.dragOrigin
-                        let adjustedTranslation: CGSize = .init(
-                            width: model.dragOrigin.x - currentOrigin.x + $0.translation.width,
-                            height: model.dragOrigin.y - currentOrigin.y + $0.translation.height)
-                        model.dragTranslation = adjustedTranslation
-                        if let direction = translationToDirection($0.translation) {
+//                        print(">>> Drag onChanged: \($0.translation), startLoc: \($0.startLocation), loc: \($0.location)")
+//                        let currentOrigin = geom.frame(in: .named("grid")).origin
+//                        let adjustedTranslation: CGSize = .init(
+//                            width: model.dragOrigin.x - currentOrigin.x + $0.translation.width,
+//                            height: model.dragOrigin.y - currentOrigin.y + $0.translation.height)
+//                        model.dragTranslation = adjustedTranslation
+
+                        if let direction = translationToDirection($0.translation, geom: geom) {
                             handler(.move(direction))
                         }
                     }
@@ -60,6 +60,8 @@ struct SmallCardView<Card>: View where Card: CardModel {
                         .onEnded { _ in
                             model.dragTranslation = .zero
                             model.dragOrigin = geom.frame(in: .named("grid")).origin
+                            model.lastTranslation = .zero
+                            model.translationOrigin = .zero
                             model.longPressed = true
                         }
                         .sequenced(before: TapGesture()
@@ -75,33 +77,42 @@ struct SmallCardView<Card>: View where Card: CardModel {
                     handler(.activated)
                 }
             )
-            .overlay(
-                Group {
-                    if model.longPressed {
-                        CardView(namespace: namespace, model: .init(card: model.card), selected: selected, zoomed: false)
-                            .opacity(0.7)
-                            .offset(x: model.dragTranslation.width, y: model.dragTranslation.height)
-//                            .animation(nil)
-                    }
-                }
-            )
+//            .overlay(
+//                Group {
+//                    if model.longPressed {
+//                        CardView(namespace: namespace, model: .init(card: model.card), selected: selected, zoomed: false)
+//                            .opacity(0.7)
+//                            .offset(x: model.dragTranslation.width, y: model.dragTranslation.height)
+//                    }
+//                }
+//            )
         }
         .aspectRatio(CardUX.aspectRatio, contentMode: .fill)
         .zIndex(zIndex)
     }
 
-    func translationToDirection(_ translation: CGSize) -> CardView<Card>.Direction? {
-        let threshold: CGFloat = 50
+    // Assumes a translation relative to the current position of the card.
+    func relativeTranslationToDirection(_ translation: CGSize, threshold: CGSize) -> CardView<Card>.Direction? {
         if abs(translation.width) > abs(translation.height) {
-            if abs(translation.width) > threshold {
+            if abs(translation.width) > threshold.width {
                 return translation.width > 0 ? .right : .left
             }
         } else {
-            if abs(translation.height) > threshold {
+            if abs(translation.height) > threshold.height {
                 return translation.height > 0 ? .down : .up
             }
         }
         return nil
+    }
+
+    // Given translation is in "grid" coordinate space. The card may already have been moved.
+    func translationToDirection(_ translation: CGSize, geom: GeometryProxy) -> CardView<Card>.Direction? {
+        let adjustedTranslation: CGSize = .init(
+            width: translation.width - model.translationOrigin.width,
+            height: translation.height - model.translationOrigin.height
+        )
+        model.lastTranslation = translation
+        return relativeTranslationToDirection(adjustedTranslation, threshold: geom.size)
     }
 }
 
