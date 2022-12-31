@@ -23,7 +23,7 @@ struct SmallCardView<Card>: View where Card: CardModel {
         GeometryReader { geom in
             Button {
                 if model.longPressed {
-                    model.longPressed = false
+                    longPressEnded()
                 } else {
                     handler(.activated)
                 }
@@ -54,7 +54,7 @@ struct SmallCardView<Card>: View where Card: CardModel {
                     }
                     .onEnded { _ in
                         print(">>> Drag onEnded, card.title: \(model.card.title)")
-                        model.longPressed = false
+                        longPressEnded()
                     }
                     .simultaneously(with: LongPressGesture()
                         .onEnded { _ in
@@ -63,17 +63,18 @@ struct SmallCardView<Card>: View where Card: CardModel {
                             model.lastTranslation = .zero
                             model.translationOrigin = .zero
                             model.longPressed = true
+                            handler(.pressed(geom.frame(in: .named("grid"))))
                         }
                         .sequenced(before: TapGesture()
                             .onEnded {
-                                model.longPressed = false
+                                longPressEnded()
                             }
                         )
                     )
             )
             .highPriorityGesture(TapGesture()
                 .onEnded {
-                    model.longPressed = false
+                    longPressEnded()
                     handler(.activated)
                 }
             )
@@ -89,6 +90,13 @@ struct SmallCardView<Card>: View where Card: CardModel {
         }
         .aspectRatio(CardUX.aspectRatio, contentMode: .fill)
         .zIndex(zIndex)
+    }
+
+    func longPressEnded() {
+        if model.longPressed {
+            model.longPressed = false
+            handler(.pressedEnded)
+        }
     }
 
     // Assumes a translation relative to the current position of the card.

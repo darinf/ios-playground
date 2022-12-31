@@ -38,18 +38,29 @@ struct CardGridView<Card, ZoomedContent, OverlayContent>: View where Card: CardM
                                 case .move(let direction):
                                     model.moveCard(cardDetail, direction: direction, geom: geom)
                                     withAnimation {
-                                        scroller.scrollTo(cardDetail.id, anchor: .center)
+                                        scroller.scrollTo(cardDetail.id)
                                     }
+                                case .pressed(let frame):
+                                    print(">>> pressed")
+                                    model.draggingModel.startDragging(card: cardDetail.model, frame: frame)
+                                    break
+                                case .pressedEnded:
+                                    print(">>> pressedEnded")
+                                    model.draggingModel.stopDragging()
+                                    break
                                 }
                             }
                             .id(cardDetail.id)
-//                            .simultaneousGesture(DragGesture()
-//                                .onChanged { _ in
-//                                    print(">>> card drag, id: \(cardDetail.id)")
-//                                }
-//                            )
                         }
                     }
+                    .overlay(
+                        CardDraggingView<Card>(
+                            namespace: namespace,
+                            model: model.draggingModel,
+                            selectedCardId: model.selectedCardId
+                        ),
+                        alignment: .topLeading
+                    )
                     .coordinateSpace(name: "grid")
                     .padding(CardGridUX.spacing)
                     .onAppear {
@@ -63,11 +74,11 @@ struct CardGridView<Card, ZoomedContent, OverlayContent>: View where Card: CardM
                     .onChange(of: model.scrollToSelectedCardId) { _ in
                         scroller.scrollTo(model.selectedCardId)
                     }
-//                    .simultaneousGesture(DragGesture()
-//                        .onChanged { _ in
-//                            print(">>> grid drag")
-//                        }
-//                    )
+                    .simultaneousGesture(DragGesture()
+                        .onChanged {
+                            model.draggingModel.translation = $0.translation
+                        }
+                    )
                 }
             }
             .ignoresSafeArea(.keyboard)
@@ -109,6 +120,29 @@ struct CardGridView<Card, ZoomedContent, OverlayContent>: View where Card: CardM
                     .ignoresSafeArea(edges: [.top, .bottom])
                     .zIndex(2)
             }
+        }
+    }
+}
+
+struct CardDraggingView<Card>: View where Card: CardModel {
+    let namespace: Namespace.ID
+    @ObservedObject var model: CardDraggingModel<Card>
+    let selectedCardId: Card.ID?
+
+    var body: some View {
+        if let card = model.draggingCard?.card {
+            CardView(
+                namespace: namespace,
+                model: .init(card: card, pressed: true),
+                selected: model.draggingCard?.card.id == selectedCardId,
+                zoomed: false
+            )
+            .frame(width: model.frame.width, height: model.frame.height, alignment: .center)
+            .offset(
+                x: model.frame.minX + model.translation.width,
+                y: model.frame.minY + model.translation.height
+            )
+            .opacity(model.draggingCard == nil ? 0 : 0.7)
         }
     }
 }
