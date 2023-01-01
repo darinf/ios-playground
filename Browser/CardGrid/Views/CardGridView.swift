@@ -121,6 +121,8 @@ struct CardGridView<Card, ZoomedContent, OverlayContent>: View where Card: CardM
     }
 }
 
+// MARK: CardDraggingView
+
 struct CardDraggingView<Card>: View where Card: CardModel {
     // Use a custom namespace here since we don't want SwiftUI to link this `CardView`
     // to the one used by `SmallCardView`. Let them be completely independent.
@@ -128,6 +130,8 @@ struct CardDraggingView<Card>: View where Card: CardModel {
 
     @ObservedObject var model: CardDraggingModel<Card>
     let selectedCardId: Card.ID?
+
+    @State var opacity: Double = 1
 
     var body: some View {
         if let card = model.draggingCard?.card {
@@ -144,7 +148,13 @@ struct CardDraggingView<Card>: View where Card: CardModel {
                 x: model.frame.minX + model.translation.width,
                 y: model.frame.minY + model.translation.height
             )
-            .opacity(model.draggingCard == nil ? 0 : 0.7)
+            .opacity(opacity)
+            .onAppear {
+                withAnimation {
+                    opacity = 0.7
+                }
+            }
+            .transition(.identity)
         }
     }
 }

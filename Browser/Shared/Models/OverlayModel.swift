@@ -7,9 +7,10 @@ import UIKit
 
 class OverlayModel: ObservableObject {
     let defaultHeight: CGFloat
-    @Published var height: CGFloat = 0
+    @Published private(set) var height: CGFloat = 0
     @Published var animatingHeight: Bool = false
     @Published var docked = true
+    var locked = false
 
     private var observers: Set<ScrollViewObserver> = []
 
@@ -18,12 +19,20 @@ class OverlayModel: ObservableObject {
         self.height = defaultHeight
     }
 
+    func setHeight(_ height: CGFloat) {
+        guard !locked else { return }
+        guard self.height != height else { return }
+        self.height = height
+    }
+
     func resetHeight() {
+        guard !locked else { return }
         guard height != defaultHeight else { return }
         height = defaultHeight
     }
 
     func resetHeightWithAnimation() {
+        guard !locked else { return }
         guard height != defaultHeight else { return }
         animatingHeight = true
         withAnimation(Animation.easeInOut(duration: 0.2)) {
@@ -69,7 +78,9 @@ class OverlayUpdater {
 
         if panning {
             // We're already in an interactive state, so no need to animate.
-            overlayModel.height = min(max(overlayModel.height - panDelta, 0), overlayModel.defaultHeight)
+            overlayModel.setHeight(
+                min(max(overlayModel.height - panDelta, 0), overlayModel.defaultHeight)
+            )
         } else if overlayModel.height > 0 {
             overlayModel.resetHeightWithAnimation()
         }

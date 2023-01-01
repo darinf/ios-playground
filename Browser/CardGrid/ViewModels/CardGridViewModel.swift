@@ -21,12 +21,13 @@ class CardGridViewModel<Card>: ObservableObject where Card: CardModel {
     private var overlayModel: OverlayModel
     private var overlayUpdater: OverlayUpdater?
     private var scrollView: UIScrollView?
-    private(set) var draggingModel: CardDraggingModel<Card> = .init()
+    private(set) var draggingModel: CardDraggingModel<Card>
 
     init(cards: [Card], selectedCardId: Card.ID?, overlayModel: OverlayModel) {
         self.allDetails = Self.buildAllDetails(cards: cards)
         self.selectedCardId = selectedCardId
         self.overlayModel = overlayModel
+        self.draggingModel = .init(overlayModel: overlayModel)
     }
 
     func cardDetails(for id: Card.ID) -> CardDetails? {
