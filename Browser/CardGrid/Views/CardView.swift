@@ -15,6 +15,7 @@ enum CardUX {
     static let pressAnimation = Animation.easeOut
 }
 
+// Layout for all of the graphical elements of a card.
 struct CardView<Card>: View where Card: CardModel {
     let namespace: Namespace.ID
     @ObservedObject var model: CardViewModel<Card>
@@ -103,6 +104,8 @@ struct CardView<Card>: View where Card: CardModel {
 
 // MARK: CloseButtonView
 
+// The close button has to be a separate view so its gesture handling can work properly.
+// See `SmallCardView`'s use of `highPriorityGesture`.
 struct CloseButtonView<Card>: View where Card: CardModel {
     let namespace: Namespace.ID
     @ObservedObject var model: CardViewModel<Card>

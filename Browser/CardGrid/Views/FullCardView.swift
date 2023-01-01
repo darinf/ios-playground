@@ -2,6 +2,7 @@
 
 import SwiftUI
 
+// The transitional variant of `CardView` when zooming in/out.
 struct FullCardView<Card>: View, Animatable where Card: CardModel {
     let namespace: Namespace.ID
     let model: CardViewModel<Card>

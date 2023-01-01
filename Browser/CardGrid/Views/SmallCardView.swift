@@ -2,6 +2,7 @@
 
 import SwiftUI
 
+// Adds behaviors to `CardView` when it lives in the grid.
 struct SmallCardView<Card>: View where Card: CardModel {
     enum Direction { case up, down, left, right }
     enum Action { case activate, close, move(Direction), press(CGRect), pressEnded }
