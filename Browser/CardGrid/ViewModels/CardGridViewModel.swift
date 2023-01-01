@@ -119,6 +119,7 @@ extension CardGridViewModel {
                 last = previous
             }
 
+            // Handle any cards that do not have `nextId` set. This is a migration case.
             // Exclude lastReferencedCard here since it has already been handled.
             for card in cardsWithoutNextId {
                 if card.id == lastReferencedCard.id {
