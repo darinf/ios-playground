@@ -46,7 +46,7 @@ struct SmallCardView<Card>: View where Card: CardModel {
             .highPriorityGesture(
                 DragGesture(coordinateSpace: .named("grid"))
                     .onChanged {
-                        if let direction = translationToDirection($0.translation, geom: geom) {
+                        if model.longPressed, let direction = translationToDirection($0.translation, geom: geom) {
                             handler(.move(direction))
                         }
                     }
