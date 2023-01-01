@@ -91,10 +91,15 @@ extension CardGridViewModel {
             uniqueKeysWithValues: cards.compactMap { $0.nextId != nil ? ($0.nextId!, $0) : nil }
         )
 
-        // Find the last card referenced by that set. Should be a card not in that set.
+        let cardsWithoutNextId = cards.compactMap {
+            $0.nextId == nil ? $0 : nil
+        }
+
+        // Find the last card referenced by the cards with `nextId`. This will be the one that
+        // is found in the `cardsWithoutNextId` array since that one will not have a `nextId`.
         var lastReferencedCard: Card?
         for card in cardsWithNextId {
-            if let next = getCardById(card.value.nextId!), next.nextId == nil {
+            if let next = cardsWithoutNextId.first(where: { $0.id == card.value.nextId! }) {
                 lastReferencedCard = next
                 break
             }
@@ -115,10 +120,10 @@ extension CardGridViewModel {
             }
 
             // Exclude lastReferencedCard here since it has already been handled.
-            let cardsWithoutNextId = cards.compactMap {
-                $0.id != lastReferencedCard.id && $0.nextId == nil ? $0 : nil
-            }
             for card in cardsWithoutNextId {
+                if card.id == lastReferencedCard.id {
+                    continue
+                }
                 if let last = sortedCards.last {
                     last.nextId = card.id
                 }
@@ -171,6 +176,8 @@ extension CardGridViewModel {
         }
         if let current {
             details.model.card.nextId = current.id
+        } else {
+            details.model.card.nextId = nil
         }
     }
 

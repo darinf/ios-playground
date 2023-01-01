@@ -9,11 +9,7 @@ class CardViewModel<Card>: ObservableObject where Card: CardModel {
     @Published var pressed: Bool
     @Published var longPressed: Bool = false
     var lastTranslation: CGSize = .zero
-    var translationOrigin: CGSize = .zero {
-        didSet {
-            print(">>> didSet translationOrigin: \(translationOrigin)")
-        }
-    }
+    var translationOrigin: CGSize = .zero
 
     private var subscription: AnyCancellable?
 
