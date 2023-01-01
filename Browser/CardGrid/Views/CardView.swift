@@ -61,30 +61,6 @@ struct CardView<Card>: View where Card: CardModel {
             .contentShape(RoundedRectangle(cornerRadius: cardRadius))
     }
 
-    var closeButton: some View {
-        VStack {
-            HStack {
-                Spacer()
-                Button {
-                    handler?(.close)
-                } label: {
-                    Circle()
-                        .fill(Color(uiColor: .systemGroupedBackground))
-                        .matchedGeometryEffect(id: "\(card.id).closebutton", in: namespace)
-                        .frame(height: 22)
-                        .overlay(
-                            Image(systemName: "multiply")
-                                .foregroundColor(Color(uiColor: .label))
-                                .matchedGeometryEffect(id: "\(card.id).closebutton-icon", in: namespace)
-                        )
-                        .opacity(showDecorations ? 1 : 0)
-                        .padding([.top, .trailing], 6)
-                }
-            }
-            Spacer()
-        }
-    }
-
     var iconAndLabel: some View {
         HStack {
             Image(uiImage: card.favicon)
@@ -106,7 +82,6 @@ struct CardView<Card>: View where Card: CardModel {
     var body: some View {
         ZStack(alignment: .bottom) {
             thumbnail
-//            closeButton
             iconAndLabel
         }
         .scaleEffect(model.pressed ? 0.95 : 1)
@@ -129,6 +104,8 @@ struct CardView<Card>: View where Card: CardModel {
         }
     }
 }
+
+// MARK: CloseButtonView
 
 struct CloseButtonView<Card>: View where Card: CardModel {
     let namespace: Namespace.ID
