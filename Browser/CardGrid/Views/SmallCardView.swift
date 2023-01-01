@@ -3,11 +3,14 @@
 import SwiftUI
 
 struct SmallCardView<Card>: View where Card: CardModel {
+    enum Direction { case up, down, left, right }
+    enum Action { case activate, close, move(Direction), press(CGRect), pressEnded }
+
     let namespace: Namespace.ID
     @ObservedObject var model: CardViewModel<Card>
     let selected: Bool
     let zoomed: Bool
-    let handler: (_ action: CardView<Card>.Action) -> Void
+    let handler: (_ action: Action) -> Void
 
     var zIndex: Double {
         if model.longPressed {
@@ -33,7 +36,7 @@ struct SmallCardView<Card>: View where Card: CardModel {
                     if hideCard {
                         Color.clear
                     } else {
-                        CardView(namespace: namespace, model: model, selected: selected, zoomed: false, handler: handler)
+                        CardView(namespace: namespace, model: model, selected: selected, zoomed: false)
                     }
                 }
                 .transition(.identity.animation(.default))
@@ -89,7 +92,7 @@ struct SmallCardView<Card>: View where Card: CardModel {
     }
 
     // Assumes a translation relative to the current position of the card.
-    func relativeTranslationToDirection(_ translation: CGSize, threshold: CGSize) -> CardView<Card>.Direction? {
+    func relativeTranslationToDirection(_ translation: CGSize, threshold: CGSize) -> Direction? {
         if abs(translation.width) > abs(translation.height) {
             if abs(translation.width) > threshold.width {
                 return translation.width > 0 ? .right : .left
@@ -103,7 +106,7 @@ struct SmallCardView<Card>: View where Card: CardModel {
     }
 
     // Given translation is in "grid" coordinate space. The card may already have been moved.
-    func translationToDirection(_ translation: CGSize, geom: GeometryProxy) -> CardView<Card>.Direction? {
+    func translationToDirection(_ translation: CGSize, geom: GeometryProxy) -> Direction? {
         let adjustedTranslation: CGSize = .init(
             width: translation.width - model.translationOrigin.width,
             height: translation.height - model.translationOrigin.height

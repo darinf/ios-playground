@@ -331,7 +331,7 @@ extension CardGridViewModel {
         Int((geom.size.width - CardGridUX.spacing) / (CardGridUX.spacing + CardUX.minimumCardWidth))
     }
 
-    func determineMove(_ sourceId: Card.ID, direction: CardView<Card>.Direction, geom: GeometryProxy) -> (from: Int, to: Int)? {
+    func determineMove(_ sourceId: Card.ID, direction: SmallCardView<Card>.Direction, geom: GeometryProxy) -> (from: Int, to: Int)? {
         let ncols = numberOfColumns(geom: geom)
         let sourceIndex = allDetails.firstIndex(where: { $0.id == sourceId })!
         let maxIndex = allDetails.count - 1
@@ -359,7 +359,7 @@ extension CardGridViewModel {
         return (from: sourceIndex, to: targetIndex)
     }
 
-    func moveCard(_ cardDetail: CardDetails, direction: CardView<Card>.Direction, geom: GeometryProxy) {
+    func moveCard(_ cardDetail: CardDetails, direction: SmallCardView<Card>.Direction, geom: GeometryProxy) {
         if let (fromIndex, toIndex) = determineMove(cardDetail.id, direction: direction, geom: geom) {
             cardDetail.model.translationOrigin = cardDetail.model.lastTranslation
             withAnimation {

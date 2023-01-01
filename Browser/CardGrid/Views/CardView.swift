@@ -16,14 +16,10 @@ enum CardUX {
 }
 
 struct CardView<Card>: View where Card: CardModel {
-    enum Direction { case up, down, left, right }
-    enum Action { case activate, close, move(Direction), press(CGRect), pressEnded }
-
     let namespace: Namespace.ID
     @ObservedObject var model: CardViewModel<Card>
     let selected: Bool
     let zoomed: Bool
-    var handler: ((_ action: Action) -> Void)? = nil
 
     var card: Card {
         model.card
