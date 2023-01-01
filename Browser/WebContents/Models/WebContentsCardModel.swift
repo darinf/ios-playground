@@ -23,6 +23,8 @@ class WebContentsCardModel: NSObject {
     @Published private(set) var isLoading: Bool = false
     @Published private(set) var estimatedProgress: Double = 0.0
 
+    @Published var nextId: UUID?
+
     // Notifies on creation of a new child card (WebView).
     let childCardPublisher = PassthroughSubject<WebContentsCardModel, Never>()
 
@@ -69,6 +71,7 @@ class WebContentsCardModel: NSObject {
         precondition(storedCard.id != nil)
 
         self.id = storedCard.id!
+        self.nextId = storedCard.next
         self.title = storedCard.title ?? ""
         self.url = URL(string: storedCard.url)
         self.thumbnail = Self.decodeImage(from: storedCard.thumbnail)
@@ -195,6 +198,16 @@ extension WebContentsCardModel {
             .sink { thumbnail in
                 storedCard.thumbnail = thumbnail
                 store.save()
+            }
+            .store(in: &subscriptions)
+
+        $nextId
+            .dropFirst()
+            .sink { nextId in
+                if nextId != storedCard.next {
+                    storedCard.next = nextId
+                    store.save()
+                }
             }
             .store(in: &subscriptions)
     }

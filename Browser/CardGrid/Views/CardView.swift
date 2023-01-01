@@ -15,14 +15,12 @@ enum CardUX {
     static let pressAnimation = Animation.easeOut
 }
 
+// Layout for all of the graphical elements of a card.
 struct CardView<Card>: View where Card: CardModel {
-    enum Action { case activated, closed }
-
     let namespace: Namespace.ID
     @ObservedObject var model: CardViewModel<Card>
     let selected: Bool
     let zoomed: Bool
-    var handler: ((_ action: Action) -> Void)? = nil
 
     var card: Card {
         model.card
@@ -60,30 +58,6 @@ struct CardView<Card>: View where Card: CardModel {
             .contentShape(RoundedRectangle(cornerRadius: cardRadius))
     }
 
-    var closeButton: some View {
-        VStack {
-            HStack {
-                Spacer()
-                Button {
-                    handler?(.closed)
-                } label: {
-                    Circle()
-                        .fill(Color(uiColor: .systemGroupedBackground))
-                        .matchedGeometryEffect(id: "\(card.id).closebutton", in: namespace)
-                        .frame(height: 22)
-                        .overlay(
-                            Image(systemName: "multiply")
-                                .foregroundColor(Color(uiColor: .label))
-                                .matchedGeometryEffect(id: "\(card.id).closebutton-icon", in: namespace)
-                        )
-                        .opacity(showDecorations ? 1 : 0)
-                        .padding([.top, .trailing], 6)
-                }
-            }
-            Spacer()
-        }
-    }
-
     var iconAndLabel: some View {
         HStack {
             Image(uiImage: card.favicon)
@@ -105,7 +79,6 @@ struct CardView<Card>: View where Card: CardModel {
     var body: some View {
         ZStack(alignment: .bottom) {
             thumbnail
-            closeButton
             iconAndLabel
         }
         .scaleEffect(model.pressed ? 0.95 : 1)
@@ -114,13 +87,60 @@ struct CardView<Card>: View where Card: CardModel {
         // consistency as sometimes a view is not removed right away.
         .onAppear {
             withAnimation(CardUX.decorationAnimation) {
-                model.showDecorations = !zoomed
+                if !model.longPressed {
+                    model.showDecorations = !zoomed
+                }
             }
         }
         .onDisappear {
             withAnimation(CardUX.decorationAnimation) {
-                model.showDecorations = zoomed
+                if !model.longPressed {
+                    model.showDecorations = zoomed
+                }
             }
         }
+    }
+}
+
+// MARK: CloseButtonView
+
+// The close button has to be a separate view so its gesture handling can work properly.
+// See `SmallCardView`'s use of `highPriorityGesture`.
+struct CloseButtonView<Card>: View where Card: CardModel {
+    let namespace: Namespace.ID
+    @ObservedObject var model: CardViewModel<Card>
+    var handler: (() -> Void)? = nil
+
+    var card: Card {
+        model.card
+    }
+    var showDecorations: Bool {
+        model.showDecorations
+    }
+
+    var body: some View {
+        VStack {
+            HStack {
+                Spacer()
+                Button {
+                    handler?()
+                } label: {
+                    Circle()
+                        .fill(Color(uiColor: .systemGroupedBackground))
+                        .matchedGeometryEffect(id: "\(card.id).closebutton", in: namespace)
+                        .frame(height: 22)
+                        .overlay(
+                            Image(systemName: "multiply")
+                                .foregroundColor(Color(uiColor: .label))
+                                .matchedGeometryEffect(id: "\(card.id).closebutton-icon", in: namespace)
+                        )
+                        .opacity(showDecorations ? 1 : 0)
+                        .padding([.top, .trailing], 6)
+                }
+            }
+            Spacer()
+        }
+        .scaleEffect(model.pressed ? 0.95 : 1)
+        .animation(CardUX.pressAnimation, value: model.pressed)
     }
 }

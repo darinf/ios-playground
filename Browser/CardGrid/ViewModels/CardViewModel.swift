@@ -6,12 +6,16 @@ import Foundation
 class CardViewModel<Card>: ObservableObject where Card: CardModel {
     let card: Card
     @Published var showDecorations: Bool = true
-    @Published var pressed: Bool = false
+    @Published var pressed: Bool
+    @Published var longPressed: Bool = false
+    var lastTranslation: CGSize = .zero
+    var translationOrigin: CGSize = .zero
 
     private var subscription: AnyCancellable?
 
-    init(card: Card) {
+    init(card: Card, pressed: Bool = false) {
         self.card = card
+        self.pressed = pressed
 
         // Forward card updates.
         self.subscription = self.card.objectWillChange

@@ -14,50 +14,76 @@ struct CardGridView<Card, ZoomedContent, OverlayContent>: View where Card: CardM
     @ViewBuilder let zoomedCard: (_ card: Card) -> ZoomedContent
 
     var grid: some View {
-        ScrollView(showsIndicators: false) {
-            ScrollViewReader { scroller in
-                let columns = [
-                    GridItem(.adaptive(minimum: CardUX.minimumCardWidth),
-                             spacing: CardGridUX.spacing)
-                ]
-                LazyVGrid(columns: columns, spacing: CardGridUX.spacing + CardUX.titleHeight + CardUX.verticalSpacing) {
-                    ForEach(model.allDetails) { cardDetail in
-                        let selected = model.selectedCardId == cardDetail.id
-                        SmallCardView(
-                            namespace: namespace,
-                            model: cardDetail.model,
-                            selected: selected,
-                            zoomed: model.zoomed
-                        ) { action in
-                            switch action {
-                            case .activated:
-                                model.activateCard(byId: cardDetail.id)
-                            case .closed:
-                                model.closeCard(byId: cardDetail.id)
+        GeometryReader { geom in
+            ScrollView(showsIndicators: false) {
+                ScrollViewReader { scroller in
+                    let columns = [
+                        GridItem(.adaptive(minimum: CardUX.minimumCardWidth),
+                                 spacing: CardGridUX.spacing)
+                    ]
+                    LazyVGrid(columns: columns, spacing: CardGridUX.spacing + CardUX.titleHeight + CardUX.verticalSpacing) {
+                        ForEach(model.allDetails) { cardDetail in
+                            let selected = model.selectedCardId == cardDetail.id
+                            SmallCardView(
+                                namespace: namespace,
+                                model: cardDetail.model,
+                                selected: selected,
+                                zoomed: model.zoomed
+                            ) { action in
+                                switch action {
+                                case .activate:
+                                    model.activateCard(byId: cardDetail.id)
+                                case .close:
+                                    model.closeCard(byId: cardDetail.id)
+                                case .move(let direction):
+                                    model.moveCard(cardDetail, direction: direction, geom: geom)
+                                    withAnimation {
+                                        scroller.scrollTo(cardDetail.id)
+                                    }
+                                case .press(let frame):
+                                    model.draggingModel.startDragging(card: cardDetail.model, frame: frame)
+                                    break
+                                case .pressEnded:
+                                    model.draggingModel.stopDragging()
+                                    break
+                                }
                             }
+                            .id(cardDetail.id)
                         }
-                        .id(cardDetail.id)
                     }
-                }
-                .padding(CardGridUX.spacing)
-                .onAppear {
-                    if let id = model.selectedCardId {
+                    .overlay(
+                        CardDraggingView<Card>(
+                            model: model.draggingModel,
+                            selectedCardId: model.selectedCardId
+                        ),
+                        alignment: .topLeading
+                    )
+                    .coordinateSpace(name: "grid")
+                    .padding(CardGridUX.spacing)
+                    .onAppear {
+                        if let id = model.selectedCardId {
+                            scroller.scrollTo(id)
+                        }
+                    }
+                    .onChange(of: model.selectedCardId) { id in
                         scroller.scrollTo(id)
                     }
-                }
-                .onChange(of: model.selectedCardId) { id in
-                    scroller.scrollTo(id)
-                }
-                .onChange(of: model.scrollToSelectedCardId) { _ in
-                    scroller.scrollTo(model.selectedCardId)
+                    .onChange(of: model.scrollToSelectedCardId) { _ in
+                        scroller.scrollTo(model.selectedCardId)
+                    }
+                    .simultaneousGesture(DragGesture()
+                        .onChanged {
+                            model.draggingModel.translation = $0.translation
+                        }
+                    )
                 }
             }
+            .ignoresSafeArea(.keyboard)
+            .introspectScrollView { scrollView in
+                model.observeScrollView(scrollView)
+            }
+            .background(Color(uiColor: .systemBackground))
         }
-        .ignoresSafeArea(.keyboard)
-        .introspectScrollView { scrollView in
-            model.observeScrollView(scrollView)
-        }
-        .background(Color(uiColor: .systemBackground))
     }
 
     var body: some View {
@@ -91,6 +117,44 @@ struct CardGridView<Card, ZoomedContent, OverlayContent>: View where Card: CardM
                     .ignoresSafeArea(edges: [.top, .bottom])
                     .zIndex(2)
             }
+        }
+    }
+}
+
+// MARK: CardDraggingView
+
+struct CardDraggingView<Card>: View where Card: CardModel {
+    // Use a custom namespace here since we don't want SwiftUI to link this `CardView`
+    // to the one used by `SmallCardView`. Let them be completely independent.
+    @Namespace var namespace
+
+    @ObservedObject var model: CardDraggingModel<Card>
+    let selectedCardId: Card.ID?
+
+    @State var opacity: Double = 1
+
+    var body: some View {
+        if let card = model.draggingCard?.card {
+            let cardViewModel = CardViewModel(card: card, pressed: true)
+            CardView(
+                namespace: namespace,
+                model: cardViewModel,
+                selected: model.draggingCard?.card.id == selectedCardId,
+                zoomed: false
+            )
+            .frame(width: model.frame.width, height: model.frame.height, alignment: .center)
+            .overlay(CloseButtonView<Card>(namespace: namespace, model: cardViewModel))
+            .offset(
+                x: model.frame.minX + model.translation.width,
+                y: model.frame.minY + model.translation.height
+            )
+            .opacity(opacity)
+            .onAppear {
+                withAnimation {
+                    opacity = 0.7
+                }
+            }
+            .transition(.identity)
         }
     }
 }
