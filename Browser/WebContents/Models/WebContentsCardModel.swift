@@ -94,14 +94,17 @@ class WebContentsCardModel: NSObject {
         webView.allowsBackForwardNavigationGestures = true
         webView.customUserAgent = userAgentString()
 
-        webView.publisher(for: \.url, options: .new).receive(on: DispatchQueue.main)
-            .assign(to: &$url)
-        webView.publisher(for: \.title, options: .new).receive(on: DispatchQueue.main)
-            .map { $0 != nil ? $0! : "" }.assign(to: &$title)
-        webView.publisher(for: \.isLoading, options: .new).receive(on: DispatchQueue.main)
-            .assign(to: &$isLoading)
-        webView.publisher(for: \.estimatedProgress, options: .new).receive(on: DispatchQueue.main)
-            .assign(to: &$estimatedProgress)
+        DispatchQueue.main.async { [self] in
+            let options: NSKeyValueObservingOptions = [.new, .initial]
+            webView.publisher(for: \.url, options: options)
+                .assign(to: &$url)
+            webView.publisher(for: \.title, options: options)
+                .map { $0 != nil ? $0! : "" }.assign(to: &$title)
+            webView.publisher(for: \.isLoading, options: options)
+                .assign(to: &$isLoading)
+            webView.publisher(for: \.estimatedProgress, options: options)
+                .assign(to: &$estimatedProgress)
+        }
 
         webView.interactionState = storedCard.interactionState
 
