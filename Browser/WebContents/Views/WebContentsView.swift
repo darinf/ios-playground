@@ -37,6 +37,20 @@ class WebViewController: UIViewController {
         .sink { [unowned self] docked, height in
             updateBottomInsets(docked: docked, height: height)
         }.store(in: &subscriptions)
+
+        overlayModel.$interactivelyChangingHeight.scan((false, false)) {
+            ($0.1, $1)
+        }
+        .sink { [unowned webView] interactivelyChangingHeight in
+            if !interactivelyChangingHeight.0 && interactivelyChangingHeight.1 {
+                // Started interactively changing height
+                webView.perform(NSSelectorFromString("_beginInteractiveObscuredInsetsChange"))
+            } else if interactivelyChangingHeight.0 && !interactivelyChangingHeight.1 {
+                // Stopped interactively changing height
+                webView.perform(NSSelectorFromString("_endInteractiveObscuredInsetsChange"))
+            }
+        }
+        .store(in: &subscriptions)
     }
 
     override func viewDidLoad() {

@@ -8,6 +8,7 @@ import UIKit
 class OverlayModel: ObservableObject {
     let defaultHeight: CGFloat
     @Published private(set) var height: CGFloat = 0
+    @Published var interactivelyChangingHeight: Bool = false
     @Published var animatingHeight: Bool = false
     @Published var docked = true
     var locked = false
@@ -71,6 +72,8 @@ class OverlayUpdater {
         panDelta: CGFloat,
         scrolledToTop: Bool
     ) {
+        overlayModel.interactivelyChangingHeight = panning
+
         if scrolledToTop {
             overlayModel.resetHeightWithAnimation()
             return
