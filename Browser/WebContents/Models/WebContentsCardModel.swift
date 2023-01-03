@@ -2,6 +2,7 @@
 
 import Combine
 import Foundation
+import SDWebImage
 import SwiftUI
 import UIKit
 import WebKit
@@ -13,11 +14,14 @@ fileprivate func userAgentString() -> String {
 
 // One of these per tab
 class WebContentsCardModel: NSObject {
+    static var all: [Weak<WebContentsCardModel>] = []
+    static var defaultFavicon = UIImage(systemName: "globe")!
+
     // CardModel fields:
     var id: UUID
     @Published private(set) var title: String = ""
-    @Published private(set) var thumbnail = pixelFromColor(.white)
-    @Published private(set) var favicon = UIImage(systemName: "globe")!
+    @Published private(set) var thumbnail: UIImage
+    @Published private(set) var favicon: UIImage
 
     @Published private(set) var url: URL? = nil
     @Published private(set) var isLoading: Bool = false
@@ -55,8 +59,12 @@ class WebContentsCardModel: NSObject {
         self.context = context
         self.url = url
         self.configuration = configuration ?? context.defaultConfiguration
+        self.thumbnail = pixelFromColor(.white)
+        self.favicon = Self.defaultFavicon
         self.storedCard = StoredCard(store: context.store)
         super.init()
+
+        Self.all.append(.init(self))
 
         initializeStoredCard()
         keepStoredCardUpdated()
@@ -75,10 +83,13 @@ class WebContentsCardModel: NSObject {
         self.title = storedCard.title ?? ""
         self.url = URL(string: storedCard.url)
         self.thumbnail = Self.decodeImage(from: storedCard.thumbnail)
+        self.favicon = Self.decodeImage(from: storedCard.favicon, fallback: { Self.defaultFavicon })
         self.context = context
         self.configuration = context.defaultConfiguration
         self.storedCard = storedCard
         super.init()
+
+        Self.all.append(.init(self))
 
         keepStoredCardUpdated()
     }
@@ -173,10 +184,10 @@ extension WebContentsCardModel {
         $url
             .dropFirst()
             .map { $0?.absoluteString ?? "" }
-            .sink { [weak self] url in
+            .sink { [unowned self] url in
                 if url != storedCard.url {
                     storedCard.url = url
-                    storedCard.interactionState = self?.webView.interactionState as? Data
+                    storedCard.interactionState = webView.interactionState as? Data
                     store.save()
                 }
             }
@@ -200,6 +211,18 @@ extension WebContentsCardModel {
             .receive(on: DispatchQueue.main)
             .sink { thumbnail in
                 storedCard.thumbnail = thumbnail
+                store.save()
+            }
+            .store(in: &subscriptions)
+
+        // Run image encoding off the main thread.
+        $favicon
+            .dropFirst()
+            .receive(on: backgroundQueue)
+            .map { $0.pngData() }
+            .receive(on: DispatchQueue.main)
+            .sink { favicon in
+                storedCard.favicon = favicon
                 store.save()
             }
             .store(in: &subscriptions)
@@ -241,5 +264,36 @@ extension WebContentsCardModel: WKNavigationDelegate {
     ) {
         print(">>> error: \(error.localizedDescription)")
         // TODO: Show error page
+    }
+}
+
+// MARK: Favicon support
+
+extension WebContentsCardModel {
+    func updateFavicon(urlString: String) {
+        guard let url = URL(string: urlString) else { return }
+
+        // TODO: De-dupe favicon images that may be repeated across cards.
+        SDWebImageManager.shared.loadImage(
+            with: url,
+            progress: { _, _, _  in }
+        ) { [self] image, _, _, _, _, _  in
+            if let image {
+                favicon = image
+            }
+        }
+    }
+}
+
+// MARK: Lookup by WebView
+
+extension WebContentsCardModel {
+    static func fromWebView(_ webView: WKWebView) -> WebContentsCardModel? {
+        for weakModel in all {
+            if let model = weakModel.value, model.webView_ == webView {
+                return model
+            }
+        }
+        return nil
     }
 }

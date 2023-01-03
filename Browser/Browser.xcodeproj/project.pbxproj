@@ -45,6 +45,9 @@
 		93AB330828EDFAA600F3C470 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AB330328EDFAA600F3C470 /* CardView.swift */; };
 		93AB330928EDFAA600F3C470 /* FullCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AB330428EDFAA600F3C470 /* FullCardView.swift */; };
 		93AB331628EE165300F3C470 /* CardGridViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AB331528EE165300F3C470 /* CardGridViewModel.swift */; };
+		93DF16ED2963B59400FA553E /* FaviconObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93DF16EC2963B59400FA553E /* FaviconObserver.swift */; };
+		93DF16F12963C06100FA553E /* Weak.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93DF16F02963C06100FA553E /* Weak.swift */; };
+		93DF16F42963C22C00FA553E /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = 93DF16F32963C22C00FA553E /* SDWebImage */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -87,6 +90,8 @@
 		93AB330328EDFAA600F3C470 /* CardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
 		93AB330428EDFAA600F3C470 /* FullCardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FullCardView.swift; sourceTree = "<group>"; };
 		93AB331528EE165300F3C470 /* CardGridViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardGridViewModel.swift; sourceTree = "<group>"; };
+		93DF16EC2963B59400FA553E /* FaviconObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaviconObserver.swift; sourceTree = "<group>"; };
+		93DF16F02963C06100FA553E /* Weak.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Weak.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,6 +99,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				93DF16F42963C22C00FA553E /* SDWebImage in Frameworks */,
 				933A5AB728FA68B900F8A35E /* Introspect in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -110,6 +116,7 @@
 				93AB330128EDFAA600F3C470 /* ReportsPressesButtonStyle.swift */,
 				933A5AA928F0DC6100F8A35E /* ScrollViewObserver.swift */,
 				933A5AAD28F291D000F8A35E /* UrlFixup.swift */,
+				93DF16F02963C06100FA553E /* Weak.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -167,6 +174,7 @@
 			children = (
 				933A5AA328F08E9F00F8A35E /* WebContentsCardModel.swift */,
 				933B70792900A227003325F2 /* WebContentsContext.swift */,
+				93DF16EC2963B59400FA553E /* FaviconObserver.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -340,6 +348,7 @@
 			name = Browser;
 			packageProductDependencies = (
 				933A5AB628FA68B900F8A35E /* Introspect */,
+				93DF16F32963C22C00FA553E /* SDWebImage */,
 			);
 			productName = Browser;
 			productReference = 93AB32DC28EDF92400F3C470 /* Browser.app */;
@@ -371,6 +380,7 @@
 			mainGroup = 93AB32D328EDF92400F3C470;
 			packageReferences = (
 				933A5AB528FA68B900F8A35E /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */,
+				93DF16F22963C22C00FA553E /* XCRemoteSwiftPackageReference "SDWebImage" */,
 			);
 			productRefGroup = 93AB32DD28EDF92400F3C470 /* Products */;
 			projectDirPath = "";
@@ -408,6 +418,7 @@
 				933B707A2900A227003325F2 /* WebContentsContext.swift in Sources */,
 				933A5AAA28F0DC6100F8A35E /* ScrollViewObserver.swift in Sources */,
 				93AB32FE28EDFA9D00F3C470 /* CardViewModel.swift in Sources */,
+				93DF16ED2963B59400FA553E /* FaviconObserver.swift in Sources */,
 				933A5AA028F07C4900F8A35E /* ZeroQueryViewModel.swift in Sources */,
 				93AB330828EDFAA600F3C470 /* CardView.swift in Sources */,
 				93AB32FF28EDFA9D00F3C470 /* ColorCardModel.swift in Sources */,
@@ -417,6 +428,7 @@
 				933249EC28EE354500AAD774 /* BrowserViewModel.swift in Sources */,
 				933A5AA228F07CB700F8A35E /* UrlFieldViewModel.swift in Sources */,
 				933B707D29010805003325F2 /* URLExtensions.swift in Sources */,
+				93DF16F12963C06100FA553E /* Weak.swift in Sources */,
 				933A5A8828EFD97900F8A35E /* OmniBarView.swift in Sources */,
 				933A5A9C28F00F3B00F8A35E /* ShowMenuView.swift in Sources */,
 				933A5AA628F0907200F8A35E /* WebContentsView.swift in Sources */,
@@ -647,6 +659,14 @@
 				minimumVersion = 0.1.4;
 			};
 		};
+		93DF16F22963C22C00FA553E /* XCRemoteSwiftPackageReference "SDWebImage" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SDWebImage/SDWebImage";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -654,6 +674,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 933A5AB528FA68B900F8A35E /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */;
 			productName = Introspect;
+		};
+		93DF16F32963C22C00FA553E /* SDWebImage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 93DF16F22963C22C00FA553E /* XCRemoteSwiftPackageReference "SDWebImage" */;
+			productName = SDWebImage;
 		};
 /* End XCSwiftPackageProductDependency section */
 
