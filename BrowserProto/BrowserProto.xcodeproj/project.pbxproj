@@ -13,6 +13,7 @@
 		93D480EA2C25D9610019921F /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 93D480E92C25D9610019921F /* Base */; };
 		93D480F42C2609950019921F /* BottomBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D480F32C2609950019921F /* BottomBarView.swift */; };
 		93D480F92C260DB90019921F /* CircleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D480F82C260DB90019921F /* CircleButton.swift */; };
+		93D480FD2C2704DF0019921F /* URLBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D480FC2C2704DF0019921F /* URLBarView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		93D480EB2C25D9610019921F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		93D480F32C2609950019921F /* BottomBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomBarView.swift; sourceTree = "<group>"; };
 		93D480F82C260DB90019921F /* CircleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleButton.swift; sourceTree = "<group>"; };
+		93D480FC2C2704DF0019921F /* URLBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLBarView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,6 +73,7 @@
 			isa = PBXGroup;
 			children = (
 				93D480F32C2609950019921F /* BottomBarView.swift */,
+				93D480FC2C2704DF0019921F /* URLBarView.swift */,
 			);
 			path = BottomBar;
 			sourceTree = "<group>";
@@ -155,6 +158,7 @@
 			files = (
 				93D480F42C2609950019921F /* BottomBarView.swift in Sources */,
 				93D480E22C25D9600019921F /* MainViewController.swift in Sources */,
+				93D480FD2C2704DF0019921F /* URLBarView.swift in Sources */,
 				93D480DE2C25D9600019921F /* AppDelegate.swift in Sources */,
 				93D480F92C260DB90019921F /* CircleButton.swift in Sources */,
 			);

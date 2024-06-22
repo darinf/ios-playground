@@ -7,7 +7,9 @@ class MainViewController: UIViewController {
         return view
     }()
 
-    private lazy var bottomBarView = BottomBarView()
+    private lazy var bottomBarView = {
+        BottomBarView(onPanUp: onPanUp)
+    }()
 
     private lazy var bottomBarViewHeightConstraint: NSLayoutConstraint = {
         bottomBarView.heightAnchor.constraint(equalToConstant: BottomBarViewConstants.baseHeight)
@@ -55,5 +57,18 @@ class MainViewController: UIViewController {
             bottomBarView.widthAnchor.constraint(equalTo: view.widthAnchor),
             bottomBarViewHeightConstraint
         ])
+    }
+
+    private func onPanUp(translation: CGFloat) {
+        print(">>> onPanUp, translation: \(translation)")
+
+        if translation > 50 {
+            print(">>> opening...")
+            let newHeight = BottomBarViewConstants.baseHeight + view.safeAreaInsets.bottom + 50
+            UIView.animate(withDuration: 0.2, delay: 0.0) {
+                self.bottomBarViewHeightConstraint.constant = newHeight
+                self.view.layoutIfNeeded()
+            }
+        }
     }
 }
