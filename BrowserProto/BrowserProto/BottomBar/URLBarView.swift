@@ -1,14 +1,14 @@
 import UIKit
 
 final class URLBarView: UIView {
-    private let onPanUp: (CGFloat) -> Void
+    private let onPanGesture: (CGFloat) -> Void
 
     private lazy var panGestureRecognizer = {
         UIPanGestureRecognizer(target: self, action: #selector(onPan))
     }()
 
-    init(cornerRadius: CGFloat, onPanUp: @escaping (CGFloat) -> Void) {
-        self.onPanUp = onPanUp
+    init(cornerRadius: CGFloat, onPanGesture: @escaping (CGFloat) -> Void) {
+        self.onPanGesture = onPanGesture
         super.init(frame: .zero)
 
         backgroundColor = .systemBackground
@@ -25,8 +25,6 @@ final class URLBarView: UIView {
 
     @objc func onPan() {
         let translation = panGestureRecognizer.translation(in: self)
-        if translation.y < 0 {
-            onPanUp(-translation.y)
-        }
+        onPanGesture(translation.y)
     }
 }

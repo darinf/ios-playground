@@ -1,19 +1,31 @@
+import Combine
 import UIKit
 
-enum BottomBarViewConstants {
-    static let baseHeight: CGFloat = 50.0
-}
-
 final class BottomBarView: UIVisualEffectView {
-    private let onPanUp: (CGFloat) -> Void
+    enum Constants {
+        static let baseHeight: CGFloat = 50.0
+        static let buttonRadius: CGFloat = 20
+        static let margin: CGFloat = 12
+        static let horizontalMargin: CGFloat = 1.5 * margin
+    }
+
+    let model = BottomBarViewModel()
+    private var subscriptions: Set<AnyCancellable> = []
+
+    private lazy var urlBarViewLeftConstraint = {
+        urlBarView.leftAnchor.constraint(equalTo: leftAnchor, constant: 2 * Constants.buttonRadius + Constants.horizontalMargin + Constants.margin)
+    }()
+    private lazy var urlBarViewRightConstraint = {
+        urlBarView.rightAnchor.constraint(equalTo: rightAnchor, constant: -(2 * Constants.buttonRadius + Constants.horizontalMargin + Constants.margin))
+    }()
 
     private lazy var backButton = {
-        let button = CircleButton(radius: 20, systemImage: "arrowtriangle.backward")
+        let button = CircleButton(radius: Constants.buttonRadius, systemImage: "arrowtriangle.backward")
         return button
     }()
 
     private lazy var urlBarView = {
-        URLBarView(cornerRadius: 20, onPanUp: onPanUp)
+        URLBarView(cornerRadius: Constants.buttonRadius, onPanGesture: onPanGesture)
     }()
 
     private lazy var menuButton = {
@@ -21,8 +33,7 @@ final class BottomBarView: UIVisualEffectView {
         return button
     }()
 
-    init(onPanUp: @escaping (CGFloat) -> Void) {
-        self.onPanUp = onPanUp
+    init() {
         super.init(effect: UIBlurEffect(style: .systemMaterial))
 
         contentView.addSubview(backButton)
@@ -42,8 +53,8 @@ final class BottomBarView: UIVisualEffectView {
         urlBarView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             urlBarView.topAnchor.constraint(equalTo: topAnchor, constant: margin),
-            urlBarView.leftAnchor.constraint(equalTo: backButton.rightAnchor, constant: margin),
-            urlBarView.rightAnchor.constraint(equalTo: menuButton.leftAnchor, constant: -margin),
+            urlBarViewLeftConstraint,
+            urlBarViewRightConstraint,
             urlBarView.heightAnchor.constraint(equalToConstant: 40)
         ])
 
@@ -54,9 +65,42 @@ final class BottomBarView: UIVisualEffectView {
             menuButton.widthAnchor.constraint(equalToConstant: 40),
             menuButton.heightAnchor.constraint(equalToConstant: 40)
         ])
+
+        setupObservers()
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    private func setupObservers() {
+        model.$expanded.sink { [weak self] expanded in
+            self?.onUpdateLayout(expanded: expanded)
+        }.store(in: &subscriptions)
+    }
+
+    private func onPanGesture(translation: CGFloat) {
+        if translation < 50 {
+            model.expanded = true
+        } else if translation > 50 {
+            model.expanded = false
+        }
+    }
+
+    private func onUpdateLayout(expanded: Bool) {
+        UIView.animate(withDuration: 0.2) { [self] in
+            if expanded {
+                backButton.layer.opacity = 0.0
+                menuButton.layer.opacity = 0.0
+                urlBarViewLeftConstraint.constant = Constants.horizontalMargin
+                urlBarViewRightConstraint.constant = -Constants.horizontalMargin
+            } else {
+                backButton.layer.opacity = 1.0
+                menuButton.layer.opacity = 1.0
+                urlBarViewLeftConstraint.constant = 2 * Constants.buttonRadius + Constants.horizontalMargin + Constants.margin
+                urlBarViewRightConstraint.constant = -(2 * Constants.buttonRadius + Constants.horizontalMargin + Constants.margin)
+            }
+            layoutIfNeeded()
+        }
     }
 }

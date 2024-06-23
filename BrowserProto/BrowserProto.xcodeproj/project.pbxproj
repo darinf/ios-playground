@@ -14,6 +14,7 @@
 		93D480F42C2609950019921F /* BottomBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D480F32C2609950019921F /* BottomBarView.swift */; };
 		93D480F92C260DB90019921F /* CircleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D480F82C260DB90019921F /* CircleButton.swift */; };
 		93D480FD2C2704DF0019921F /* URLBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D480FC2C2704DF0019921F /* URLBarView.swift */; };
+		93D480FF2C271E090019921F /* BottomBarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D480FE2C271E090019921F /* BottomBarViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		93D480F32C2609950019921F /* BottomBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomBarView.swift; sourceTree = "<group>"; };
 		93D480F82C260DB90019921F /* CircleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleButton.swift; sourceTree = "<group>"; };
 		93D480FC2C2704DF0019921F /* URLBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLBarView.swift; sourceTree = "<group>"; };
+		93D480FE2C271E090019921F /* BottomBarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomBarViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +75,7 @@
 			isa = PBXGroup;
 			children = (
 				93D480F32C2609950019921F /* BottomBarView.swift */,
+				93D480FE2C271E090019921F /* BottomBarViewModel.swift */,
 				93D480FC2C2704DF0019921F /* URLBarView.swift */,
 			);
 			path = BottomBar;
@@ -159,6 +162,7 @@
 				93D480F42C2609950019921F /* BottomBarView.swift in Sources */,
 				93D480E22C25D9600019921F /* MainViewController.swift in Sources */,
 				93D480FD2C2704DF0019921F /* URLBarView.swift in Sources */,
+				93D480FF2C271E090019921F /* BottomBarViewModel.swift in Sources */,
 				93D480DE2C25D9600019921F /* AppDelegate.swift in Sources */,
 				93D480F92C260DB90019921F /* CircleButton.swift in Sources */,
 			);
