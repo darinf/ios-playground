@@ -12,11 +12,20 @@ final class BottomBarView: UIVisualEffectView {
     let model = BottomBarViewModel()
     private var subscriptions: Set<AnyCancellable> = []
 
-    private lazy var urlBarViewLeftConstraint = {
-        urlBarView.leftAnchor.constraint(equalTo: leftAnchor, constant: 2 * Constants.buttonRadius + Constants.horizontalMargin + Constants.margin)
+    private lazy var urlBarViewExpandedLeftConstraint = {
+        urlBarView.leftAnchor.constraint(equalTo: leftAnchor, constant: Constants.horizontalMargin)
     }()
-    private lazy var urlBarViewRightConstraint = {
-        urlBarView.rightAnchor.constraint(equalTo: rightAnchor, constant: -(2 * Constants.buttonRadius + Constants.horizontalMargin + Constants.margin))
+
+    private lazy var urlBarViewExpandedRightConstraint = {
+        urlBarView.rightAnchor.constraint(equalTo: rightAnchor, constant: -Constants.horizontalMargin)
+    }()
+
+    private lazy var urlBarViewCompactLeftConstraint = {
+        urlBarView.leftAnchor.constraint(equalTo: backButton.rightAnchor, constant: Constants.margin)
+    }()
+
+    private lazy var urlBarViewCompactRightConstraint = {
+        urlBarView.rightAnchor.constraint(equalTo: menuButton.leftAnchor, constant: -Constants.margin)
     }()
 
     private lazy var backButton = {
@@ -53,8 +62,8 @@ final class BottomBarView: UIVisualEffectView {
         urlBarView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             urlBarView.topAnchor.constraint(equalTo: topAnchor, constant: margin),
-            urlBarViewLeftConstraint,
-            urlBarViewRightConstraint,
+            urlBarViewCompactLeftConstraint,
+            urlBarViewCompactRightConstraint,
             urlBarView.heightAnchor.constraint(equalToConstant: 40)
         ])
 
@@ -74,7 +83,7 @@ final class BottomBarView: UIVisualEffectView {
     }
 
     private func setupObservers() {
-        model.$expanded.sink { [weak self] expanded in
+        model.$expanded.dropFirst().sink { [weak self] expanded in
             self?.onUpdateLayout(expanded: expanded)
         }.store(in: &subscriptions)
     }
@@ -92,13 +101,25 @@ final class BottomBarView: UIVisualEffectView {
             if expanded {
                 backButton.layer.opacity = 0.0
                 menuButton.layer.opacity = 0.0
-                urlBarViewLeftConstraint.constant = Constants.horizontalMargin
-                urlBarViewRightConstraint.constant = -Constants.horizontalMargin
+                NSLayoutConstraint.deactivate([
+                    urlBarViewCompactLeftConstraint,
+                    urlBarViewCompactRightConstraint
+                ])
+                NSLayoutConstraint.activate([
+                    urlBarViewExpandedLeftConstraint,
+                    urlBarViewExpandedRightConstraint
+                ])
             } else {
                 backButton.layer.opacity = 1.0
                 menuButton.layer.opacity = 1.0
-                urlBarViewLeftConstraint.constant = 2 * Constants.buttonRadius + Constants.horizontalMargin + Constants.margin
-                urlBarViewRightConstraint.constant = -(2 * Constants.buttonRadius + Constants.horizontalMargin + Constants.margin)
+                NSLayoutConstraint.deactivate([
+                    urlBarViewExpandedLeftConstraint,
+                    urlBarViewExpandedRightConstraint
+                ])
+                NSLayoutConstraint.activate([
+                    urlBarViewCompactLeftConstraint,
+                    urlBarViewCompactRightConstraint
+                ])
             }
             layoutIfNeeded()
         }

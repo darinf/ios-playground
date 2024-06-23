@@ -64,7 +64,7 @@ class MainViewController: UIViewController {
     }
 
     private func setupObservers() {
-        bottomBarView.model.$expanded.sink { [weak self] expanded in
+        bottomBarView.model.$expanded.dropFirst().sink { [weak self] expanded in
             self?.onUpdateBottomBarHeight(expanded: expanded)
         }.store(in: &subscriptions)
     }
