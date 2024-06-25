@@ -19,7 +19,7 @@ class MainViewController: UIViewController {
     }()
 
     private lazy var bottomBarViewHeightConstraint: NSLayoutConstraint = {
-        bottomBarView.heightAnchor.constraint(equalToConstant: BottomBarView.Metrics.baseHeight)
+        bottomBarView.heightAnchor.constraint(equalToConstant: 0)
     }()
 
     override func loadView() {
@@ -46,19 +46,16 @@ class MainViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        print(">>> viewDidAppear, safeAreaInsets: \(view.safeAreaInsets)")
         view.setNeedsUpdateConstraints()
     }
 
     override func viewSafeAreaInsetsDidChange() {
         super.viewSafeAreaInsetsDidChange()
-        print(">>> viewSafeAreaInsetsDidChange()")
         view.setNeedsUpdateConstraints()
     }
 
     override func updateViewConstraints() {
         super.updateViewConstraints()
-        print(">>> updateViewConstraints")
         updateBottomBarHeight(expanded: bottomBarView.model.expanded, animated: false)
     }
 
@@ -91,9 +88,9 @@ class MainViewController: UIViewController {
     }
 
     private func updateBottomBarHeight(expanded: Bool, animated: Bool) {
-        let additionalHeight: CGFloat = expanded ? 50 : 0
+        let contentBoxHeight: CGFloat = expanded ? BottomBarView.Metrics.contentBoxExpandedHeight : BottomBarView.Metrics.contentBoxCompactHeight
 
-        let newHeight = BottomBarView.Metrics.baseHeight + view.safeAreaInsets.bottom + additionalHeight
+        let newHeight = view.safeAreaInsets.bottom + contentBoxHeight + BottomBarView.Metrics.margin
 
         let applyNewHeight = { [self] in
             bottomBarViewHeightConstraint.constant = newHeight
