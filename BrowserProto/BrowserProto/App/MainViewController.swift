@@ -10,6 +10,10 @@ class MainViewController: UIViewController {
         return view
     }()
 
+    private lazy var webContentView = {
+        WebContentView()
+    }()
+
     private lazy var bottomBarView = {
         BottomBarView()
     }()
@@ -26,9 +30,14 @@ class MainViewController: UIViewController {
         super.viewDidLoad()
 
         view.addSubview(bottomBarView)
+        view.addSubview(webContentView)
 
         setupInitialConstraints()
         setupObservers()
+
+        view.bringSubviewToFront(bottomBarView)
+
+        webContentView.model.url = URL(string: "https://news.ycombinator.com/")
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -50,7 +59,7 @@ class MainViewController: UIViewController {
     override func updateViewConstraints() {
         super.updateViewConstraints()
         print(">>> updateViewConstraints")
-        bottomBarViewHeightConstraint.constant = BottomBarView.Metrics.baseHeight + view.safeAreaInsets.bottom
+        updateBottomBarHeight(expanded: bottomBarView.model.expanded, animated: false)
     }
 
     private func setupInitialConstraints() {
@@ -61,21 +70,49 @@ class MainViewController: UIViewController {
             bottomBarView.widthAnchor.constraint(equalTo: view.widthAnchor),
             bottomBarViewHeightConstraint
         ])
+
+        webContentView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            webContentView.topAnchor.constraint(equalTo: view.topAnchor),
+            webContentView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            webContentView.widthAnchor.constraint(equalTo: view.widthAnchor),
+            webContentView.heightAnchor.constraint(equalTo: view.heightAnchor)
+        ])
     }
 
     private func setupObservers() {
         bottomBarView.model.$expanded.dropFirst().sink { [weak self] expanded in
-            self?.onUpdateBottomBarHeight(expanded: expanded)
+            self?.updateBottomBarHeight(expanded: expanded, animated: true)
+        }.store(in: &subscriptions)
+
+        webContentView.model.$url.dropFirst().sink { [weak self] url in
+            self?.bottomBarView.urlBarView.model.displayText = url?.host() ?? ""
         }.store(in: &subscriptions)
     }
 
-    private func onUpdateBottomBarHeight(expanded: Bool) {
+    private func updateBottomBarHeight(expanded: Bool, animated: Bool) {
         let additionalHeight: CGFloat = expanded ? 50 : 0
 
         let newHeight = BottomBarView.Metrics.baseHeight + view.safeAreaInsets.bottom + additionalHeight
-        UIView.animate(withDuration: 0.2, delay: 0.0) {
-            self.bottomBarViewHeightConstraint.constant = newHeight
-            self.view.layoutIfNeeded()
+
+        let applyNewHeight = { [self] in
+            bottomBarViewHeightConstraint.constant = newHeight
+            webContentView.webView.scrollView.contentInsetAdjustmentBehavior = .never
+            webContentView.webView.scrollView.contentInset = .init(
+                top: view.safeAreaInsets.top,
+                left: view.safeAreaInsets.left,
+                bottom: newHeight,
+                right: view.safeAreaInsets.right
+            )
+        }
+
+        if animated {
+            UIView.animate(withDuration: 0.2, delay: 0.0) {
+                applyNewHeight()
+                self.view.layoutIfNeeded()
+            }
+        } else {
+            applyNewHeight()
         }
     }
 }

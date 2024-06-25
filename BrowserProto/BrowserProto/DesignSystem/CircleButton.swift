@@ -12,7 +12,7 @@ final class CircleButton: UIButton {
         if let image = UIImage(systemName: systemImage) {
             setImage(image, for: .normal)
         }
-        tintColor = .systemGray2
+        tintColor = Colors.foregroundText
 
         addTarget(self, action: #selector(onPressed), for: .touchUpInside)
     }
@@ -23,5 +23,11 @@ final class CircleButton: UIButton {
 
     @objc func onPressed() {
         print(">>> onPressed")
+    }
+
+    override var isHighlighted: Bool {
+        didSet {
+            backgroundColor = isHighlighted ? .systemFill : .systemBackground
+        }
     }
 }
