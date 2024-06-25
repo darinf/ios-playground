@@ -2,7 +2,7 @@ import Combine
 import UIKit
 
 final class BottomBarView: UIVisualEffectView {
-    enum Constants {
+    enum Metrics {
         static let baseHeight: CGFloat = 50.0
         static let buttonRadius: CGFloat = 20
         static let margin: CGFloat = 12
@@ -13,28 +13,28 @@ final class BottomBarView: UIVisualEffectView {
     private var subscriptions: Set<AnyCancellable> = []
 
     private lazy var urlBarViewExpandedLeftConstraint = {
-        urlBarView.leftAnchor.constraint(equalTo: leftAnchor, constant: Constants.horizontalMargin)
+        urlBarView.leftAnchor.constraint(equalTo: leftAnchor, constant: Metrics.horizontalMargin)
     }()
 
     private lazy var urlBarViewExpandedRightConstraint = {
-        urlBarView.rightAnchor.constraint(equalTo: rightAnchor, constant: -Constants.horizontalMargin)
+        urlBarView.rightAnchor.constraint(equalTo: rightAnchor, constant: -Metrics.horizontalMargin)
     }()
 
     private lazy var urlBarViewCompactLeftConstraint = {
-        urlBarView.leftAnchor.constraint(equalTo: backButton.rightAnchor, constant: Constants.margin)
+        urlBarView.leftAnchor.constraint(equalTo: backButton.rightAnchor, constant: Metrics.margin)
     }()
 
     private lazy var urlBarViewCompactRightConstraint = {
-        urlBarView.rightAnchor.constraint(equalTo: menuButton.leftAnchor, constant: -Constants.margin)
+        urlBarView.rightAnchor.constraint(equalTo: menuButton.leftAnchor, constant: -Metrics.margin)
     }()
 
     private lazy var backButton = {
-        let button = CircleButton(radius: Constants.buttonRadius, systemImage: "arrowtriangle.backward")
+        let button = CircleButton(radius: Metrics.buttonRadius, systemImage: "arrowtriangle.backward")
         return button
     }()
 
     private lazy var urlBarView = {
-        URLBarView(cornerRadius: Constants.buttonRadius, onPanGesture: onPanGesture)
+        URLBarView(cornerRadius: Metrics.buttonRadius, onPanGesture: onPanGesture)
     }()
 
     private lazy var menuButton = {
