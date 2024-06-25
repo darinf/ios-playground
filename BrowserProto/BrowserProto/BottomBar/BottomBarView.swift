@@ -15,22 +15,6 @@ final class BottomBarView: UIVisualEffectView {
     let model = BottomBarViewModel()
     private var subscriptions: Set<AnyCancellable> = []
 
-//    private lazy var urlBarViewExpandedLeftConstraint = {
-//        urlBarView.leftAnchor.constraint(equalTo: leftAnchor, constant: Metrics.horizontalMargin)
-//    }()
-//
-//    private lazy var urlBarViewExpandedRightConstraint = {
-//        urlBarView.rightAnchor.constraint(equalTo: rightAnchor, constant: -Metrics.horizontalMargin)
-//    }()
-//
-//    private lazy var urlBarViewCompactLeftConstraint = {
-//        urlBarView.leftAnchor.constraint(equalTo: backButton.rightAnchor, constant: Metrics.margin)
-//    }()
-//
-//    private lazy var urlBarViewCompactRightConstraint = {
-//        urlBarView.rightAnchor.constraint(equalTo: menuButton.leftAnchor, constant: -Metrics.margin)
-//    }()
-
     private lazy var urlBarViewRightConstraint = {
         urlBarView.rightAnchor.constraint(equalTo: rightAnchor, constant: Metrics.urlBarViewCompactRightOffset)
     }()
@@ -57,18 +41,9 @@ final class BottomBarView: UIVisualEffectView {
     init() {
         super.init(effect: UIBlurEffect(style: .systemMaterial))
 
-//        contentView.addSubview(backButton)
         contentView.addSubview(urlBarView)
         contentView.addSubview(tabsButton)
         contentView.addSubview(menuButton)
-
-//        backButton.translatesAutoresizingMaskIntoConstraints = false
-//        NSLayoutConstraint.activate([
-//            backButton.topAnchor.constraint(equalTo: topAnchor, constant: margin),
-//            backButton.leftAnchor.constraint(equalTo: leftAnchor, constant: 1.5 * margin),
-//            backButton.widthAnchor.constraint(equalToConstant: 40),
-//            backButton.heightAnchor.constraint(equalToConstant: 40)
-//        ])
 
         urlBarView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -109,38 +84,29 @@ final class BottomBarView: UIVisualEffectView {
 
     private func onPanGesture(translation: CGFloat) {
         if translation < 50 {
-            model.expanded = true
+            if !model.expanded {
+                model.expanded = true
+            }
         } else if translation > 50 {
-            model.expanded = false
+            if model.expanded {
+                model.expanded = false
+            }
         }
     }
 
     private func onUpdateLayout(expanded: Bool) {
-        UIView.animate(withDuration: 0.2) { [self] in
+        if expanded {
+            urlBarViewRightConstraint.constant = Metrics.urlBarViewExpandedRightOffset
+        } else {
+            urlBarViewRightConstraint.constant = Metrics.urlBarViewCompactRightOffset
+        }
+        UIView.animate(withDuration: 0.2, delay: 0) { [self] in
             if expanded {
                 tabsButton.layer.opacity = 0.0
                 menuButton.layer.opacity = 0.0
-                urlBarViewRightConstraint.constant = Metrics.urlBarViewExpandedRightOffset
-//                NSLayoutConstraint.deactivate([
-//                    urlBarViewCompactLeftConstraint,
-//                    urlBarViewCompactRightConstraint
-//                ])
-//                NSLayoutConstraint.activate([
-//                    urlBarViewExpandedLeftConstraint,
-//                    urlBarViewExpandedRightConstraint
-//                ])
             } else {
                 tabsButton.layer.opacity = 1.0
                 menuButton.layer.opacity = 1.0
-                urlBarViewRightConstraint.constant = Metrics.urlBarViewCompactRightOffset
-//                NSLayoutConstraint.deactivate([
-//                    urlBarViewExpandedLeftConstraint,
-//                    urlBarViewExpandedRightConstraint
-//                ])
-//                NSLayoutConstraint.activate([
-//                    urlBarViewCompactLeftConstraint,
-//                    urlBarViewCompactRightConstraint
-//                ])
             }
             layoutIfNeeded()
         }

@@ -28,6 +28,8 @@ final class URLBarView: UIView {
         layer.cornerRadius = cornerRadius
         clipsToBounds = true
 
+        isUserInteractionEnabled = true
+
         addGestureRecognizer(panGestureRecognizer)
 
         addSubview(label)
@@ -52,10 +54,21 @@ final class URLBarView: UIView {
         NSLayoutConstraint.activate([
             label.centerXAnchor.constraint(equalTo: centerXAnchor),
             label.centerYAnchor.constraint(equalTo: centerYAnchor),
-            label.widthAnchor.constraint(equalTo: widthAnchor),
-            label.heightAnchor.constraint(equalTo: heightAnchor)
+//            label.widthAnchor.constraint(equalTo: widthAnchor),
+//            label.heightAnchor.constraint(equalTo: heightAnchor)
         ])
     }
+
+//    override func layoutSubviews() {
+//        print(">>> URLBarView.layoutSubviews")
+//        label.frame = bounds
+//    }
+
+//    override var frame: CGRect {
+//        didSet {
+//            print(">>> didSet frame: \(frame)")
+//        }
+//    }
 
     @objc private func onPan() {
         let translation = panGestureRecognizer.translation(in: self)
