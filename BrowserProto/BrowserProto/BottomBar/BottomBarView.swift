@@ -29,7 +29,12 @@ final class BottomBarView: UIVisualEffectView {
     }()
 
     private lazy var backButton = {
-        let button = CircleButton(radius: Metrics.buttonRadius, systemImage: "arrowtriangle.backward")
+        let button = CircleButton(radius: Metrics.buttonRadius, systemImage: "chevron.left")
+        return button
+    }()
+
+    private lazy var forwardButton = {
+        let button = CircleButton(radius: Metrics.buttonRadius, systemImage: "chevron.right")
         return button
     }()
 
@@ -52,8 +57,13 @@ final class BottomBarView: UIVisualEffectView {
 
         contentView.addSubview(contentBox)
         contentBox.addSubview(urlBarView)
+        contentBox.addSubview(backButton)
+        contentBox.addSubview(forwardButton)
         contentBox.addSubview(tabsButton)
         contentBox.addSubview(menuButton)
+
+        backButton.layer.opacity = 0.0
+        forwardButton.layer.opacity = 0.0
 
         setupConstraints()
     }
@@ -73,6 +83,22 @@ final class BottomBarView: UIVisualEffectView {
             urlBarView.leftAnchor.constraint(equalTo: contentBox.leftAnchor),
             urlBarViewRightConstraint,
             urlBarView.heightAnchor.constraint(equalToConstant: Metrics.buttonDiameter)
+        ])
+
+        backButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            backButton.bottomAnchor.constraint(equalTo: contentBox.bottomAnchor),
+            backButton.leftAnchor.constraint(equalTo: contentBox.leftAnchor),
+            backButton.widthAnchor.constraint(equalToConstant: Metrics.buttonDiameter),
+            backButton.heightAnchor.constraint(equalToConstant: Metrics.buttonDiameter)
+        ])
+
+        forwardButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            forwardButton.bottomAnchor.constraint(equalTo: contentBox.bottomAnchor),
+            forwardButton.leftAnchor.constraint(equalTo: backButton.rightAnchor, constant: Metrics.margin),
+            forwardButton.widthAnchor.constraint(equalToConstant: Metrics.buttonDiameter),
+            forwardButton.heightAnchor.constraint(equalToConstant: Metrics.buttonDiameter)
         ])
 
         tabsButton.translatesAutoresizingMaskIntoConstraints = false
@@ -125,13 +151,13 @@ final class BottomBarView: UIVisualEffectView {
             urlBarViewRightConstraint.constant = Metrics.urlBarViewCompactRightOffset
         }
         UIView.animate(withDuration: 0.2, delay: 0) { [self] in
-//            if expanded {
-//                tabsButton.layer.opacity = 0.0
-//                menuButton.layer.opacity = 0.0
-//            } else {
-//                tabsButton.layer.opacity = 1.0
-//                menuButton.layer.opacity = 1.0
-//            }
+            if expanded {
+                backButton.layer.opacity = 1.0
+                forwardButton.layer.opacity = 1.0
+            } else {
+                backButton.layer.opacity = 0.0
+                forwardButton.layer.opacity = 0.0
+            }
             layoutIfNeeded()
         }
     }

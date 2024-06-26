@@ -26,7 +26,8 @@ final class URLBarView: UIView {
         backgroundColor = .systemBackground
 
         layer.cornerRadius = cornerRadius
-        clipsToBounds = true
+        DropShadow.apply(toLayer: layer)
+//        clipsToBounds = true
 
         isUserInteractionEnabled = true
 

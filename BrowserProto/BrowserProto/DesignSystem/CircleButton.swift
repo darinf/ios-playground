@@ -7,7 +7,8 @@ final class CircleButton: UIButton {
 
         backgroundColor = .systemBackground
         layer.cornerRadius = 0.5 * bounds.size.width
-        clipsToBounds = true
+        DropShadow.apply(toLayer: layer)
+//        clipsToBounds = true
 
         if let image = UIImage(systemName: systemImage) {
             setImage(image, for: .normal)
