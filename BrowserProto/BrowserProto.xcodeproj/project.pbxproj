@@ -12,7 +12,7 @@
 		93D480E72C25D9610019921F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 93D480E62C25D9610019921F /* Assets.xcassets */; };
 		93D480EA2C25D9610019921F /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 93D480E92C25D9610019921F /* Base */; };
 		93D480F42C2609950019921F /* BottomBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D480F32C2609950019921F /* BottomBarView.swift */; };
-		93D480F92C260DB90019921F /* CircleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D480F82C260DB90019921F /* CircleButton.swift */; };
+		93D480F92C260DB90019921F /* CapsuleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D480F82C260DB90019921F /* CapsuleButton.swift */; };
 		93D480FD2C2704DF0019921F /* URLBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D480FC2C2704DF0019921F /* URLBarView.swift */; };
 		93D480FF2C271E090019921F /* BottomBarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D480FE2C271E090019921F /* BottomBarViewModel.swift */; };
 		93D481042C2B08CB0019921F /* WebContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D481032C2B08CB0019921F /* WebContentView.swift */; };
@@ -20,6 +20,7 @@
 		93D481082C2B13200019921F /* URLBarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D481072C2B13200019921F /* URLBarViewModel.swift */; };
 		93D4810A2C2B275F0019921F /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D481092C2B275F0019921F /* Colors.swift */; };
 		93D4810C2C2C493B0019921F /* DropShadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D4810B2C2C493A0019921F /* DropShadow.swift */; };
+		93D4810F2C2CC4DE0019921F /* URLInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D4810E2C2CC4DE0019921F /* URLInputView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,7 +31,7 @@
 		93D480E92C25D9610019921F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		93D480EB2C25D9610019921F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		93D480F32C2609950019921F /* BottomBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomBarView.swift; sourceTree = "<group>"; };
-		93D480F82C260DB90019921F /* CircleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleButton.swift; sourceTree = "<group>"; };
+		93D480F82C260DB90019921F /* CapsuleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapsuleButton.swift; sourceTree = "<group>"; };
 		93D480FC2C2704DF0019921F /* URLBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLBarView.swift; sourceTree = "<group>"; };
 		93D480FE2C271E090019921F /* BottomBarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomBarViewModel.swift; sourceTree = "<group>"; };
 		93D481032C2B08CB0019921F /* WebContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebContentView.swift; sourceTree = "<group>"; };
@@ -38,6 +39,7 @@
 		93D481072C2B13200019921F /* URLBarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLBarViewModel.swift; sourceTree = "<group>"; };
 		93D481092C2B275F0019921F /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		93D4810B2C2C493A0019921F /* DropShadow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropShadow.swift; sourceTree = "<group>"; };
+		93D4810E2C2CC4DE0019921F /* URLInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLInputView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +75,7 @@
 				93D481012C2B08770019921F /* App */,
 				93D480F62C2609A40019921F /* BottomBar */,
 				93D480F72C260D860019921F /* DesignSystem */,
+				93D4810D2C2CC47B0019921F /* Navigation */,
 				93D481002C2B08690019921F /* WebContent */,
 			);
 			path = BrowserProto;
@@ -92,7 +95,7 @@
 		93D480F72C260D860019921F /* DesignSystem */ = {
 			isa = PBXGroup;
 			children = (
-				93D480F82C260DB90019921F /* CircleButton.swift */,
+				93D480F82C260DB90019921F /* CapsuleButton.swift */,
 				93D481092C2B275F0019921F /* Colors.swift */,
 				93D4810B2C2C493A0019921F /* DropShadow.swift */,
 			);
@@ -126,6 +129,14 @@
 				93D480E82C25D9610019921F /* LaunchScreen.storyboard */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		93D4810D2C2CC47B0019921F /* Navigation */ = {
+			isa = PBXGroup;
+			children = (
+				93D4810E2C2CC4DE0019921F /* URLInputView.swift */,
+			);
+			path = Navigation;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -203,12 +214,13 @@
 				93D4810A2C2B275F0019921F /* Colors.swift in Sources */,
 				93D481062C2B08D80019921F /* WebContentViewModel.swift in Sources */,
 				93D481042C2B08CB0019921F /* WebContentView.swift in Sources */,
+				93D4810F2C2CC4DE0019921F /* URLInputView.swift in Sources */,
 				93D480E22C25D9600019921F /* MainViewController.swift in Sources */,
 				93D480FD2C2704DF0019921F /* URLBarView.swift in Sources */,
 				93D481082C2B13200019921F /* URLBarViewModel.swift in Sources */,
 				93D480FF2C271E090019921F /* BottomBarViewModel.swift in Sources */,
 				93D480DE2C25D9600019921F /* AppDelegate.swift in Sources */,
-				93D480F92C260DB90019921F /* CircleButton.swift in Sources */,
+				93D480F92C260DB90019921F /* CapsuleButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

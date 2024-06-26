@@ -6,6 +6,7 @@ final class WebContentView: UIView {
     let model = WebContentViewModel()
 
     private var subscriptions: Set<AnyCancellable> = []
+    private var overrideSafeAreaInsets: UIEdgeInsets?
 
     private static var configuration = {
         let configuration = WKWebViewConfiguration()
@@ -47,8 +48,12 @@ final class WebContentView: UIView {
             self?.navigate(to: url)
         }.store(in: &subscriptions)
 
+        model.$overrideSafeAreaInsets.dropFirst().sink { [weak self] insets in
+            self?.overrideSafeAreaInsets = insets
+            self?.setNeedsLayout()
+        }.store(in: &subscriptions)
+
         webView.publisher(for: \.url).dropFirst().sink { [weak self] url in
-            print(">>> webView.url, updated to: \(url?.absoluteString ?? "nil")")
             self?.model.url = url
         }.store(in: &subscriptions)
     }
@@ -58,5 +63,9 @@ final class WebContentView: UIView {
             print(">>> navigating to: \(url)")
             webView.load(.init(url: url))
         }
+    }
+
+    override var safeAreaInsets: UIEdgeInsets {
+        overrideSafeAreaInsets ?? super.safeAreaInsets
     }
 }

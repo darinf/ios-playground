@@ -1,19 +1,21 @@
 import UIKit
 
-final class CircleButton: UIButton {
-    init(radius: CGFloat, systemImage: String) {
-        let diameter = 2 * radius
-        super.init(frame: .init(origin: .zero, size: .init(width: diameter, height: diameter)))
+class CapsuleButton: UIButton {
+    private let clicked: () -> Void
+
+    init(cornerRadius: CGFloat, systemImage: String? = nil, clicked: @escaping () -> Void) {
+        self.clicked = clicked
+        super.init(frame: .zero)
 
         backgroundColor = .systemBackground
-        layer.cornerRadius = 0.5 * bounds.size.width
+        layer.cornerRadius = cornerRadius
         DropShadow.apply(toLayer: layer)
-//        clipsToBounds = true
 
-        if let image = UIImage(systemName: systemImage) {
+        if let systemImage, let image = UIImage(systemName: systemImage) {
             setImage(image, for: .normal)
         }
         tintColor = Colors.foregroundText
+        setTitleColor(Colors.foregroundText, for: .normal)
 
         addTarget(self, action: #selector(onPressed), for: .touchUpInside)
     }
@@ -23,7 +25,7 @@ final class CircleButton: UIButton {
     }
 
     @objc func onPressed() {
-        print(">>> onPressed")
+        self.clicked()
     }
 
     override var isHighlighted: Bool {

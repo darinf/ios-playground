@@ -29,12 +29,12 @@ final class BottomBarView: UIVisualEffectView {
     }()
 
     private lazy var backButton = {
-        let button = CircleButton(radius: Metrics.buttonRadius, systemImage: "chevron.left")
+        let button = CapsuleButton(cornerRadius: Metrics.buttonRadius, systemImage: "chevron.left") {}
         return button
     }()
 
     private lazy var forwardButton = {
-        let button = CircleButton(radius: Metrics.buttonRadius, systemImage: "chevron.right")
+        let button = CapsuleButton(cornerRadius: Metrics.buttonRadius, systemImage: "chevron.right") {}
         return button
     }()
 
@@ -43,17 +43,17 @@ final class BottomBarView: UIVisualEffectView {
     }()
 
     private lazy var tabsButton = {
-        let button = CircleButton(radius: Metrics.buttonRadius, systemImage: "square.on.square")
+        let button = CapsuleButton(cornerRadius: Metrics.buttonRadius, systemImage: "square.on.square") {}
         return button
     }()
 
     private lazy var menuButton = {
-        let button = CircleButton(radius: 20, systemImage: "ellipsis")
+        let button = CapsuleButton(cornerRadius: 20, systemImage: "ellipsis") {}
         return button
     }()
 
     init() {
-        super.init(effect: UIBlurEffect(style: .systemMaterial))
+        super.init(effect: UIBlurEffect(style: .systemThinMaterial))
 
         contentView.addSubview(contentBox)
         contentBox.addSubview(urlBarView)
