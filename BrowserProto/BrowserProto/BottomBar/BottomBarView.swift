@@ -38,17 +38,19 @@ final class BottomBarView: UIVisualEffectView {
         UIView()
     }()
 
-    private lazy var backButton = {
+    lazy var backButton = {
         let button = CapsuleButton(cornerRadius: Metrics.buttonRadius, systemImage: "chevron.left") { [weak self] in
             self?.handler(.goBack)
         }
+        button.isEnabled = false
         return button
     }()
 
-    private lazy var forwardButton = {
+    lazy var forwardButton = {
         let button = CapsuleButton(cornerRadius: Metrics.buttonRadius, systemImage: "chevron.right") { [weak self] in
             self?.handler(.goForward)
         }
+        button.isEnabled = false
         return button
     }()
 

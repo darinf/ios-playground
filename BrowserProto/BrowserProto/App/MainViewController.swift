@@ -29,6 +29,10 @@ class MainViewController: UIViewController {
             case .editURL:
                 view.bringSubviewToFront(urlInputView)
                 urlInputView.model.showing = true
+            case .goBack:
+                webContentView.webView.goBack()
+            case .goForward:
+                webContentView.webView.goForward()
             default:
                 print(">>> unhandled action: \(action)")
             }
@@ -124,6 +128,14 @@ class MainViewController: UIViewController {
 
         webContentView.model.$url.dropFirst().sink { [weak self] url in
             self?.bottomBarView.urlBarView.model.displayText = url?.host() ?? ""
+        }.store(in: &subscriptions)
+
+        webContentView.model.$canGoBack.dropFirst().sink { [weak self] canGoBack in
+            self?.bottomBarView.backButton.isEnabled = canGoBack
+        }.store(in: &subscriptions)
+
+        webContentView.model.$canGoForward.dropFirst().sink { [weak self] canGoForward in
+            self?.bottomBarView.forwardButton.isEnabled = canGoForward
         }.store(in: &subscriptions)
 
         urlInputView.model.$text.dropFirst().sink { [weak self] text in

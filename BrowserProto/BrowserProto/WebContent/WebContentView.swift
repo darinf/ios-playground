@@ -56,6 +56,14 @@ final class WebContentView: UIView {
         webView.publisher(for: \.url).dropFirst().sink { [weak self] url in
             self?.model.url = url
         }.store(in: &subscriptions)
+
+        webView.publisher(for: \.canGoBack).dropFirst().sink { [weak self] canGoBack in
+            self?.model.canGoBack = canGoBack
+        }.store(in: &subscriptions)
+
+        webView.publisher(for: \.canGoForward).dropFirst().sink { [weak self] canGoForward in
+            self?.model.canGoForward = canGoForward
+        }.store(in: &subscriptions)
     }
 
     private func navigate(to url: URL?) {
