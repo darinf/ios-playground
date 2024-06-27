@@ -139,6 +139,17 @@ class MainViewController: UIViewController {
 //                urlInputView.isHidden = true
 //            }
 //        }.store(in: &subscriptions)
+
+        urlInputView.model.$text.dropFirst().sink { [weak self] text in
+            guard let self else { return }
+            let url: URL?
+            if text.starts(with: "http://") || text.starts(with: "https://") {
+                url = URL(string: text)
+            } else {
+                url = URL(string: "https://www.google.com/search?q=\(text)")
+            }
+            webContentView.model.url = url
+        }.store(in: &subscriptions)
     }
 
     private func updateLayout(expanded: Bool, animated: Bool) {

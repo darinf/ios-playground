@@ -30,8 +30,10 @@ final class URLInputView: UIView {
 
     lazy var textField = {
         let textField = UITextField()
+        textField.delegate = self
         textField.autocapitalizationType = .none
         textField.autocorrectionType = .no
+        textField.keyboardType = .webSearch
         return textField
     }()
 
@@ -103,5 +105,15 @@ final class URLInputView: UIView {
 
     @objc private func onDismiss() {
         model.showing = false
+    }
+}
+
+extension URLInputView: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        model.showing = false
+        if let text = textField.text {
+            model.text = text
+        }
+        return true
     }
 }
