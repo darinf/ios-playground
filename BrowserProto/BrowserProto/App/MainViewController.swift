@@ -11,7 +11,9 @@ class MainViewController: UIViewController {
     }()
 
     private lazy var urlInputView = {
-        URLInputView()
+        URLInputView() { [weak self] url in
+            self?.bottomBarView.urlBarView.model.editing = false
+        }
     }()
 
     private lazy var webContentView = {
@@ -101,6 +103,13 @@ class MainViewController: UIViewController {
             webContentView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             webContentView.widthAnchor.constraint(equalTo: view.widthAnchor)
         ])
+
+        urlInputView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            urlInputView.topAnchor.constraint(equalTo: view.topAnchor),
+            urlInputView.widthAnchor.constraint(equalTo: view.widthAnchor),
+            urlInputView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
     }
 
     private func setupObservers() {
@@ -110,6 +119,18 @@ class MainViewController: UIViewController {
 
         webContentView.model.$url.dropFirst().sink { [weak self] url in
             self?.bottomBarView.urlBarView.model.displayText = url?.host() ?? ""
+        }.store(in: &subscriptions)
+
+        bottomBarView.urlBarView.model.$editing.dropFirst().sink { [weak self] editing in
+            guard let self else { return }
+            if editing {
+                urlInputView.isHidden = false
+                view.bringSubviewToFront(urlInputView)
+                urlInputView.textField.becomeFirstResponder()
+            } else {
+                urlInputView.textField.resignFirstResponder()
+                urlInputView.isHidden = true
+            }
         }.store(in: &subscriptions)
     }
 
