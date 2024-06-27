@@ -162,11 +162,13 @@ final class BottomBarView: UIVisualEffectView {
     }
 
     private func onPanGesture(translation: CGFloat) {
-        if translation < 50 {
+        let threshold: CGFloat = 25
+
+        if translation < threshold {
             if !model.expanded {
                 model.expanded = true
             }
-        } else if translation > 50 {
+        } else if translation > threshold {
             if model.expanded {
                 model.expanded = false
             }

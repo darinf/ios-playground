@@ -14,9 +14,11 @@ final class WebContentView: UIView {
         return configuration
     }()
 
-    lazy var webView = {
+    private lazy var webView = {
         let webView = WKWebView(frame: .zero, configuration: Self.configuration)
         webView.allowsBackForwardNavigationGestures = true
+        webView.scrollView.clipsToBounds = false
+        webView.scrollView.contentInsetAdjustmentBehavior = .always
         return webView
     }()
 
@@ -33,6 +35,29 @@ final class WebContentView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
+    func updateLayout(insets: UIEdgeInsets) {
+        webView.setValue(
+            UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0),
+            forKey: "unobscuredSafeAreaInsets"
+        )
+        webView.setValue(
+            insets,
+            forKey: "obscuredInsets"
+        )
+        webView.setMinimumViewportInset(insets, maximumViewportInset: insets)
+
+        overrideSafeAreaInsets = insets
+        setNeedsLayout()
+    }
+
+    func goBack() {
+        webView.goBack()
+    }
+
+    func goForward() {
+        webView.goForward()
+    }
+
     private func setupConstraints() {
         webView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -46,11 +71,6 @@ final class WebContentView: UIView {
     private func setupObservers() {
         model.$url.dropFirst().sink { [weak self] url in
             self?.navigate(to: url)
-        }.store(in: &subscriptions)
-
-        model.$overrideSafeAreaInsets.dropFirst().sink { [weak self] insets in
-            self?.overrideSafeAreaInsets = insets
-            self?.setNeedsLayout()
         }.store(in: &subscriptions)
 
         webView.publisher(for: \.url).dropFirst().sink { [weak self] url in

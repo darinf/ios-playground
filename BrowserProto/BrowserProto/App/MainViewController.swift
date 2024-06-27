@@ -30,9 +30,9 @@ class MainViewController: UIViewController {
                 view.bringSubviewToFront(urlInputView)
                 urlInputView.model.showing = true
             case .goBack:
-                webContentView.webView.goBack()
+                webContentView.goBack()
             case .goForward:
-                webContentView.webView.goForward()
+                webContentView.goForward()
             default:
                 print(">>> unhandled action: \(action)")
             }
@@ -58,8 +58,6 @@ class MainViewController: UIViewController {
         view.addSubview(bottomBarView)
         view.addSubview(webContentView)
         view.addSubview(urlInputView)
-
-        webContentView.webView.scrollView.clipsToBounds = false
 
         setupInitialConstraints()
         setupObservers()
@@ -160,20 +158,10 @@ class MainViewController: UIViewController {
         let applyNewHeight = { [self] in
             topBarViewHeightConstraint.constant = safeAreaInsets.top
             bottomBarViewHeightConstraint.constant = newHeight
-            webContentView.webView.scrollView.contentInsetAdjustmentBehavior = .always
 
-            let insets = UIEdgeInsets(top: 0, left: 0, bottom: newHeight, right: 0)
-            webContentView.webView.setValue(
-                UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0),
-                forKey: "unobscuredSafeAreaInsets"
+            webContentView.updateLayout(
+                insets: UIEdgeInsets(top: 0, left: 0, bottom: newHeight, right: 0)
             )
-            webContentView.webView.setValue(
-                insets,
-                forKey: "obscuredInsets"
-            )
-            webContentView.webView.setMinimumViewportInset(insets, maximumViewportInset: insets)
-
-            webContentView.model.overrideSafeAreaInsets = insets
         }
 
         if animated {
