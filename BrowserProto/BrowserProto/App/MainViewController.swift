@@ -125,15 +125,15 @@ class MainViewController: UIViewController {
         }.store(in: &subscriptions)
 
         webContentView.model.$url.dropFirst().sink { [weak self] url in
-            self?.bottomBarView.urlBarView.model.displayText = url?.host() ?? ""
+            self?.bottomBarView.updateURL(url)
         }.store(in: &subscriptions)
 
         webContentView.model.$canGoBack.dropFirst().sink { [weak self] canGoBack in
-            self?.bottomBarView.backButton.isEnabled = canGoBack
+            self?.bottomBarView.backButtonEnabled = canGoBack
         }.store(in: &subscriptions)
 
         webContentView.model.$canGoForward.dropFirst().sink { [weak self] canGoForward in
-            self?.bottomBarView.forwardButton.isEnabled = canGoForward
+            self?.bottomBarView.forwardButtonEnabled = canGoForward
         }.store(in: &subscriptions)
 
         urlInputView.model.$text.dropFirst().sink { [weak self] text in

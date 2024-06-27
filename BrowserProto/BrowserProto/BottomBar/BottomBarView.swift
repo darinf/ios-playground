@@ -34,11 +34,11 @@ final class BottomBarView: UIVisualEffectView {
         contentBox.heightAnchor.constraint(equalToConstant: Metrics.contentBoxCompactHeight)
     }()
 
-    lazy var contentBox = {
+    private lazy var contentBox = {
         UIView()
     }()
 
-    lazy var backButton = {
+    private lazy var backButton = {
         let button = CapsuleButton(cornerRadius: Metrics.buttonRadius, systemImage: "chevron.left") { [weak self] in
             self?.handler(.goBack)
         }
@@ -46,7 +46,7 @@ final class BottomBarView: UIVisualEffectView {
         return button
     }()
 
-    lazy var forwardButton = {
+    private lazy var forwardButton = {
         let button = CapsuleButton(cornerRadius: Metrics.buttonRadius, systemImage: "chevron.right") { [weak self] in
             self?.handler(.goForward)
         }
@@ -54,7 +54,7 @@ final class BottomBarView: UIVisualEffectView {
         return button
     }()
 
-    lazy var urlBarView = {
+    private lazy var urlBarView = {
         URLBarView(cornerRadius: Metrics.buttonRadius) { [weak self] action in
             guard let self else { return }
             switch action {
@@ -101,6 +101,20 @@ final class BottomBarView: UIVisualEffectView {
         addGestureRecognizer(panGestureRecognizer)
 
         setupConstraints()
+    }
+
+    func updateURL(_ url: URL?) {
+        urlBarView.model.displayText = url?.host() ?? ""
+    }
+
+    var backButtonEnabled: Bool {
+        get { backButton.isEnabled }
+        set { backButton.isEnabled = newValue }
+    }
+
+    var forwardButtonEnabled: Bool {
+        get { forwardButton.isEnabled }
+        set { forwardButton.isEnabled = newValue }
     }
 
     private func setupConstraints() {
