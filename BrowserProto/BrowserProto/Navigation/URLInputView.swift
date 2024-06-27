@@ -44,6 +44,10 @@ final class URLInputView: UIView {
     init() {
         super.init(frame: .zero)
 
+        backgroundColor = .systemFill
+        DropShadow.apply(toLayer: layer)
+        layer.opacity = 0
+
         addGestureRecognizer(tapGestureRecognizer)
 
         addSubview(contentBox)
@@ -94,11 +98,15 @@ final class URLInputView: UIView {
         model.$showing.dropFirst().sink { [weak self] showing in
             guard let self else { return }
             if showing {
-                isHidden = false
+                UIView.animate(withDuration: 0.2) {
+                    self.layer.opacity = 1
+                }
                 textField.becomeFirstResponder()
             } else {
                 textField.resignFirstResponder()
-                isHidden = true
+                UIView.animate(withDuration: 0.2) {
+                    self.layer.opacity = 0
+                }
             }
         }.store(in: &subscriptions)
     }

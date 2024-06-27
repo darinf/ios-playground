@@ -82,6 +82,8 @@ final class BottomBarView: UIVisualEffectView {
         self.handler = handler
         super.init(effect: UIBlurEffect(style: .systemThinMaterial))
 
+        DropShadow.apply(toLayer: layer)
+
         contentView.addSubview(contentBox)
         contentBox.addSubview(urlBarView)
         contentBox.addSubview(backButton)

@@ -55,8 +55,6 @@ class MainViewController: UIViewController {
         view.addSubview(webContentView)
         view.addSubview(urlInputView)
 
-        urlInputView.isHidden = true
-
         webContentView.webView.scrollView.clipsToBounds = false
 
         setupInitialConstraints()
@@ -127,18 +125,6 @@ class MainViewController: UIViewController {
         webContentView.model.$url.dropFirst().sink { [weak self] url in
             self?.bottomBarView.urlBarView.model.displayText = url?.host() ?? ""
         }.store(in: &subscriptions)
-
-//        bottomBarView.urlBarView.model.$editing.dropFirst().sink { [weak self] editing in
-//            guard let self else { return }
-//            if editing {
-//                urlInputView.isHidden = false
-//                view.bringSubviewToFront(urlInputView)
-//                urlInputView.textField.becomeFirstResponder()
-//            } else {
-//                urlInputView.textField.resignFirstResponder()
-//                urlInputView.isHidden = true
-//            }
-//        }.store(in: &subscriptions)
 
         urlInputView.model.$text.dropFirst().sink { [weak self] text in
             guard let self else { return }
