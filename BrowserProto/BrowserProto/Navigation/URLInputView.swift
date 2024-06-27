@@ -8,7 +8,7 @@ final class URLInputView: UIView {
 
     enum Metrics {
         static let margin: CGFloat = 10
-        static let textFieldContainerHeight: CGFloat = 30
+        static let textFieldContainerHeight: CGFloat = 40
         static let textFieldMargin: CGFloat = textFieldContainerHeight / 2
         static let contentBoxHeight: CGFloat = textFieldContainerHeight + 2 * margin
     }

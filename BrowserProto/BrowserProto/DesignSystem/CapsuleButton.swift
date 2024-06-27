@@ -2,6 +2,7 @@ import UIKit
 
 class CapsuleButton: UIButton {
     private let clicked: () -> Void
+    private let feedbackGenerator = UIImpactFeedbackGenerator(style: .soft)
 
     init(cornerRadius: CGFloat, systemImage: String? = nil, clicked: @escaping () -> Void) {
         self.clicked = clicked
@@ -25,6 +26,7 @@ class CapsuleButton: UIButton {
     }
 
     @objc func onPressed() {
+        feedbackGenerator.impactOccurred(intensity: 0.5)
         self.clicked()
     }
 
