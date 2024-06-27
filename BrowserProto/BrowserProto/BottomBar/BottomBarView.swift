@@ -58,8 +58,6 @@ final class BottomBarView: UIVisualEffectView {
         URLBarView(cornerRadius: Metrics.buttonRadius) { [weak self] action in
             guard let self else { return }
             switch action {
-            case .panning(let translation):
-                onPanGesture(translation: translation)
             case .clicked:
                 handler(.editURL)
             }
@@ -80,6 +78,10 @@ final class BottomBarView: UIVisualEffectView {
         return button
     }()
 
+    private lazy var panGestureRecognizer = {
+        UIPanGestureRecognizer(target: self, action: #selector(onPan))
+    }()
+
     init(handler: @escaping (Action) -> Void) {
         self.handler = handler
         super.init(effect: UIBlurEffect(style: .systemThinMaterial))
@@ -95,6 +97,8 @@ final class BottomBarView: UIVisualEffectView {
 
         backButton.layer.opacity = 0.0
         forwardButton.layer.opacity = 0.0
+
+        addGestureRecognizer(panGestureRecognizer)
 
         setupConstraints()
     }
@@ -193,5 +197,9 @@ final class BottomBarView: UIVisualEffectView {
             }
             layoutIfNeeded()
         }
+    }
+
+    @objc private func onPan() {
+        onPanGesture(translation: panGestureRecognizer.translation(in: self).y)
     }
 }

@@ -41,6 +41,10 @@ final class URLInputView: UIView {
         UITapGestureRecognizer(target: self, action: #selector(onDismiss))
     }()
 
+    lazy var panGestureRecognizer = {
+        UIPanGestureRecognizer(target: self, action: #selector(onPan))
+    }()
+
     init() {
         super.init(frame: .zero)
 
@@ -49,6 +53,7 @@ final class URLInputView: UIView {
         layer.opacity = 0
 
         addGestureRecognizer(tapGestureRecognizer)
+        contentBox.addGestureRecognizer(panGestureRecognizer)
 
         addSubview(contentBox)
         addSubview(filler)
@@ -113,6 +118,14 @@ final class URLInputView: UIView {
 
     @objc private func onDismiss() {
         model.showing = false
+    }
+
+    @objc private func onPan() {
+        let threshold: CGFloat = 25
+        let translation = panGestureRecognizer.translation(in: contentBox)
+        if translation.y > threshold {
+            model.showing = false
+        }
     }
 }
 

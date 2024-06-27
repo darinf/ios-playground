@@ -26,7 +26,7 @@ class CapsuleButton: UIButton {
     }
 
     @objc func onPressed() {
-        feedbackGenerator.impactOccurred(intensity: 0.5)
+        feedbackGenerator.impactOccurred(intensity: 0.7)
         self.clicked()
     }
 
