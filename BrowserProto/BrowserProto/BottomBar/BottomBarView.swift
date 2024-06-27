@@ -13,7 +13,17 @@ final class BottomBarView: UIVisualEffectView {
         static let contentBoxExpandedHeight = 2 * buttonDiameter + margin
     }
 
+    enum Action {
+        case goBack
+        case goForward
+        case showTabs
+        case showMenu
+        case editURL
+    }
+
     let model = BottomBarViewModel()
+
+    private let handler: (Action) -> Void
     private var subscriptions: Set<AnyCancellable> = []
 
     private lazy var urlBarViewRightConstraint = {
@@ -29,30 +39,47 @@ final class BottomBarView: UIVisualEffectView {
     }()
 
     private lazy var backButton = {
-        let button = CapsuleButton(cornerRadius: Metrics.buttonRadius, systemImage: "chevron.left") {}
+        let button = CapsuleButton(cornerRadius: Metrics.buttonRadius, systemImage: "chevron.left") { [weak self] in
+            self?.handler(.goBack)
+        }
         return button
     }()
 
     private lazy var forwardButton = {
-        let button = CapsuleButton(cornerRadius: Metrics.buttonRadius, systemImage: "chevron.right") {}
+        let button = CapsuleButton(cornerRadius: Metrics.buttonRadius, systemImage: "chevron.right") { [weak self] in
+            self?.handler(.goForward)
+        }
         return button
     }()
 
     lazy var urlBarView = {
-        URLBarView(cornerRadius: Metrics.buttonRadius, onPanGesture: onPanGesture)
+        URLBarView(cornerRadius: Metrics.buttonRadius) { [weak self] action in
+            guard let self else { return }
+            switch action {
+            case .panning(let translation):
+                onPanGesture(translation: translation)
+            case .clicked:
+                handler(.editURL)
+            }
+        }
     }()
 
     private lazy var tabsButton = {
-        let button = CapsuleButton(cornerRadius: Metrics.buttonRadius, systemImage: "square.on.square") {}
+        let button = CapsuleButton(cornerRadius: Metrics.buttonRadius, systemImage: "square.on.square") { [weak self] in
+            self?.handler(.showTabs)
+        }
         return button
     }()
 
     private lazy var menuButton = {
-        let button = CapsuleButton(cornerRadius: 20, systemImage: "ellipsis") {}
+        let button = CapsuleButton(cornerRadius: 20, systemImage: "ellipsis") { [weak self] in
+            self?.handler(.showMenu)
+        }
         return button
     }()
 
-    init() {
+    init(handler: @escaping (Action) -> Void) {
+        self.handler = handler
         super.init(effect: UIBlurEffect(style: .systemThinMaterial))
 
         contentView.addSubview(contentBox)

@@ -11,9 +11,7 @@ class MainViewController: UIViewController {
     }()
 
     private lazy var urlInputView = {
-        URLInputView() { [weak self] url in
-            self?.bottomBarView.urlBarView.model.editing = false
-        }
+        URLInputView()
     }()
 
     private lazy var webContentView = {
@@ -25,7 +23,16 @@ class MainViewController: UIViewController {
     }()
 
     private lazy var bottomBarView = {
-        BottomBarView()
+        BottomBarView() { [weak self] action in
+            guard let self else { return }
+            switch action {
+            case .editURL:
+                view.bringSubviewToFront(urlInputView)
+                urlInputView.model.showing = true
+            default:
+                print(">>> unhandled action: \(action)")
+            }
+        }
     }()
 
     private lazy var topBarViewHeightConstraint: NSLayoutConstraint = {
@@ -121,17 +128,17 @@ class MainViewController: UIViewController {
             self?.bottomBarView.urlBarView.model.displayText = url?.host() ?? ""
         }.store(in: &subscriptions)
 
-        bottomBarView.urlBarView.model.$editing.dropFirst().sink { [weak self] editing in
-            guard let self else { return }
-            if editing {
-                urlInputView.isHidden = false
-                view.bringSubviewToFront(urlInputView)
-                urlInputView.textField.becomeFirstResponder()
-            } else {
-                urlInputView.textField.resignFirstResponder()
-                urlInputView.isHidden = true
-            }
-        }.store(in: &subscriptions)
+//        bottomBarView.urlBarView.model.$editing.dropFirst().sink { [weak self] editing in
+//            guard let self else { return }
+//            if editing {
+//                urlInputView.isHidden = false
+//                view.bringSubviewToFront(urlInputView)
+//                urlInputView.textField.becomeFirstResponder()
+//            } else {
+//                urlInputView.textField.resignFirstResponder()
+//                urlInputView.isHidden = true
+//            }
+//        }.store(in: &subscriptions)
     }
 
     private func updateLayout(expanded: Bool, animated: Bool) {

@@ -1,7 +1,10 @@
+import Combine
 import UIKit
 
 final class URLInputView: UIView {
-    private let completion: (String?) -> Void
+    let model = URLInputViewModel()
+
+    private var subscriptions: Set<AnyCancellable> = []
 
     enum Metrics {
         static let margin: CGFloat = 10
@@ -36,8 +39,7 @@ final class URLInputView: UIView {
         UITapGestureRecognizer(target: self, action: #selector(onDismiss))
     }()
 
-    init(completion: @escaping (String?) -> Void) {
-        self.completion = completion
+    init() {
         super.init(frame: .zero)
 
         addGestureRecognizer(tapGestureRecognizer)
@@ -48,6 +50,7 @@ final class URLInputView: UIView {
         textFieldContainer.addSubview(textField)
 
         setupConstraints()
+        setupObservers()
     }
     
     required init?(coder: NSCoder) {
@@ -85,7 +88,20 @@ final class URLInputView: UIView {
         ])
     }
 
+    private func setupObservers() {
+        model.$showing.dropFirst().sink { [weak self] showing in
+            guard let self else { return }
+            if showing {
+                isHidden = false
+                textField.becomeFirstResponder()
+            } else {
+                textField.resignFirstResponder()
+                isHidden = true
+            }
+        }.store(in: &subscriptions)
+    }
+
     @objc private func onDismiss() {
-        completion(nil)
+        model.showing = false
     }
 }

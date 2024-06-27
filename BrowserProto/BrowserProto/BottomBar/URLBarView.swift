@@ -4,17 +4,22 @@ import UIKit
 final class URLBarView: CapsuleButton {
     let model = URLBarViewModel()
 
-    private let onPanGesture: (CGFloat) -> Void
+    enum Action {
+        case panning(CGFloat)
+        case clicked
+    }
+
+    private let handler: (Action) -> Void
     private var subscriptions: Set<AnyCancellable> = []
 
     private lazy var panGestureRecognizer = {
         UIPanGestureRecognizer(target: self, action: #selector(onPan))
     }()
 
-    init(cornerRadius: CGFloat, onPanGesture: @escaping (CGFloat) -> Void) {
-        self.onPanGesture = onPanGesture
-        super.init(cornerRadius: cornerRadius) { [model] in
-            model.editing = true
+    init(cornerRadius: CGFloat, handler: @escaping (Action) -> Void) {
+        self.handler = handler
+        super.init(cornerRadius: cornerRadius) {
+            handler(.clicked)
         }
 
         backgroundColor = .systemBackground
@@ -42,6 +47,6 @@ final class URLBarView: CapsuleButton {
 
     @objc private func onPan() {
         let translation = panGestureRecognizer.translation(in: self)
-        onPanGesture(translation.y)
+        handler(.panning(translation.y))
     }
 }
