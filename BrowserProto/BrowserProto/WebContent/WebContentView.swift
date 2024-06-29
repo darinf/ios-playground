@@ -5,6 +5,12 @@ import WebKit
 final class WebContentView: UIView {
     let model = WebContentViewModel()
 
+    enum Action {
+        case panning(offset: CGFloat)
+        case panningEnd(offset: CGFloat)
+    }
+
+    private let handler: (Action) -> Void
     private var subscriptions: Set<AnyCancellable> = []
     private var overrideSafeAreaInsets: UIEdgeInsets?
 
@@ -22,8 +28,19 @@ final class WebContentView: UIView {
         return webView
     }()
 
-    init() {
+    private lazy var panGestureRecognizer = {
+        let gesture = UIPanGestureRecognizer(target: self, action: #selector(onPan))
+        gesture.delegate = self
+        gesture.maximumNumberOfTouches = 1
+        gesture.allowedScrollTypesMask = .all
+        return gesture
+    }()
+
+    init(handler: @escaping (Action) -> Void) {
+        self.handler = handler
         super.init(frame: .zero)
+
+        webView.scrollView.addGestureRecognizer(panGestureRecognizer)
 
         addSubview(webView)
 
@@ -95,5 +112,35 @@ final class WebContentView: UIView {
 
     override var safeAreaInsets: UIEdgeInsets {
         overrideSafeAreaInsets ?? super.safeAreaInsets
+    }
+
+    @objc private func onPan() {
+        let translation = panGestureRecognizer.translation(in: self)
+        guard abs(translation.y) > abs(translation.x) else { return }
+        switch panGestureRecognizer.state {
+        case .began:
+            print(">>> began gesture")
+        case .changed:
+            handler(.panning(offset: translation.y))
+        case .ended:
+            handler(.panningEnd(offset: translation.y))
+        case .possible:
+            print(">>> gesture possible")
+        case .cancelled:
+            print(">>> gesture cancelled")
+        case .failed:
+            print(">>> gesture failed")
+        @unknown default:
+            print(">>> gesture unknown")
+        }
+    }
+}
+
+extension WebContentView: UIGestureRecognizerDelegate {
+    func gestureRecognizer(
+        _ gestureRecognizer: UIGestureRecognizer,
+        shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer
+    ) -> Bool {
+        return true
     }
 }
