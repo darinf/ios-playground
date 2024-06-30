@@ -36,6 +36,17 @@ final class WebContentView: UIView {
 
         webView.scrollView.addGestureRecognizer(panGestureRecognizer)
 
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(onRefresh), for: .valueChanged)
+        refreshControl.tintColor = .init(dynamicProvider: { [webView] _ in
+            if webView.scrollView.backgroundColor?.isDarkColor ?? false {
+                return .systemGray.resolvedColor(with: UITraitCollection.init(userInterfaceStyle: .dark))
+            } else {
+                return .systemGray.resolvedColor(with: UITraitCollection.init(userInterfaceStyle: .light))
+            }
+        })
+        webView.scrollView.refreshControl = refreshControl
+
         addSubview(webView)
 
         setupConstraints()
@@ -128,6 +139,16 @@ final class WebContentView: UIView {
         }
 
         model.panningState = .init(panning: panning, deltaY: deltaY)
+    }
+
+    @objc private func onRefresh() {
+        UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
+        webView.reload()
+        if let refreshControl = webView.scrollView.refreshControl {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                refreshControl.endRefreshing()
+            }
+        }
     }
 }
 
