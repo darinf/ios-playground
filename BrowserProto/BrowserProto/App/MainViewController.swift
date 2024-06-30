@@ -3,6 +3,7 @@ import UIKit
 
 class MainViewController: UIViewController {
     private var subscriptions: Set<AnyCancellable> = []
+    private var bottomBarOffset: CGFloat = .zero
 
     private lazy var backgroundView = {
         let view = UIView()
@@ -15,7 +16,7 @@ class MainViewController: UIViewController {
     }()
 
     private lazy var webContentView = {
-        WebContentView(handler: onWebContentViewAction)
+        WebContentView() // handler: onWebContentViewAction)
     }()
 
     private lazy var topBarView = {
@@ -126,6 +127,7 @@ class MainViewController: UIViewController {
 
         webContentView.model.$url.dropFirst().sink { [weak self] url in
             self?.bottomBarView.updateURL(url)
+            self?.resetBottomBarOffset()
         }.store(in: &subscriptions)
 
         webContentView.model.$canGoBack.dropFirst().sink { [weak self] canGoBack in
@@ -134,6 +136,10 @@ class MainViewController: UIViewController {
 
         webContentView.model.$canGoForward.dropFirst().sink { [weak self] canGoForward in
             self?.bottomBarView.forwardButtonEnabled = canGoForward
+        }.store(in: &subscriptions)
+
+        webContentView.model.$panningState.dropFirst().sink { [weak self] panningState in
+            self?.updateBottomBarOffset(for: panningState)
         }.store(in: &subscriptions)
 
         urlInputView.model.$text.dropFirst().sink { [weak self] text in
@@ -174,53 +180,37 @@ class MainViewController: UIViewController {
         }
     }
 
-    private func onWebContentViewAction(action: WebContentView.Action) {
-        switch action {
-        case .panning(let offset):
-            print(">>> panning: \(offset)")
+    private var bottomBarMaxOffset: CGFloat {
+        let expanded = bottomBarView.model.expanded
+        return (expanded ? BottomBarView.Metrics.contentBoxExpandedHeight : BottomBarView.Metrics.contentBoxCompactHeight) + BottomBarView.Metrics.margin
+    }
 
-            let expanded = bottomBarView.model.expanded
-            let contentBoxHeight: CGFloat = (expanded ? BottomBarView.Metrics.contentBoxExpandedHeight : BottomBarView.Metrics.contentBoxCompactHeight) + BottomBarView.Metrics.margin
+    private func updateBottomBarOffset(for panningState: WebContentViewModel.PanningState) {
+        let maxOffset = bottomBarMaxOffset
+        if panningState.panning {
+            setBottomBarOffset(max(min(bottomBarOffset + panningState.deltaY, maxOffset), 0))
+        } else if bottomBarOffset < maxOffset {
+            resetBottomBarOffset()
+        }
+    }
 
-            let clampedOffset = min(max(-offset, 0), contentBoxHeight)
-            print(">>> clampedOffset: \(clampedOffset)")
+    private func setBottomBarOffset(_ newOffset: CGFloat) {
+        bottomBarOffset = newOffset
 
-            if clampedOffset == 0 {
-                UIView.animate(withDuration: 0.2) { [self] in
-                    let transform = CGAffineTransform(translationX: 0, y: 0)
-                    bottomBarView.layer.setAffineTransform(transform)
-                    bottomBarView.contentView.layer.opacity = 1.0
-                }
-            } else {
-                let transform = CGAffineTransform(translationX: 0, y: clampedOffset)
-                bottomBarView.layer.setAffineTransform(transform)
-                bottomBarView.contentView.layer.opacity = Float(abs(contentBoxHeight - clampedOffset) / contentBoxHeight)
-            }
-            let newHeight = view.safeAreaInsets.bottom + contentBoxHeight - clampedOffset
-            webContentView.updateLayout(
-                insets: UIEdgeInsets(top: 0, left: 0, bottom: newHeight, right: 0)
-            )
-        case .panningEnd(let offset):
-            let expanded = bottomBarView.model.expanded
-            let contentBoxHeight: CGFloat = (expanded ? BottomBarView.Metrics.contentBoxExpandedHeight : BottomBarView.Metrics.contentBoxCompactHeight) + BottomBarView.Metrics.margin
+        let maxOffset = bottomBarMaxOffset
+        let transform = CGAffineTransform(translationX: 0, y: bottomBarOffset)
+        bottomBarView.layer.setAffineTransform(transform)
+        bottomBarView.contentView.layer.opacity = Float(abs(maxOffset - bottomBarOffset) / maxOffset)
 
-            let clampedOffset = min(max(-offset, 0), contentBoxHeight)
+        let newHeight = view.safeAreaInsets.bottom + maxOffset - bottomBarOffset
+        webContentView.updateLayout(
+            insets: UIEdgeInsets(top: 0, left: 0, bottom: newHeight, right: 0)
+        )
+    }
 
-            if clampedOffset == contentBoxHeight {
-                let transform = CGAffineTransform(translationX: 0, y: clampedOffset)
-                bottomBarView.layer.setAffineTransform(transform)
-                bottomBarView.contentView.layer.opacity = Float(abs(contentBoxHeight - clampedOffset) / contentBoxHeight)
-            } else {
-                UIView.animate(withDuration: 0.2) { [self] in
-                    let transform = CGAffineTransform(translationX: 0, y: 0)
-                    bottomBarView.layer.setAffineTransform(transform)
-                    bottomBarView.contentView.layer.opacity = 1.0
-                }
-            }
-            let newHeight = view.safeAreaInsets.bottom + contentBoxHeight - clampedOffset
-            webContentView.updateLayout(
-                insets: UIEdgeInsets(top: 0, left: 0, bottom: newHeight, right: 0)
-            )
+    private func resetBottomBarOffset() {
+        UIView.animate(withDuration: 0.2) { [self] in
+            setBottomBarOffset(0)
         }
     }
 }

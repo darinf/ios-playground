@@ -5,14 +5,9 @@ import WebKit
 final class WebContentView: UIView {
     let model = WebContentViewModel()
 
-    enum Action {
-        case panning(offset: CGFloat)
-        case panningEnd(offset: CGFloat)
-    }
-
-    private let handler: (Action) -> Void
     private var subscriptions: Set<AnyCancellable> = []
     private var overrideSafeAreaInsets: UIEdgeInsets?
+    private var lastTranslation: CGPoint = .zero
 
     private static var configuration = {
         let configuration = WKWebViewConfiguration()
@@ -36,8 +31,7 @@ final class WebContentView: UIView {
         return gesture
     }()
 
-    init(handler: @escaping (Action) -> Void) {
-        self.handler = handler
+    init() {
         super.init(frame: .zero)
 
         webView.scrollView.addGestureRecognizer(panGestureRecognizer)
@@ -114,25 +108,26 @@ final class WebContentView: UIView {
         overrideSafeAreaInsets ?? super.safeAreaInsets
     }
 
-    @objc private func onPan() {
-        let translation = panGestureRecognizer.translation(in: self)
-        guard abs(translation.y) > abs(translation.x) else { return }
-        switch panGestureRecognizer.state {
-        case .began:
-            print(">>> began gesture")
-        case .changed:
-            handler(.panning(offset: translation.y))
-        case .ended:
-            handler(.panningEnd(offset: translation.y))
-        case .possible:
-            print(">>> gesture possible")
-        case .cancelled:
-            print(">>> gesture cancelled")
-        case .failed:
-            print(">>> gesture failed")
-        @unknown default:
-            print(">>> gesture unknown")
+    @objc private func onPan(_ gesture: UIPanGestureRecognizer) {
+        let panning = (gesture.state == .changed)
+
+        let translation = gesture.translation(in: self)
+        let dy = lastTranslation.y - translation.y
+
+        let deltaY: CGFloat
+        if abs(translation.x) > abs(translation.y) {
+            deltaY = 0
+        } else {
+            deltaY = dy
         }
+
+        if gesture.state == .ended || gesture.state == .cancelled {
+            lastTranslation = .zero
+        } else {
+            lastTranslation = translation
+        }
+
+        model.panningState = .init(panning: panning, deltaY: deltaY)
     }
 }
 
