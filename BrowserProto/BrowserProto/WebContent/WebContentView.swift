@@ -138,7 +138,11 @@ final class WebContentView: UIView {
             lastTranslation = translation
         }
 
-        model.panningState = .init(panning: panning, deltaY: deltaY)
+        if panning {
+            model.panningDeltaY = deltaY
+        } else {
+            model.panningDeltaY = nil
+        }
     }
 
     @objc private func onRefresh() {

@@ -138,8 +138,8 @@ class MainViewController: UIViewController {
             self?.bottomBarView.forwardButtonEnabled = canGoForward
         }.store(in: &subscriptions)
 
-        webContentView.model.$panningState.dropFirst().sink { [weak self] panningState in
-            self?.updateBottomBarOffset(for: panningState)
+        webContentView.model.$panningDeltaY.dropFirst().sink { [weak self] panningDeltaY in
+            self?.updateBottomBarOffset(panningDeltaY: panningDeltaY)
         }.store(in: &subscriptions)
 
         urlInputView.model.$text.dropFirst().sink { [weak self] text in
@@ -185,10 +185,10 @@ class MainViewController: UIViewController {
         return (expanded ? BottomBarView.Metrics.contentBoxExpandedHeight : BottomBarView.Metrics.contentBoxCompactHeight) + BottomBarView.Metrics.margin
     }
 
-    private func updateBottomBarOffset(for panningState: WebContentViewModel.PanningState) {
+    private func updateBottomBarOffset(panningDeltaY: CGFloat?) {
         let maxOffset = bottomBarMaxOffset
-        if panningState.panning {
-            setBottomBarOffset(max(min(bottomBarOffset + panningState.deltaY, maxOffset), 0))
+        if let panningDeltaY {
+            setBottomBarOffset(max(min(bottomBarOffset + panningDeltaY, maxOffset), 0))
         } else if bottomBarOffset < maxOffset {
             resetBottomBarOffset()
         }
