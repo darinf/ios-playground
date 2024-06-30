@@ -177,6 +177,10 @@ final class BottomBarView: UIVisualEffectView {
         model.$expanded.dropFirst().sink { [weak self] expanded in
             self?.onUpdateLayout(expanded: expanded)
         }.store(in: &subscriptions)
+
+        model.$progress.dropFirst().sink { [weak self] progress in
+            self?.urlBarView.showProgress(progress: progress)
+        }.store(in: &subscriptions)
     }
 
     private func onPanGesture(translation: CGFloat) {

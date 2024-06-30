@@ -138,6 +138,10 @@ class MainViewController: UIViewController {
             self?.bottomBarView.forwardButtonEnabled = canGoForward
         }.store(in: &subscriptions)
 
+        webContentView.model.$progress.dropFirst().sink { [weak self] progress in
+            self?.bottomBarView.model.progress = progress
+        }.store(in: &subscriptions)
+
         webContentView.model.$panningDeltaY.dropFirst().sink { [weak self] panningDeltaY in
             self?.updateBottomBarOffset(panningDeltaY: panningDeltaY)
         }.store(in: &subscriptions)

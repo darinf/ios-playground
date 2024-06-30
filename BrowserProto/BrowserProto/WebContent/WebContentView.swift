@@ -106,12 +106,28 @@ final class WebContentView: UIView {
         webView.publisher(for: \.canGoForward).dropFirst().sink { [weak self] canGoForward in
             self?.model.canGoForward = canGoForward
         }.store(in: &subscriptions)
+
+        webView.publisher(for: \.isLoading).combineLatest(webView.publisher(for: \.estimatedProgress)).dropFirst().sink { [weak self] in
+            self?.updateProgress(isLoading: $0.0, estimatedProgress: $0.1)
+        }.store(in: &subscriptions)
     }
 
     private func navigate(to url: URL?) {
         if let url, url != webView.url {
             print(">>> navigating to: \(url)")
             webView.load(.init(url: url))
+        }
+    }
+
+    private func updateProgress(isLoading: Bool, estimatedProgress: Double) {
+        let progress: Double?
+        if isLoading {
+            progress = estimatedProgress
+        } else {
+            progress = nil
+        }
+        if model.progress != progress {
+            model.progress = progress
         }
     }
 

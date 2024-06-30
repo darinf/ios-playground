@@ -31,6 +31,10 @@ final class URLBarView: CapsuleButton {
         fatalError("init(coder:) has not been implemented")
     }
 
+    func showProgress(progress: Double?) {
+        print(">>> showProgress: \(progress)")
+    }
+
     private func setupObservers() {
         model.$displayText.dropFirst().sink { [weak self] displayText in
             print(">>> displayText: \(displayText)")
