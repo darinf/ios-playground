@@ -65,8 +65,6 @@ class MainViewController: UIViewController {
 
         view.bringSubviewToFront(topBarView)
         view.bringSubviewToFront(bottomBarView)
-
-        webContentView.model.url = URL(string: "https://news.ycombinator.com/")
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -76,6 +74,8 @@ class MainViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         view.setNeedsUpdateConstraints()
+
+        webContentView.model.url = URL(string: "https://news.ycombinator.com/")
     }
 
     override func viewSafeAreaInsetsDidChange() {
