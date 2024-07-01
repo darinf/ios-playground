@@ -38,6 +38,9 @@ final class URLBarView: CapsuleButton {
 
         sendSubviewToBack(progressContainerView)
 
+        titleLabel?.font = .systemFont(ofSize: 14)
+        titleLabel?.lineBreakMode = .byTruncatingHead
+
         setupConstraints()
     }
     
