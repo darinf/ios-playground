@@ -4,17 +4,11 @@ class CapsuleButton: UIButton {
     private let clicked: () -> Void
     private let feedbackGenerator = UIImpactFeedbackGenerator(style: .soft)
 
-    var defaultBackgroundColor: UIColor = .systemBackground {
-        didSet {
-            backgroundColor = defaultBackgroundColor
-        }
-    }
-
     init(cornerRadius: CGFloat, systemImage: String? = nil, clicked: @escaping () -> Void) {
         self.clicked = clicked
         super.init(frame: .zero)
 
-        backgroundColor = defaultBackgroundColor
+        backgroundColor = .systemBackground
         layer.cornerRadius = cornerRadius
         DropShadow.apply(toLayer: layer)
 
@@ -38,7 +32,7 @@ class CapsuleButton: UIButton {
 
     override var isHighlighted: Bool {
         didSet {
-            backgroundColor = isHighlighted ? .systemFill : defaultBackgroundColor
+            backgroundColor = isHighlighted ? .systemFill : .systemBackground
         }
     }
 }
