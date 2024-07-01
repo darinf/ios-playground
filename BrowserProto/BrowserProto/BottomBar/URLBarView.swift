@@ -9,12 +9,15 @@ final class URLBarView: CapsuleButton {
     private let handler: (Action) -> Void
 
     private lazy var progressContainerView = {
-        UIView()
+        let view = UIView()
+        view.isUserInteractionEnabled = false
+        return view
     }()
 
     private lazy var progressView = {
         let view = UIView()
         view.backgroundColor = .systemTeal.withAlphaComponent(0.5)
+        view.isUserInteractionEnabled = false
         return view
     }()
 
