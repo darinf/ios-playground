@@ -17,7 +17,6 @@
 		93D480FF2C271E090019921F /* BottomBarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D480FE2C271E090019921F /* BottomBarViewModel.swift */; };
 		93D481042C2B08CB0019921F /* WebContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D481032C2B08CB0019921F /* WebContentView.swift */; };
 		93D481062C2B08D80019921F /* WebContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D481052C2B08D80019921F /* WebContentViewModel.swift */; };
-		93D481082C2B13200019921F /* URLBarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D481072C2B13200019921F /* URLBarViewModel.swift */; };
 		93D4810A2C2B275F0019921F /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D481092C2B275F0019921F /* Colors.swift */; };
 		93D4810C2C2C493B0019921F /* DropShadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D4810B2C2C493A0019921F /* DropShadow.swift */; };
 		93D4810F2C2CC4DE0019921F /* URLInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D4810E2C2CC4DE0019921F /* URLInputView.swift */; };
@@ -40,7 +39,6 @@
 		93D480FE2C271E090019921F /* BottomBarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomBarViewModel.swift; sourceTree = "<group>"; };
 		93D481032C2B08CB0019921F /* WebContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebContentView.swift; sourceTree = "<group>"; };
 		93D481052C2B08D80019921F /* WebContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebContentViewModel.swift; sourceTree = "<group>"; };
-		93D481072C2B13200019921F /* URLBarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLBarViewModel.swift; sourceTree = "<group>"; };
 		93D481092C2B275F0019921F /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		93D4810B2C2C493A0019921F /* DropShadow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropShadow.swift; sourceTree = "<group>"; };
 		93D4810E2C2CC4DE0019921F /* URLInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLInputView.swift; sourceTree = "<group>"; };
@@ -97,7 +95,6 @@
 				93D480F32C2609950019921F /* BottomBarView.swift */,
 				93D480FE2C271E090019921F /* BottomBarViewModel.swift */,
 				93D480FC2C2704DF0019921F /* URLBarView.swift */,
-				93D481072C2B13200019921F /* URLBarViewModel.swift */,
 			);
 			path = BottomBar;
 			sourceTree = "<group>";
@@ -249,7 +246,6 @@
 				93D480E22C25D9600019921F /* MainViewController.swift in Sources */,
 				93D480FD2C2704DF0019921F /* URLBarView.swift in Sources */,
 				93D481192C31A24D0019921F /* UIColor+Extensions.swift in Sources */,
-				93D481082C2B13200019921F /* URLBarViewModel.swift in Sources */,
 				93D480FF2C271E090019921F /* BottomBarViewModel.swift in Sources */,
 				93D480DE2C25D9600019921F /* AppDelegate.swift in Sources */,
 				93D480F92C260DB90019921F /* CapsuleButton.swift in Sources */,

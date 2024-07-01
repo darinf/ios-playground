@@ -104,7 +104,7 @@ final class BottomBarView: UIVisualEffectView {
     }
 
     func updateURL(_ url: URL?) {
-        urlBarView.model.displayText = url?.host() ?? ""
+        urlBarView.setDisplayText(url?.host() ?? "")
     }
 
     var backButtonEnabled: Bool {
@@ -179,7 +179,7 @@ final class BottomBarView: UIVisualEffectView {
         }.store(in: &subscriptions)
 
         model.$progress.dropFirst().sink { [weak self] progress in
-            self?.urlBarView.showProgress(progress: progress)
+            self?.urlBarView.setProgress(progress)
         }.store(in: &subscriptions)
     }
 
