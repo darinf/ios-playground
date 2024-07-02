@@ -9,20 +9,7 @@ final class URLBarView: CapsuleButton {
     private let handler: (Action) -> Void
 
     private lazy var progressContainerView = {
-        let view = UIView()
-        view.isUserInteractionEnabled = false
-        return view
-    }()
-
-    private lazy var progressView = {
-        let view = UIView()
-        view.backgroundColor = .systemTeal.withAlphaComponent(0.5)
-        view.isUserInteractionEnabled = false
-        return view
-    }()
-
-    private lazy var progressViewWidthConstraint = {
-        progressView.widthAnchor.constraint(equalToConstant: 0)
+        ProgressContainerView(cornerRadius: layer.cornerRadius)
     }()
 
     init(cornerRadius: CGFloat, handler: @escaping (Action) -> Void) {
@@ -32,10 +19,6 @@ final class URLBarView: CapsuleButton {
         }
 
         addSubview(progressContainerView)
-        progressContainerView.layer.cornerRadius = cornerRadius
-        progressContainerView.clipsToBounds = true
-        progressContainerView.addSubview(progressView)
-
         sendSubviewToBack(progressContainerView)
 
         titleLabel?.font = .systemFont(ofSize: 14)
@@ -51,16 +34,16 @@ final class URLBarView: CapsuleButton {
     func setProgress(_ progress: Double?) {
         if let progress {
             UIView.animate(withDuration: 0.2) { [self] in
-                progressViewWidthConstraint.constant = progress * bounds.width
+                progressContainerView.progress = progress
                 progressContainerView.layoutIfNeeded()
             }
-        } else if progressViewWidthConstraint.constant != 0 {
+        } else if progressContainerView.progress != nil {
             UIView.animate(withDuration: 0.2) { [self] in
-                progressViewWidthConstraint.constant = bounds.width
+                progressContainerView.progress = 1.0
                 progressContainerView.layoutIfNeeded()
             } completion: { [self] _ in
                 UIView.animate(withDuration: 0.01, delay: 0.35) { [self] in
-                    progressViewWidthConstraint.constant = 0
+                    progressContainerView.progress = nil
                     progressContainerView.layoutIfNeeded()
                 }
             }
@@ -79,13 +62,44 @@ final class URLBarView: CapsuleButton {
             progressContainerView.leftAnchor.constraint(equalTo: leftAnchor),
             progressContainerView.rightAnchor.constraint(equalTo: rightAnchor)
         ])
+    }
+}
 
-        progressView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            progressView.topAnchor.constraint(equalTo: progressContainerView.topAnchor),
-            progressView.bottomAnchor.constraint(equalTo: progressContainerView.bottomAnchor),
-            progressView.leftAnchor.constraint(equalTo: progressContainerView.leftAnchor),
-            progressViewWidthConstraint
-        ])
+private final class ProgressContainerView: UIView {
+    var progress: Double? {
+        didSet {
+            setNeedsLayout()
+        }
+    }
+
+    private lazy var progressView = {
+        let view = UIView()
+        view.backgroundColor = .systemTeal.withAlphaComponent(0.5)
+        view.isUserInteractionEnabled = false
+        return view
+    }()
+
+    init(cornerRadius: CGFloat) {
+        super.init(frame: .zero)
+
+        addSubview(progressView)
+
+        layer.cornerRadius = cornerRadius
+        clipsToBounds = true
+        isUserInteractionEnabled = false
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func layoutSubviews() {
+        progressView.frame = .init(
+            origin: .zero,
+            size: .init(
+                width: (progress ?? 0) * bounds.width,
+                height: bounds.height
+            )
+        )
     }
 }
