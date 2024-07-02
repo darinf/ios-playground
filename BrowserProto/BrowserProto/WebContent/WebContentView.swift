@@ -69,6 +69,15 @@ final class WebContentView: UIView {
         webView.setMinimumViewportInset(insets, maximumViewportInset: insets)
 
         overrideSafeAreaInsets = insets
+
+        // TODO: Might need to tweak this further.
+        webView.scrollView.verticalScrollIndicatorInsets = .init(
+            top: insets.top,
+            left: 0,
+            bottom: insets.bottom - super.safeAreaInsets.bottom,
+            right: 0
+        )
+
         setNeedsLayout()
     }
 
