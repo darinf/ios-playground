@@ -103,20 +103,6 @@ final class BottomBarView: UIVisualEffectView {
         setupConstraints()
     }
 
-    func updateURL(_ url: URL?) {
-        urlBarView.setDisplayText(url?.host() ?? "")
-    }
-
-    var backButtonEnabled: Bool {
-        get { backButton.isEnabled }
-        set { backButton.isEnabled = newValue }
-    }
-
-    var forwardButtonEnabled: Bool {
-        get { forwardButton.isEnabled }
-        set { forwardButton.isEnabled = newValue }
-    }
-
     private func setupConstraints() {
         contentBox.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -176,6 +162,22 @@ final class BottomBarView: UIVisualEffectView {
     private func setupObservers() {
         model.$expanded.dropFirst().sink { [weak self] expanded in
             self?.onUpdateLayout(expanded: expanded)
+        }.store(in: &subscriptions)
+
+        model.$url.dropFirst().sink { [weak self] url in
+            self?.urlBarView.setDisplayText(url?.host() ?? "")
+        }.store(in: &subscriptions)
+
+        model.$canGoBack.dropFirst().sink { [weak self] canGoBack in
+            self?.backButton.isEnabled = canGoBack
+        }.store(in: &subscriptions)
+
+        model.$canGoForward.dropFirst().sink { [weak self] canGoForward in
+            self?.forwardButton.isEnabled = canGoForward
+        }.store(in: &subscriptions)
+
+        model.$url.dropFirst().sink { [weak self] url in
+            self?.urlBarView.setDisplayText(url?.host() ?? "")
         }.store(in: &subscriptions)
 
         model.$progress.dropFirst().sink { [weak self] progress in

@@ -16,7 +16,7 @@ class MainViewController: UIViewController {
     }()
 
     private lazy var webContentView = {
-        WebContentView() // handler: onWebContentViewAction)
+        WebContentView()
     }()
 
     private lazy var topBarView = {
@@ -126,16 +126,16 @@ class MainViewController: UIViewController {
         }.store(in: &subscriptions)
 
         webContentView.model.$url.dropFirst().sink { [weak self] url in
-            self?.bottomBarView.updateURL(url)
+            self?.bottomBarView.model.url = url
             self?.resetBottomBarOffset()
         }.store(in: &subscriptions)
 
         webContentView.model.$canGoBack.dropFirst().sink { [weak self] canGoBack in
-            self?.bottomBarView.backButtonEnabled = canGoBack
+            self?.bottomBarView.model.canGoBack = canGoBack
         }.store(in: &subscriptions)
 
         webContentView.model.$canGoForward.dropFirst().sink { [weak self] canGoForward in
-            self?.bottomBarView.forwardButtonEnabled = canGoForward
+            self?.bottomBarView.model.canGoForward = canGoForward
         }.store(in: &subscriptions)
 
         webContentView.model.$progress.dropFirst().sink { [weak self] progress in
