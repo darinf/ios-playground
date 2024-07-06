@@ -8,6 +8,7 @@ final class WebContentView: UIView {
     private var subscriptions: Set<AnyCancellable> = []
     private var overrideSafeAreaInsets: UIEdgeInsets?
     private var lastTranslation: CGPoint = .zero
+    private var suppressNavigation: Bool = false
 
     private static var configuration = {
         let configuration = WKWebViewConfiguration()
@@ -101,11 +102,15 @@ final class WebContentView: UIView {
 
     private func setupObservers() {
         model.$url.dropFirst().sink { [weak self] url in
-            self?.navigate(to: url)
+            guard let self, !suppressNavigation else { return }
+            navigate(to: url)
         }.store(in: &subscriptions)
 
         webView.publisher(for: \.url).dropFirst().sink { [weak self] url in
-            self?.model.url = url
+            guard let self else { return }
+            suppressNavigation = true
+            defer { suppressNavigation = false }
+            model.url = url
         }.store(in: &subscriptions)
 
         webView.publisher(for: \.canGoBack).dropFirst().sink { [weak self] canGoBack in
@@ -122,7 +127,7 @@ final class WebContentView: UIView {
     }
 
     private func navigate(to url: URL?) {
-        if let url, url != webView.url {
+        if let url {
             print(">>> navigating to: \(url)")
             webView.load(.init(url: url))
         }

@@ -3,7 +3,6 @@ import UIKit
 
 final class URLInputView: UIView {
     let model = URLInputViewModel()
-
     private var subscriptions: Set<AnyCancellable> = []
 
     enum Metrics {
@@ -103,6 +102,7 @@ final class URLInputView: UIView {
         model.$showing.dropFirst().sink { [weak self] showing in
             guard let self else { return }
             if showing {
+                superview?.bringSubviewToFront(self)
                 UIView.animate(withDuration: 0.2) {
                     self.layer.opacity = 1
                 }

@@ -2,6 +2,8 @@ import Combine
 import UIKit
 
 class MainViewController: UIViewController {
+    let model = MainViewModel()
+
     private var subscriptions: Set<AnyCancellable> = []
     private var bottomBarOffset: CGFloat = .zero
 
@@ -28,7 +30,6 @@ class MainViewController: UIViewController {
             guard let self else { return }
             switch action {
             case .editURL:
-                view.bringSubviewToFront(urlInputView)
                 urlInputView.model.showing = true
             case .goBack:
                 webContentView.goBack()
@@ -147,14 +148,7 @@ class MainViewController: UIViewController {
         }.store(in: &subscriptions)
 
         urlInputView.model.$text.dropFirst().sink { [weak self] text in
-            guard let self else { return }
-            let url: URL?
-            if text.starts(with: "http://") || text.starts(with: "https://") {
-                url = URL(string: text)
-            } else {
-                url = URL(string: "https://www.google.com/search?q=\(text)")
-            }
-            webContentView.model.url = url
+            self?.webContentView.model.url = URLInput.url(from: text)
         }.store(in: &subscriptions)
     }
 
