@@ -117,24 +117,21 @@ final class URLInputView: UIView {
     }
 
     @objc private func onDismiss() {
-        model.showing = false
+        model.dismiss()
     }
 
     @objc private func onPan() {
         let threshold: CGFloat = 25
         let translation = panGestureRecognizer.translation(in: contentBox)
         if translation.y > threshold {
-            model.showing = false
+            model.dismiss()
         }
     }
 }
 
 extension URLInputView: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        model.showing = false
-        if let text = textField.text {
-            model.text = text
-        }
+        model.dismiss(withResult: textField.text)
         return true
     }
 }

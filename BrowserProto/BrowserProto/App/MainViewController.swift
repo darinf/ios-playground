@@ -30,7 +30,7 @@ class MainViewController: UIViewController {
             guard let self else { return }
             switch action {
             case .editURL:
-                urlInputView.model.showing = true
+                urlInputView.model.show()
             case .goBack:
                 webContentView.goBack()
             case .goForward:
