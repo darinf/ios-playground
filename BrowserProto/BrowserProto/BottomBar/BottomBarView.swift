@@ -189,13 +189,9 @@ final class BottomBarView: UIVisualEffectView {
         let threshold: CGFloat = 25
 
         if translation < threshold {
-            if !model.expanded {
-                model.expanded = true
-            }
+            model.update(expanded: true)
         } else if translation > threshold {
-            if model.expanded {
-                model.expanded = false
-            }
+            model.update(expanded: false)
         }
     }
 

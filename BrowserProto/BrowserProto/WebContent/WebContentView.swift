@@ -8,7 +8,6 @@ final class WebContentView: UIView {
     private var subscriptions: Set<AnyCancellable> = []
     private var overrideSafeAreaInsets: UIEdgeInsets?
     private var lastTranslation: CGPoint = .zero
-    private var suppressNavigation: Bool = false
 
     private static var configuration = {
         let configuration = WKWebViewConfiguration()
@@ -101,28 +100,25 @@ final class WebContentView: UIView {
     }
 
     private func setupObservers() {
-        model.$url.dropFirst().sink { [weak self] url in
-            guard let self, !suppressNavigation else { return }
-            navigate(to: url)
+        model.$requestedURL.dropFirst().sink { [weak self] url in
+            self?.navigate(to: url)
         }.store(in: &subscriptions)
 
         webView.publisher(for: \.url).dropFirst().sink { [weak self] url in
             guard let self else { return }
-            suppressNavigation = true
-            defer { suppressNavigation = false }
-            model.url = url
+            model.update(url: url)
         }.store(in: &subscriptions)
 
         webView.publisher(for: \.canGoBack).dropFirst().sink { [weak self] canGoBack in
-            self?.model.canGoBack = canGoBack
+            self?.model.update(canGoBack: canGoBack)
         }.store(in: &subscriptions)
 
         webView.publisher(for: \.canGoForward).dropFirst().sink { [weak self] canGoForward in
-            self?.model.canGoForward = canGoForward
+            self?.model.update(canGoForward: canGoForward)
         }.store(in: &subscriptions)
 
         webView.publisher(for: \.isLoading).combineLatest(webView.publisher(for: \.estimatedProgress)).dropFirst().sink { [weak self] in
-            self?.updateProgress(isLoading: $0.0, estimatedProgress: $0.1)
+            self?.model.updateProgress(isLoading: $0.0, estimatedProgress: $0.1)
         }.store(in: &subscriptions)
     }
 
@@ -130,18 +126,6 @@ final class WebContentView: UIView {
         if let url {
             print(">>> navigating to: \(url)")
             webView.load(.init(url: url))
-        }
-    }
-
-    private func updateProgress(isLoading: Bool, estimatedProgress: Double) {
-        let progress: Double?
-        if isLoading {
-            progress = estimatedProgress
-        } else {
-            progress = nil
-        }
-        if model.progress != progress {
-            model.progress = progress
         }
     }
 
@@ -169,9 +153,9 @@ final class WebContentView: UIView {
         }
 
         if panning {
-            model.panningDeltaY = deltaY
+            model.update(panningDeltaY: deltaY)
         } else {
-            model.panningDeltaY = nil
+            model.update(panningDeltaY: nil)
         }
     }
 

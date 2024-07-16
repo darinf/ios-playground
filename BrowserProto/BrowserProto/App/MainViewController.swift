@@ -76,7 +76,7 @@ class MainViewController: UIViewController {
         super.viewDidAppear(animated)
         view.setNeedsUpdateConstraints()
 
-        webContentView.model.url = URL(string: "https://news.ycombinator.com/")
+        webContentView.model.navigate(to: URL(string: "https://news.ycombinator.com/"))
     }
 
     override func viewSafeAreaInsetsDidChange() {
@@ -127,20 +127,20 @@ class MainViewController: UIViewController {
         }.store(in: &subscriptions)
 
         webContentView.model.$url.dropFirst().sink { [weak self] url in
-            self?.bottomBarView.model.url = url
+            self?.bottomBarView.model.update(url: url)
             self?.resetBottomBarOffset()
         }.store(in: &subscriptions)
 
         webContentView.model.$canGoBack.dropFirst().sink { [weak self] canGoBack in
-            self?.bottomBarView.model.canGoBack = canGoBack
+            self?.bottomBarView.model.update(canGoBack: canGoBack)
         }.store(in: &subscriptions)
 
         webContentView.model.$canGoForward.dropFirst().sink { [weak self] canGoForward in
-            self?.bottomBarView.model.canGoForward = canGoForward
+            self?.bottomBarView.model.update(canGoForward: canGoForward)
         }.store(in: &subscriptions)
 
         webContentView.model.$progress.dropFirst().sink { [weak self] progress in
-            self?.bottomBarView.model.progress = progress
+            self?.bottomBarView.model.update(progress: progress)
         }.store(in: &subscriptions)
 
         webContentView.model.$panningDeltaY.dropFirst().sink { [weak self] panningDeltaY in
@@ -148,7 +148,7 @@ class MainViewController: UIViewController {
         }.store(in: &subscriptions)
 
         urlInputView.model.$text.dropFirst().sink { [weak self] text in
-            self?.webContentView.model.url = URLInput.url(from: text)
+            self?.webContentView.model.navigate(to: URLInput.url(from: text))
         }.store(in: &subscriptions)
     }
 
