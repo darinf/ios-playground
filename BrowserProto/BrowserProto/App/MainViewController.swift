@@ -154,10 +154,6 @@ class MainViewController: UIViewController {
         model.webContentViewModel.$panningDeltaY.dropFirst().sink { [weak self] panningDeltaY in
             self?.updateBottomBarOffset(panningDeltaY: panningDeltaY)
         }.store(in: &subscriptions)
-//
-//        model.urlInputViewModel.$text.dropFirst().sink { [weak self] text in
-//            self?.model.webContentViewModel.navigate(to: URLInput.url(from: text))
-//        }.store(in: &subscriptions)
     }
 
     private func updateLayout(expanded: Bool, animated: Bool) {
@@ -194,9 +190,13 @@ class MainViewController: UIViewController {
     private func updateBottomBarOffset(panningDeltaY: CGFloat?) {
         let maxOffset = bottomBarMaxOffset
         if let panningDeltaY {
-            setBottomBarOffset(max(min(bottomBarOffset + panningDeltaY, maxOffset), 0))
+            animateBottomBarOffset(to: max(min(bottomBarOffset + panningDeltaY, maxOffset), 0))
         } else if bottomBarOffset < maxOffset {
-            resetBottomBarOffset()
+            if bottomBarOffset / maxOffset > 0.5 {
+                animateBottomBarOffset(to: maxOffset)
+            } else {
+                resetBottomBarOffset()
+            }
         }
     }
 
@@ -214,9 +214,13 @@ class MainViewController: UIViewController {
         )
     }
 
-    private func resetBottomBarOffset() {
+    private func animateBottomBarOffset(to offset: CGFloat) {
         UIView.animate(withDuration: 0.2) { [self] in
-            setBottomBarOffset(0)
+            setBottomBarOffset(offset)
         }
+    }
+
+    private func resetBottomBarOffset() {
+        animateBottomBarOffset(to: 0)
     }
 }
