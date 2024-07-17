@@ -21,8 +21,7 @@ final class BottomBarView: UIVisualEffectView {
         case editURL
     }
 
-    let model = BottomBarViewModel()
-
+    private let model: BottomBarViewModel
     private let handler: (Action) -> Void
     private var subscriptions: Set<AnyCancellable> = []
 
@@ -82,7 +81,8 @@ final class BottomBarView: UIVisualEffectView {
         UIPanGestureRecognizer(target: self, action: #selector(onPan))
     }()
 
-    init(handler: @escaping (Action) -> Void) {
+    init(model: BottomBarViewModel, handler: @escaping (Action) -> Void) {
+        self.model = model
         self.handler = handler
         super.init(effect: UIBlurEffect(style: .systemThinMaterial))
 
@@ -160,27 +160,23 @@ final class BottomBarView: UIVisualEffectView {
     }
 
     private func setupObservers() {
-        model.$expanded.dropFirst().sink { [weak self] expanded in
+        model.$expanded.dropFirst().removeDuplicates().sink { [weak self] expanded in
             self?.onUpdateLayout(expanded: expanded)
         }.store(in: &subscriptions)
 
-        model.$url.dropFirst().sink { [weak self] url in
-            self?.urlBarView.setDisplayText(url?.host() ?? "")
-        }.store(in: &subscriptions)
-
-        model.$canGoBack.dropFirst().sink { [weak self] canGoBack in
+        model.$canGoBack.dropFirst().removeDuplicates().sink { [weak self] canGoBack in
             self?.backButton.isEnabled = canGoBack
         }.store(in: &subscriptions)
 
-        model.$canGoForward.dropFirst().sink { [weak self] canGoForward in
+        model.$canGoForward.dropFirst().removeDuplicates().sink { [weak self] canGoForward in
             self?.forwardButton.isEnabled = canGoForward
         }.store(in: &subscriptions)
 
-        model.$url.dropFirst().sink { [weak self] url in
+        model.$url.dropFirst().removeDuplicates().sink { [weak self] url in
             self?.urlBarView.setDisplayText(url?.host() ?? "")
         }.store(in: &subscriptions)
 
-        model.$progress.dropFirst().sink { [weak self] progress in
+        model.$progress.dropFirst().removeDuplicates().sink { [weak self] progress in
             self?.urlBarView.setProgress(progress)
         }.store(in: &subscriptions)
     }
@@ -189,9 +185,9 @@ final class BottomBarView: UIVisualEffectView {
         let threshold: CGFloat = 25
 
         if translation < threshold {
-            model.update(expanded: true)
+            model.expanded = true
         } else if translation > threshold {
-            model.update(expanded: false)
+            model.expanded = false
         }
     }
 

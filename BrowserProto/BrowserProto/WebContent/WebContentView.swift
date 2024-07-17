@@ -3,8 +3,7 @@ import UIKit
 import WebKit
 
 final class WebContentView: UIView {
-    let model = WebContentViewModel()
-
+    private let model: WebContentViewModel
     private var subscriptions: Set<AnyCancellable> = []
     private var overrideSafeAreaInsets: UIEdgeInsets?
     private var lastTranslation: CGPoint = .zero
@@ -31,7 +30,8 @@ final class WebContentView: UIView {
         return gesture
     }()
 
-    init() {
+    init(model: WebContentViewModel) {
+        self.model = model
         super.init(frame: .zero)
 
         webView.scrollView.addGestureRecognizer(panGestureRecognizer)
@@ -105,16 +105,15 @@ final class WebContentView: UIView {
         }.store(in: &subscriptions)
 
         webView.publisher(for: \.url).dropFirst().sink { [weak self] url in
-            guard let self else { return }
-            model.update(url: url)
+            self?.model.url = url
         }.store(in: &subscriptions)
 
         webView.publisher(for: \.canGoBack).dropFirst().sink { [weak self] canGoBack in
-            self?.model.update(canGoBack: canGoBack)
+            self?.model.canGoBack = canGoBack
         }.store(in: &subscriptions)
 
         webView.publisher(for: \.canGoForward).dropFirst().sink { [weak self] canGoForward in
-            self?.model.update(canGoForward: canGoForward)
+            self?.model.canGoForward = canGoForward
         }.store(in: &subscriptions)
 
         webView.publisher(for: \.isLoading).combineLatest(webView.publisher(for: \.estimatedProgress)).dropFirst().sink { [weak self] in
@@ -153,9 +152,9 @@ final class WebContentView: UIView {
         }
 
         if panning {
-            model.update(panningDeltaY: deltaY)
+            model.panningDeltaY = deltaY
         } else {
-            model.update(panningDeltaY: nil)
+            model.panningDeltaY = nil
         }
     }
 

@@ -14,11 +14,17 @@ class MainViewController: UIViewController {
     }()
 
     private lazy var urlInputView = {
-        URLInputView()
+        URLInputView(model: model.urlInputViewModel) { [weak self] action in
+            guard let self else { return }
+            switch action {
+            case .navigate(let text):
+                model.webContentViewModel.navigate(to: URLInput.url(from: text))
+            }
+        }
     }()
 
     private lazy var webContentView = {
-        WebContentView()
+        WebContentView(model: model.webContentViewModel)
     }()
 
     private lazy var topBarView = {
@@ -26,17 +32,19 @@ class MainViewController: UIViewController {
     }()
 
     private lazy var bottomBarView = {
-        BottomBarView() { [weak self] action in
+        BottomBarView(model: model.bottomBarViewModel) { [weak self] action in
             guard let self else { return }
             switch action {
             case .editURL:
-                urlInputView.model.show()
+                model.urlInputViewModel.showing = true
             case .goBack:
                 webContentView.goBack()
             case .goForward:
                 webContentView.goForward()
-            default:
-                print(">>> unhandled action: \(action)")
+            case .showTabs:
+                print(">>> showTabs")
+            case .showMenu:
+                print(">>> showMenu")
             }
         }
     }()
@@ -76,7 +84,7 @@ class MainViewController: UIViewController {
         super.viewDidAppear(animated)
         view.setNeedsUpdateConstraints()
 
-        webContentView.model.navigate(to: URL(string: "https://news.ycombinator.com/"))
+        model.webContentViewModel.navigate(to: URL(string: "https://news.ycombinator.com/"))
     }
 
     override func viewSafeAreaInsetsDidChange() {
@@ -85,7 +93,7 @@ class MainViewController: UIViewController {
     }
 
     override func updateViewConstraints() {
-        updateLayout(expanded: bottomBarView.model.expanded, animated: false)
+        updateLayout(expanded: model.bottomBarViewModel.expanded, animated: false)
         super.updateViewConstraints()
     }
 
@@ -122,34 +130,34 @@ class MainViewController: UIViewController {
     }
 
     private func setupObservers() {
-        bottomBarView.model.$expanded.dropFirst().sink { [weak self] expanded in
+        model.bottomBarViewModel.$expanded.dropFirst().sink { [weak self] expanded in
             self?.updateLayout(expanded: expanded, animated: true)
         }.store(in: &subscriptions)
 
-        webContentView.model.$url.dropFirst().sink { [weak self] url in
-            self?.bottomBarView.model.update(url: url)
+        model.webContentViewModel.$url.dropFirst().sink { [weak self] url in
+            self?.model.bottomBarViewModel.url = url
             self?.resetBottomBarOffset()
         }.store(in: &subscriptions)
 
-        webContentView.model.$canGoBack.dropFirst().sink { [weak self] canGoBack in
-            self?.bottomBarView.model.update(canGoBack: canGoBack)
+        model.webContentViewModel.$canGoBack.dropFirst().sink { [weak self] canGoBack in
+            self?.model.bottomBarViewModel.canGoBack = canGoBack
         }.store(in: &subscriptions)
 
-        webContentView.model.$canGoForward.dropFirst().sink { [weak self] canGoForward in
-            self?.bottomBarView.model.update(canGoForward: canGoForward)
+        model.webContentViewModel.$canGoForward.dropFirst().sink { [weak self] canGoForward in
+            self?.model.bottomBarViewModel.canGoForward = canGoForward
         }.store(in: &subscriptions)
 
-        webContentView.model.$progress.dropFirst().sink { [weak self] progress in
-            self?.bottomBarView.model.update(progress: progress)
+        model.webContentViewModel.$progress.dropFirst().sink { [weak self] progress in
+            self?.model.bottomBarViewModel.progress = progress
         }.store(in: &subscriptions)
 
-        webContentView.model.$panningDeltaY.dropFirst().sink { [weak self] panningDeltaY in
+        model.webContentViewModel.$panningDeltaY.dropFirst().sink { [weak self] panningDeltaY in
             self?.updateBottomBarOffset(panningDeltaY: panningDeltaY)
         }.store(in: &subscriptions)
-
-        urlInputView.model.$text.dropFirst().sink { [weak self] text in
-            self?.webContentView.model.navigate(to: URLInput.url(from: text))
-        }.store(in: &subscriptions)
+//
+//        model.urlInputViewModel.$text.dropFirst().sink { [weak self] text in
+//            self?.model.webContentViewModel.navigate(to: URLInput.url(from: text))
+//        }.store(in: &subscriptions)
     }
 
     private func updateLayout(expanded: Bool, animated: Bool) {
@@ -179,7 +187,7 @@ class MainViewController: UIViewController {
     }
 
     private var bottomBarMaxOffset: CGFloat {
-        let expanded = bottomBarView.model.expanded
+        let expanded = model.bottomBarViewModel.expanded
         return (expanded ? BottomBarView.Metrics.contentBoxExpandedHeight : BottomBarView.Metrics.contentBoxCompactHeight) + BottomBarView.Metrics.margin
     }
 

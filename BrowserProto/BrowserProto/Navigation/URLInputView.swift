@@ -2,7 +2,8 @@ import Combine
 import UIKit
 
 final class URLInputView: UIView {
-    let model = URLInputViewModel()
+    private let model: URLInputViewModel
+    private let handler: (Action) -> Void
     private var subscriptions: Set<AnyCancellable> = []
 
     enum Metrics {
@@ -10,6 +11,10 @@ final class URLInputView: UIView {
         static let textFieldContainerHeight: CGFloat = 40
         static let textFieldMargin: CGFloat = textFieldContainerHeight / 2
         static let contentBoxHeight: CGFloat = textFieldContainerHeight + 2 * margin
+    }
+
+    enum Action {
+        case navigate(String)
     }
 
     lazy var contentBox = {
@@ -44,7 +49,9 @@ final class URLInputView: UIView {
         UIPanGestureRecognizer(target: self, action: #selector(onPan))
     }()
 
-    init() {
+    init(model: URLInputViewModel, handler: @escaping (Action) -> Void) {
+        self.model = model
+        self.handler = handler
         super.init(frame: .zero)
 
         backgroundColor = .systemFill
@@ -117,21 +124,24 @@ final class URLInputView: UIView {
     }
 
     @objc private func onDismiss() {
-        model.dismiss()
+        model.showing = false
     }
 
     @objc private func onPan() {
         let threshold: CGFloat = 25
         let translation = panGestureRecognizer.translation(in: contentBox)
         if translation.y > threshold {
-            model.dismiss()
+            model.showing = false
         }
     }
 }
 
 extension URLInputView: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        model.dismiss(withResult: textField.text)
+        if let text = textField.text {
+            handler(.navigate(text))
+        }
+        model.showing = false
         return true
     }
 }
