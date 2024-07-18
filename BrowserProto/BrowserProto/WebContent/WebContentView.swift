@@ -3,8 +3,12 @@ import UIKit
 import WebKit
 
 final class WebContentView: UIView {
+    enum Action {}
+
     private let model: WebContentViewModel
+    private let handler: (Action) -> Void
     private var subscriptions: Set<AnyCancellable> = []
+    private var webViewSubscriptions: Set<AnyCancellable> = []
     private var overrideSafeAreaInsets: UIEdgeInsets?
     private var lastTranslation: CGPoint = .zero
 
@@ -14,13 +18,7 @@ final class WebContentView: UIView {
         return configuration
     }()
 
-    private lazy var webView = {
-        let webView = WKWebView(frame: .zero, configuration: Self.configuration)
-        webView.allowsBackForwardNavigationGestures = true
-        webView.scrollView.clipsToBounds = false
-        webView.scrollView.contentInsetAdjustmentBehavior = .always
-        return webView
-    }()
+    private var webView: WKWebView!
 
     private lazy var panGestureRecognizer = {
         let gesture = UIPanGestureRecognizer(target: self, action: #selector(onPan))
@@ -30,10 +28,33 @@ final class WebContentView: UIView {
         return gesture
     }()
 
-    init(model: WebContentViewModel) {
+    init(model: WebContentViewModel, handler: @escaping (Action) -> Void) {
         self.model = model
+        self.handler = handler
+
         super.init(frame: .zero)
 
+        setWebView(Self.createWebView(id: .init(), configuration: Self.configuration))
+
+        setupObservers()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    func setWebView(_ webView: WKWebView) {
+        if let existingWebView = self.webView {
+            existingWebView.uiDelegate = nil
+            existingWebView.scrollView.removeGestureRecognizer(panGestureRecognizer)
+            existingWebView.scrollView.refreshControl = nil
+            existingWebView.removeFromSuperview()
+            webViewSubscriptions.removeAll()
+        }
+
+        self.webView = webView
+
+        webView.uiDelegate = self
         webView.scrollView.addGestureRecognizer(panGestureRecognizer)
 
         let refreshControl = UIRefreshControl()
@@ -49,12 +70,8 @@ final class WebContentView: UIView {
 
         addSubview(webView)
 
-        setupConstraints()
-        setupObservers()
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        setupWebViewObservers()
+//        setupWebViewConstraints()
     }
 
     func updateLayout(insets: UIEdgeInsets) {
@@ -89,36 +106,38 @@ final class WebContentView: UIView {
         webView.goForward()
     }
 
-    private func setupConstraints() {
-        webView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            webView.topAnchor.constraint(equalTo: topAnchor),
-            webView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            webView.widthAnchor.constraint(equalTo: widthAnchor),
-            webView.heightAnchor.constraint(equalTo: heightAnchor)
-        ])
-    }
+//    private func setupWebViewConstraints() {
+//        webView.translatesAutoresizingMaskIntoConstraints = false
+//        NSLayoutConstraint.activate([
+//            webView.topAnchor.constraint(equalTo: topAnchor),
+//            webView.bottomAnchor.constraint(equalTo: bottomAnchor),
+//            webView.widthAnchor.constraint(equalTo: widthAnchor),
+//            webView.heightAnchor.constraint(equalTo: heightAnchor)
+//        ])
+//    }
 
     private func setupObservers() {
         model.$requestedURL.dropFirst().sink { [weak self] url in
             self?.navigate(to: url)
         }.store(in: &subscriptions)
+    }
 
+    private func setupWebViewObservers() {
         webView.publisher(for: \.url).dropFirst().sink { [weak self] url in
             self?.model.url = url
-        }.store(in: &subscriptions)
+        }.store(in: &webViewSubscriptions)
 
         webView.publisher(for: \.canGoBack).dropFirst().sink { [weak self] canGoBack in
             self?.model.canGoBack = canGoBack
-        }.store(in: &subscriptions)
+        }.store(in: &webViewSubscriptions)
 
         webView.publisher(for: \.canGoForward).dropFirst().sink { [weak self] canGoForward in
             self?.model.canGoForward = canGoForward
-        }.store(in: &subscriptions)
+        }.store(in: &webViewSubscriptions)
 
         webView.publisher(for: \.isLoading).combineLatest(webView.publisher(for: \.estimatedProgress)).dropFirst().sink { [weak self] in
             self?.model.updateProgress(isLoading: $0.0, estimatedProgress: $0.1)
-        }.store(in: &subscriptions)
+        }.store(in: &webViewSubscriptions)
     }
 
     private func navigate(to url: URL?) {
@@ -126,6 +145,11 @@ final class WebContentView: UIView {
             print(">>> navigating to: \(url)")
             webView.load(.init(url: url))
         }
+    }
+
+    override func layoutSubviews() {
+        print(">>> layoutSubviews()")
+        webView.frame = bounds
     }
 
     override var safeAreaInsets: UIEdgeInsets {
@@ -167,6 +191,15 @@ final class WebContentView: UIView {
             }
         }
     }
+
+    private static func createWebView(id: WebViewID, configuration: WKWebViewConfiguration) -> WKWebView {
+        let webView = WKWebView(frame: .zero, configuration: configuration)
+        webView.allowsBackForwardNavigationGestures = true
+        webView.scrollView.clipsToBounds = false
+        webView.scrollView.contentInsetAdjustmentBehavior = .always
+        WebViewStore.shared.insert(webView, withID: id)
+        return webView
+    }
 }
 
 extension WebContentView: UIGestureRecognizerDelegate {
@@ -175,5 +208,23 @@ extension WebContentView: UIGestureRecognizerDelegate {
         shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer
     ) -> Bool {
         return true
+    }
+}
+
+extension WebContentView: WKUIDelegate {
+    func webView(
+        _ webView: WKWebView,
+        createWebViewWith configuration: WKWebViewConfiguration,
+        for navigationAction: WKNavigationAction,
+        windowFeatures: WKWindowFeatures
+    ) -> WKWebView? {
+        let newWebView = Self.createWebView(id: .init(), configuration: configuration)
+
+        DispatchQueue.main.async { [self] in
+            setWebView(newWebView)
+            setNeedsLayout()
+        }
+
+        return newWebView
     }
 }

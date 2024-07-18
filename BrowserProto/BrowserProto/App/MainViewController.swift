@@ -24,7 +24,7 @@ class MainViewController: UIViewController {
     }()
 
     private lazy var webContentView = {
-        WebContentView(model: model.webContentViewModel)
+        WebContentView(model: model.webContentViewModel, handler: { _ in })
     }()
 
     private lazy var topBarView = {
