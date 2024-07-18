@@ -4,14 +4,13 @@ import UIKit
 import WebKit
 
 final class WebContentViewModel {
-    @Published var id: WebViewID?
+    @Published private(set) var id: WebViewID?
     @Published var url: URL?
     @Published var canGoBack: Bool = false
     @Published var canGoForward: Bool = false
     @Published private(set) var progress: Double?
     @Published var panningDeltaY: CGFloat?
-
-    private var backStack: [WebViewID] = []
+    @Published private(set) var backStack: [WebViewID] = []
 
     private var webView: WKWebView? {
         guard let id else { return nil }
@@ -36,10 +35,22 @@ final class WebContentViewModel {
     }
 
     func goBack() {
-        webView?.goBack()
+        if let webView, webView.canGoBack {
+            webView.goBack()
+        } else if !backStack.isEmpty {
+            id = backStack.first
+            backStack.removeFirst()
+        }
     }
 
     func goForward() {
         webView?.goForward()
+    }
+
+    func pushWebView(withID newWebViewID: WebViewID) {
+        if let id {
+            backStack.insert(id, at: 0)
+        }
+        id = newWebViewID
     }
 }

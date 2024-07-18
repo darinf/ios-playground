@@ -37,7 +37,7 @@ final class WebContentView: UIView {
 
         let webViewID = WebViewID()
         _ = Self.createWebView(id: webViewID, configuration: Self.configuration)
-        model.id = webViewID
+        model.pushWebView(withID: webViewID)
 
         setupObservers()
     }
@@ -136,8 +136,15 @@ final class WebContentView: UIView {
             self?.model.url = url
         }.store(in: &webViewSubscriptions)
 
-        webView.publisher(for: \.canGoBack, options: [.initial]).sink { [weak self] canGoBack in
-            self?.model.canGoBack = canGoBack
+        Publishers.CombineLatest(
+            model.$backStack,
+            webView.publisher(for: \.canGoBack, options: [.initial])
+        ).sink { [weak self] (backStack, canGoBack) in
+            if canGoBack {
+                self?.model.canGoBack = true
+            } else {
+                self?.model.canGoBack = !backStack.isEmpty
+            }
         }.store(in: &webViewSubscriptions)
 
         webView.publisher(for: \.canGoForward, options: [.initial]).sink { [weak self] canGoForward in
@@ -225,7 +232,7 @@ extension WebContentView: WKUIDelegate {
         let newWebView = Self.createWebView(id: newWebViewID, configuration: configuration)
 
         DispatchQueue.main.async { [self] in
-            model.id = newWebViewID
+            model.pushWebView(withID: newWebViewID)
         }
 
         return newWebView
