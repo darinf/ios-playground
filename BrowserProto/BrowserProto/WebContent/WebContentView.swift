@@ -29,6 +29,12 @@ final class WebContentView: UIView {
         return gesture
     }()
 
+    private lazy var edgeSwipeGestureRecognizer = {
+        let gesture = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(onLeftEdgeSwipe))
+        gesture.edges = [.left]
+        return gesture
+    }()
+
     init(model: WebContentViewModel, handler: @escaping (Action) -> Void) {
         self.model = model
         self.handler = handler
@@ -140,10 +146,15 @@ final class WebContentView: UIView {
             model.$backStack,
             webView.publisher(for: \.canGoBack, options: [.initial])
         ).sink { [weak self] (backStack, canGoBack) in
+            guard let self else { return }
+            webView.removeGestureRecognizer(edgeSwipeGestureRecognizer)
             if canGoBack {
-                self?.model.canGoBack = true
+                model.canGoBack = true
             } else {
-                self?.model.canGoBack = !backStack.isEmpty
+                model.canGoBack = !backStack.isEmpty
+                if !backStack.isEmpty {
+                    webView.addGestureRecognizer(edgeSwipeGestureRecognizer)
+                }
             }
         }.store(in: &webViewSubscriptions)
 
@@ -187,6 +198,11 @@ final class WebContentView: UIView {
         } else {
             model.panningDeltaY = nil
         }
+    }
+
+    @objc private func onLeftEdgeSwipe(_ gesture: UIScreenEdgePanGestureRecognizer) {
+        // TODO: Add animation
+        model.goBack()
     }
 
     @objc private func onRefresh() {
