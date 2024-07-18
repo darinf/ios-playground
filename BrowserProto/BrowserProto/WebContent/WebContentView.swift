@@ -18,7 +18,8 @@ final class WebContentView: UIView {
         return configuration
     }()
 
-    private var webView: WKWebView!
+    private var webView: WKWebView?
+    private var webViewConstraints: [NSLayoutConstraint] = []
 
     private lazy var panGestureRecognizer = {
         let gesture = UIPanGestureRecognizer(target: self, action: #selector(onPan))
@@ -34,7 +35,9 @@ final class WebContentView: UIView {
 
         super.init(frame: .zero)
 
-        setWebView(Self.createWebView(id: .init(), configuration: Self.configuration))
+        let webViewID = WebViewID()
+        _ = Self.createWebView(id: webViewID, configuration: Self.configuration)
+        model.id = webViewID
 
         setupObservers()
     }
@@ -43,8 +46,10 @@ final class WebContentView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func setWebView(_ webView: WKWebView) {
+    func setWebView(_ webView: WKWebView?) {
         if let existingWebView = self.webView {
+            NSLayoutConstraint.deactivate(webViewConstraints)
+            webViewConstraints = []
             existingWebView.uiDelegate = nil
             existingWebView.scrollView.removeGestureRecognizer(panGestureRecognizer)
             existingWebView.scrollView.refreshControl = nil
@@ -53,6 +58,8 @@ final class WebContentView: UIView {
         }
 
         self.webView = webView
+
+        guard let webView else { return }
 
         webView.uiDelegate = self
         webView.scrollView.addGestureRecognizer(panGestureRecognizer)
@@ -71,10 +78,15 @@ final class WebContentView: UIView {
         addSubview(webView)
 
         setupWebViewObservers()
-//        setupWebViewConstraints()
+        setupWebViewConstraints()
     }
 
     func updateLayout(insets: UIEdgeInsets) {
+        overrideSafeAreaInsets = insets
+        setNeedsLayout()
+
+        guard let webView else { return }
+
         webView.setValue(
             UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0),
             forKey: "unobscuredSafeAreaInsets"
@@ -85,8 +97,6 @@ final class WebContentView: UIView {
         )
         webView.setMinimumViewportInset(insets, maximumViewportInset: insets)
 
-        overrideSafeAreaInsets = insets
-
         // TODO: Might need to tweak this further.
         webView.scrollView.verticalScrollIndicatorInsets = .init(
             top: insets.top,
@@ -94,62 +104,71 @@ final class WebContentView: UIView {
             bottom: insets.bottom - super.safeAreaInsets.bottom,
             right: 0
         )
-
-        setNeedsLayout()
     }
 
     func goBack() {
-        webView.goBack()
+        webView?.goBack()
     }
 
     func goForward() {
-        webView.goForward()
+        webView?.goForward()
     }
 
-//    private func setupWebViewConstraints() {
-//        webView.translatesAutoresizingMaskIntoConstraints = false
-//        NSLayoutConstraint.activate([
-//            webView.topAnchor.constraint(equalTo: topAnchor),
-//            webView.bottomAnchor.constraint(equalTo: bottomAnchor),
-//            webView.widthAnchor.constraint(equalTo: widthAnchor),
-//            webView.heightAnchor.constraint(equalTo: heightAnchor)
-//        ])
-//    }
+    private func setupWebViewConstraints() {
+        guard let webView else { return }
+        webView.translatesAutoresizingMaskIntoConstraints = false
+        webViewConstraints = [
+            webView.topAnchor.constraint(equalTo: topAnchor),
+            webView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            webView.widthAnchor.constraint(equalTo: widthAnchor),
+            webView.heightAnchor.constraint(equalTo: heightAnchor)
+        ]
+        NSLayoutConstraint.activate(webViewConstraints)
+    }
 
     private func setupObservers() {
+        model.$id.sink { [weak self] id in
+            guard let self else { return }
+            if let id {
+                setWebView(WebViewStore.shared.lookup(byID: id))
+            } else {
+                setWebView(nil)
+            }
+        }.store(in: &subscriptions)
+
         model.$requestedURL.dropFirst().sink { [weak self] url in
             self?.navigate(to: url)
         }.store(in: &subscriptions)
     }
 
     private func setupWebViewObservers() {
-        webView.publisher(for: \.url).dropFirst().sink { [weak self] url in
+        guard let webView else { return }
+
+        webView.publisher(for: \.url, options: [.initial]).sink { [weak self] url in
             self?.model.url = url
         }.store(in: &webViewSubscriptions)
 
-        webView.publisher(for: \.canGoBack).dropFirst().sink { [weak self] canGoBack in
+        webView.publisher(for: \.canGoBack, options: [.initial]).sink { [weak self] canGoBack in
             self?.model.canGoBack = canGoBack
         }.store(in: &webViewSubscriptions)
 
-        webView.publisher(for: \.canGoForward).dropFirst().sink { [weak self] canGoForward in
+        webView.publisher(for: \.canGoForward, options: [.initial]).sink { [weak self] canGoForward in
             self?.model.canGoForward = canGoForward
         }.store(in: &webViewSubscriptions)
 
-        webView.publisher(for: \.isLoading).combineLatest(webView.publisher(for: \.estimatedProgress)).dropFirst().sink { [weak self] in
+        Publishers.CombineLatest(
+            webView.publisher(for: \.isLoading, options: [.initial]),
+            webView.publisher(for: \.estimatedProgress, options: [.initial])
+        ).sink { [weak self] in
             self?.model.updateProgress(isLoading: $0.0, estimatedProgress: $0.1)
         }.store(in: &webViewSubscriptions)
     }
 
     private func navigate(to url: URL?) {
-        if let url {
+        if let url, let webView {
             print(">>> navigating to: \(url)")
             webView.load(.init(url: url))
         }
-    }
-
-    override func layoutSubviews() {
-        print(">>> layoutSubviews()")
-        webView.frame = bounds
     }
 
     override var safeAreaInsets: UIEdgeInsets {
@@ -183,6 +202,7 @@ final class WebContentView: UIView {
     }
 
     @objc private func onRefresh() {
+        guard let webView else { return }
         UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
         webView.reload()
         if let refreshControl = webView.scrollView.refreshControl {
@@ -218,11 +238,13 @@ extension WebContentView: WKUIDelegate {
         for navigationAction: WKNavigationAction,
         windowFeatures: WKWindowFeatures
     ) -> WKWebView? {
-        let newWebView = Self.createWebView(id: .init(), configuration: configuration)
+        print(">>> createWebView")
+        
+        let newWebViewID = WebViewID()
+        let newWebView = Self.createWebView(id: newWebViewID, configuration: configuration)
 
         DispatchQueue.main.async { [self] in
-            setWebView(newWebView)
-            setNeedsLayout()
+            model.id = newWebViewID
         }
 
         return newWebView
