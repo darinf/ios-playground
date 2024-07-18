@@ -106,14 +106,6 @@ final class WebContentView: UIView {
         )
     }
 
-    func goBack() {
-        webView?.goBack()
-    }
-
-    func goForward() {
-        webView?.goForward()
-    }
-
     private func setupWebViewConstraints() {
         guard let webView else { return }
         webView.translatesAutoresizingMaskIntoConstraints = false
@@ -134,10 +126,6 @@ final class WebContentView: UIView {
             } else {
                 setWebView(nil)
             }
-        }.store(in: &subscriptions)
-
-        model.$requestedURL.dropFirst().sink { [weak self] url in
-            self?.navigate(to: url)
         }.store(in: &subscriptions)
     }
 
@@ -162,13 +150,6 @@ final class WebContentView: UIView {
         ).sink { [weak self] in
             self?.model.updateProgress(isLoading: $0.0, estimatedProgress: $0.1)
         }.store(in: &webViewSubscriptions)
-    }
-
-    private func navigate(to url: URL?) {
-        if let url, let webView {
-            print(">>> navigating to: \(url)")
-            webView.load(.init(url: url))
-        }
     }
 
     override var safeAreaInsets: UIEdgeInsets {

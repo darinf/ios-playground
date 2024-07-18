@@ -38,9 +38,9 @@ class MainViewController: UIViewController {
             case .editURL:
                 model.urlInputViewModel.showing = true
             case .goBack:
-                webContentView.goBack()
+                model.webContentViewModel.goBack()
             case .goForward:
-                webContentView.goForward()
+                model.webContentViewModel.goForward()
             case .showTabs:
                 print(">>> showTabs")
             case .showMenu:
