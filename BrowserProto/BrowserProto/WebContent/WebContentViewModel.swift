@@ -10,7 +10,7 @@ final class WebContentViewModel {
     @Published var canGoForward: Bool = false
     @Published private(set) var progress: Double?
     @Published var panningDeltaY: CGFloat?
-    @Published private(set) var backStack: [WebViewID] = []
+    @Published private(set) var backStack: [WebViewID] = [] // New items at the back
 
     private var webView: WKWebView? {
         guard let id else { return nil }
@@ -38,8 +38,10 @@ final class WebContentViewModel {
         if let webView, webView.canGoBack {
             webView.goBack()
         } else if !backStack.isEmpty {
-            id = backStack.first
-            backStack.removeFirst()
+            if let id {
+                WebViewStore.shared.remove(byID: id)
+            }
+            id = backStack.popLast()
         }
     }
 
@@ -49,7 +51,7 @@ final class WebContentViewModel {
 
     func pushWebView(withID newWebViewID: WebViewID) {
         if let id {
-            backStack.insert(id, at: 0)
+            backStack.append(id)
         }
         id = newWebViewID
     }
