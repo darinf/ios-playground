@@ -25,7 +25,6 @@ final class WebContentView: UIView {
     }()
 
     private var webView: WKWebView?
-    private var webViewConstraints: [NSLayoutConstraint] = []
 
     private lazy var panGestureRecognizer = {
         let gesture = UIPanGestureRecognizer(target: self, action: #selector(onPan))
@@ -60,8 +59,8 @@ final class WebContentView: UIView {
 
     func setWebView(_ webView: WKWebView?) {
         if let existingWebView = self.webView {
-            NSLayoutConstraint.deactivate(webViewConstraints)
-            webViewConstraints = []
+//            NSLayoutConstraint.deactivate(webViewConstraints)
+//            webViewConstraints = []
             existingWebView.uiDelegate = nil
             existingWebView.scrollView.removeGestureRecognizer(panGestureRecognizer)
             existingWebView.scrollView.refreshControl = nil
@@ -88,9 +87,9 @@ final class WebContentView: UIView {
         webView.scrollView.refreshControl = refreshControl
 
         addSubview(webView)
+        webView.activateContainmentConstraints(inside: self)
 
         setupWebViewObservers()
-        setupWebViewConstraints()
     }
 
     func updateLayout(insets: UIEdgeInsets) {
@@ -116,18 +115,6 @@ final class WebContentView: UIView {
             bottom: insets.bottom - super.safeAreaInsets.bottom,
             right: 0
         )
-    }
-
-    private func setupWebViewConstraints() {
-        guard let webView else { return }
-        webView.translatesAutoresizingMaskIntoConstraints = false
-        webViewConstraints = [
-            webView.topAnchor.constraint(equalTo: topAnchor),
-            webView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            webView.widthAnchor.constraint(equalTo: widthAnchor),
-            webView.heightAnchor.constraint(equalTo: heightAnchor)
-        ]
-        NSLayoutConstraint.activate(webViewConstraints)
     }
 
     private func setupObservers() {
