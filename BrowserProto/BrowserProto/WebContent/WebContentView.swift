@@ -201,8 +201,25 @@ final class WebContentView: UIView {
     }
 
     @objc private func onLeftEdgeSwipe(_ gesture: UIScreenEdgePanGestureRecognizer) {
-        // TODO: Add animation
-        model.goBack()
+        let translation = gesture.translation(in: self)
+        let offset = translation.x
+
+        if gesture.state == .ended {
+            if offset > 100 {
+                // TODO: Add image of previous WebView
+                model.goBack()
+                webView?.layer.setAffineTransform(.init(translationX: offset, y: 0))
+            }
+            UIView.animate(withDuration: 0.2) { [self] in
+                backgroundColor = .clear
+                webView?.layer.setAffineTransform(.init(translationX: 0, y: 0))
+            }
+        } else {
+            UIView.animate(withDuration: 0.01) { [self] in
+                backgroundColor = .systemFill
+                webView?.layer.setAffineTransform(.init(translationX: offset, y: 0))
+            }
+        }
     }
 
     @objc private func onRefresh() {
