@@ -5,12 +5,18 @@ import WebKit
 final class WebContentView: UIView {
     enum Action {}
 
+    private struct DragBackState {
+        let revealedWebView: WKWebView?
+        let overlay: UIView
+    }
+
     private let model: WebContentViewModel
     private let handler: (Action) -> Void
     private var subscriptions: Set<AnyCancellable> = []
     private var webViewSubscriptions: Set<AnyCancellable> = []
     private var overrideSafeAreaInsets: UIEdgeInsets?
     private var lastTranslation: CGPoint = .zero
+    private var dragBackState: DragBackState?
 
     private static var configuration = {
         let configuration = WKWebViewConfiguration()
@@ -206,19 +212,59 @@ final class WebContentView: UIView {
 
         if gesture.state == .ended {
             if offset > 100 {
-                // TODO: Add image of previous WebView
+                let exitingWebView = webView
+
+                if let dragBackState {
+                    dragBackState.revealedWebView?.removeFromSuperview()
+                    dragBackState.overlay.removeFromSuperview()
+                    self.dragBackState = nil
+                }
+
                 model.goBack()
-                webView?.layer.setAffineTransform(.init(translationX: offset, y: 0))
-            }
-            UIView.animate(withDuration: 0.2) { [self] in
-                backgroundColor = .clear
                 webView?.layer.setAffineTransform(.init(translationX: 0, y: 0))
+                
+                if let exitingWebView {
+                    addSubview(exitingWebView)
+                    bringSubviewToFront(exitingWebView)
+                    exitingWebView.activateContainmentConstraints(inside: self)
+                    exitingWebView.layer.setAffineTransform(.init(translationX: offset, y: 0))
+
+                    UIView.animate(withDuration: 0.2) { [self] in
+                        if let screen = window?.screen {
+                            exitingWebView.layer.setAffineTransform(.init(translationX: screen.bounds.width, y: 0))
+                        }
+                    } completion: { _ in
+                        exitingWebView.removeFromSuperview()
+                    }
+                }
+            } else {
+                UIView.animate(withDuration: 0.2) { [self] in
+                    webView?.layer.setAffineTransform(.init(translationX: 0, y: 0))
+                } completion: { [self] _ in
+                    if let dragBackState {
+                        dragBackState.revealedWebView?.removeFromSuperview()
+                        dragBackState.overlay.removeFromSuperview()
+                        self.dragBackState = nil
+                    }
+                }
             }
         } else {
-            UIView.animate(withDuration: 0.01) { [self] in
-                backgroundColor = .systemFill
-                webView?.layer.setAffineTransform(.init(translationX: offset, y: 0))
+            if dragBackState == nil {
+                let overlay = UIView()
+                overlay.backgroundColor = .systemFill
+                addSubview(overlay)
+                sendSubviewToBack(overlay)
+                overlay.activateContainmentConstraints(inside: self)
+
+                let revealedWebView = model.previousWebView
+                if let revealedWebView {
+                    addSubview(revealedWebView)
+                    sendSubviewToBack(revealedWebView)
+                    revealedWebView.activateContainmentConstraints(inside: self)
+                }
+                dragBackState = .init(revealedWebView: revealedWebView, overlay: overlay)
             }
+            webView?.layer.setAffineTransform(.init(translationX: offset, y: 0))
         }
     }
 

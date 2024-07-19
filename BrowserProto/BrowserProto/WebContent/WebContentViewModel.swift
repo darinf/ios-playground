@@ -12,8 +12,13 @@ final class WebContentViewModel {
     @Published var panningDeltaY: CGFloat?
     @Published private(set) var backStack: [WebViewID] = [] // New items at the back
 
-    private var webView: WKWebView? {
+    var webView: WKWebView? {
         guard let id else { return nil }
+        return WebViewStore.shared.lookup(byID: id)
+    }
+
+    var previousWebView: WKWebView? {
+        guard let id = backStack.last else { return nil }
         return WebViewStore.shared.lookup(byID: id)
     }
 

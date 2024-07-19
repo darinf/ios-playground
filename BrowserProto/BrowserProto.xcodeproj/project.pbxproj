@@ -28,6 +28,7 @@
 		93D4811F2C38C4680019921F /* URLInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D4811E2C38C4680019921F /* URLInput.swift */; };
 		93D481212C4976F90019921F /* WebViewStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D481202C4976F90019921F /* WebViewStore.swift */; };
 		93D481232C49780D0019921F /* WebViewID.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D481222C49780D0019921F /* WebViewID.swift */; };
+		93D481252C4AEBE80019921F /* UIView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D481242C4AEBE80019921F /* UIView+Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -54,6 +55,7 @@
 		93D4811E2C38C4680019921F /* URLInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLInput.swift; sourceTree = "<group>"; };
 		93D481202C4976F90019921F /* WebViewStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewStore.swift; sourceTree = "<group>"; };
 		93D481222C49780D0019921F /* WebViewID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewID.swift; sourceTree = "<group>"; };
+		93D481242C4AEBE80019921F /* UIView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extensions.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -171,6 +173,7 @@
 			isa = PBXGroup;
 			children = (
 				93D481182C31A24D0019921F /* UIColor+Extensions.swift */,
+				93D481242C4AEBE80019921F /* UIView+Extensions.swift */,
 				93D4811E2C38C4680019921F /* URLInput.swift */,
 			);
 			path = Utils;
@@ -248,6 +251,7 @@
 			files = (
 				93D481112C2DA5F00019921F /* URLInputViewModel.swift in Sources */,
 				93D4810C2C2C493B0019921F /* DropShadow.swift in Sources */,
+				93D481252C4AEBE80019921F /* UIView+Extensions.swift in Sources */,
 				93D480F42C2609950019921F /* BottomBarView.swift in Sources */,
 				93D4810A2C2B275F0019921F /* Colors.swift in Sources */,
 				93D4811F2C38C4680019921F /* URLInput.swift in Sources */,
