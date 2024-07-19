@@ -218,12 +218,17 @@ final class WebContentView: UIView {
 
     private static func createWebView(id: WebViewID, configuration: WKWebViewConfiguration) -> WKWebView {
         let webView = WKWebView(frame: .zero, configuration: configuration)
+        webView.customUserAgent = userAgentString
         webView.allowsBackForwardNavigationGestures = true
         webView.scrollView.clipsToBounds = false
         webView.scrollView.contentInsetAdjustmentBehavior = .always
         WebViewStore.shared.insert(webView, withID: id)
         return webView
     }
+
+    private static var userAgentString: String = {
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1"
+    }()
 }
 
 extension WebContentView: UIGestureRecognizerDelegate {
@@ -252,5 +257,10 @@ extension WebContentView: WKUIDelegate {
         }
 
         return newWebView
+    }
+
+    func webViewDidClose(_ webView: WKWebView) {
+        print(">>> webViewDidClose")
+        model.popBack()
     }
 }

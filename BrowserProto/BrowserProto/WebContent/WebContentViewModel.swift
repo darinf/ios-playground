@@ -37,16 +37,21 @@ final class WebContentViewModel {
     func goBack() {
         if let webView, webView.canGoBack {
             webView.goBack()
-        } else if !backStack.isEmpty {
-            if let id {
-                WebViewStore.shared.remove(byID: id)
-            }
-            id = backStack.popLast()
+        } else {
+            popBack()
         }
     }
 
     func goForward() {
         webView?.goForward()
+    }
+
+    func popBack() {
+        guard !backStack.isEmpty else { return }
+        if let id {
+            WebViewStore.shared.remove(byID: id)
+        }
+        id = backStack.popLast()
     }
 
     func pushWebView(withID newWebViewID: WebViewID) {
