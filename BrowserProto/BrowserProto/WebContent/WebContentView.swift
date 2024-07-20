@@ -59,8 +59,6 @@ final class WebContentView: UIView {
 
     func setWebView(_ webView: WKWebView?) {
         if let existingWebView = self.webView {
-//            NSLayoutConstraint.deactivate(webViewConstraints)
-//            webViewConstraints = []
             existingWebView.uiDelegate = nil
             existingWebView.scrollView.removeGestureRecognizer(panGestureRecognizer)
             existingWebView.scrollView.refreshControl = nil
