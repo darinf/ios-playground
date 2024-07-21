@@ -1,5 +1,9 @@
 import Combine
 
 final class URLInputViewModel {
-    @Published var showing: Bool = false
+    enum Mode {
+        case showing(initialValue: String)
+        case hidden
+    }
+    @Published var mode: Mode = .hidden
 }

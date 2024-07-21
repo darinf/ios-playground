@@ -36,7 +36,7 @@ class MainViewController: UIViewController {
             guard let self else { return }
             switch action {
             case .editURL:
-                model.urlInputViewModel.showing = true
+                model.urlInputViewModel.mode = .showing(initialValue: model.webContentViewModel.url?.absoluteString ?? "")
             case .goBack:
                 model.webContentViewModel.goBack()
             case .goForward:

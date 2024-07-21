@@ -106,15 +106,18 @@ final class URLInputView: UIView {
     }
 
     private func setupObservers() {
-        model.$showing.dropFirst().sink { [weak self] showing in
+        model.$mode.dropFirst().sink { [weak self] mode in
             guard let self else { return }
-            if showing {
+            switch mode {
+            case .showing(let initialValue):
                 superview?.bringSubviewToFront(self)
                 UIView.animate(withDuration: 0.2) {
                     self.layer.opacity = 1
                 }
+                textField.text = initialValue
                 textField.becomeFirstResponder()
-            } else {
+                textField.selectAll(nil)
+            case .hidden:
                 textField.resignFirstResponder()
                 UIView.animate(withDuration: 0.2) {
                     self.layer.opacity = 0
@@ -124,14 +127,14 @@ final class URLInputView: UIView {
     }
 
     @objc private func onDismiss() {
-        model.showing = false
+        model.mode = .hidden
     }
 
     @objc private func onPan() {
         let threshold: CGFloat = 25
         let translation = panGestureRecognizer.translation(in: contentBox)
         if translation.y > threshold {
-            model.showing = false
+            model.mode = .hidden
         }
     }
 }
@@ -141,7 +144,7 @@ extension URLInputView: UITextFieldDelegate {
         if let text = textField.text {
             handler(.navigate(text))
         }
-        model.showing = false
+        model.mode = .hidden
         return true
     }
 }

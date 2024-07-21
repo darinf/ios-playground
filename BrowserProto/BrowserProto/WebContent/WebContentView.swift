@@ -21,6 +21,7 @@ final class WebContentView: UIView {
     private static var configuration = {
         let configuration = WKWebViewConfiguration()
         configuration.allowsInlineMediaPlayback = true
+        configuration.ignoresViewportScaleLimits = true
         return configuration
     }()
 
