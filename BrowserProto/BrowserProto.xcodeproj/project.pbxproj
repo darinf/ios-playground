@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		93C94CD92C4F2C2D00E3BB13 /* SearchEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93C94CD82C4F2C2D00E3BB13 /* SearchEngine.swift */; };
+		93C94CDB2C4F34BB00E3BB13 /* SuggestionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93C94CDA2C4F34BB00E3BB13 /* SuggestionsView.swift */; };
 		93D480DE2C25D9600019921F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D480DD2C25D9600019921F /* AppDelegate.swift */; };
 		93D480E22C25D9600019921F /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D480E12C25D9600019921F /* MainViewController.swift */; };
 		93D480E72C25D9610019921F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 93D480E62C25D9610019921F /* Assets.xcassets */; };
@@ -32,6 +34,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		93C94CD82C4F2C2D00E3BB13 /* SearchEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchEngine.swift; sourceTree = "<group>"; };
+		93C94CDA2C4F34BB00E3BB13 /* SuggestionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsView.swift; sourceTree = "<group>"; };
 		93D480DA2C25D9600019921F /* BrowserProto.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BrowserProto.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		93D480DD2C25D9600019921F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		93D480E12C25D9600019921F /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
@@ -154,6 +158,8 @@
 		93D4810D2C2CC47B0019921F /* Navigation */ = {
 			isa = PBXGroup;
 			children = (
+				93C94CD82C4F2C2D00E3BB13 /* SearchEngine.swift */,
+				93C94CDA2C4F34BB00E3BB13 /* SuggestionsView.swift */,
 				93D4810E2C2CC4DE0019921F /* URLInputView.swift */,
 				93D481102C2DA5F00019921F /* URLInputViewModel.swift */,
 			);
@@ -252,8 +258,10 @@
 				93D481112C2DA5F00019921F /* URLInputViewModel.swift in Sources */,
 				93D4810C2C2C493B0019921F /* DropShadow.swift in Sources */,
 				93D481252C4AEBE80019921F /* UIView+Extensions.swift in Sources */,
+				93C94CD92C4F2C2D00E3BB13 /* SearchEngine.swift in Sources */,
 				93D480F42C2609950019921F /* BottomBarView.swift in Sources */,
 				93D4810A2C2B275F0019921F /* Colors.swift in Sources */,
+				93C94CDB2C4F34BB00E3BB13 /* SuggestionsView.swift in Sources */,
 				93D4811F2C38C4680019921F /* URLInput.swift in Sources */,
 				93D481062C2B08D80019921F /* WebContentViewModel.swift in Sources */,
 				93D481042C2B08CB0019921F /* WebContentView.swift in Sources */,

@@ -1,4 +1,5 @@
 import Combine
+import SwiftUI
 import UIKit
 
 final class URLInputView: UIView {
@@ -10,7 +11,7 @@ final class URLInputView: UIView {
         static let margin: CGFloat = 10
         static let textFieldContainerHeight: CGFloat = 40
         static let textFieldMargin: CGFloat = textFieldContainerHeight / 2
-        static let contentBoxHeight: CGFloat = textFieldContainerHeight + 2 * margin
+        static let contentBoxMinHeight: CGFloat = textFieldContainerHeight + 2 * margin
     }
 
     enum Action {
@@ -19,6 +20,14 @@ final class URLInputView: UIView {
 
     lazy var contentBox = {
         UIVisualEffectView(effect: UIBlurEffect(style: .systemThinMaterial))
+    }()
+
+    lazy var contentBoxFullHeightConstraint = {
+        contentBox.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor)
+    }()
+
+    lazy var contentBoxMinHeightConstraint = {
+        contentBox.heightAnchor.constraint(equalToConstant: Metrics.contentBoxMinHeight)
     }()
 
     lazy var filler = {
@@ -39,6 +48,17 @@ final class URLInputView: UIView {
         textField.autocorrectionType = .no
         textField.keyboardType = .webSearch
         return textField
+    }()
+
+    lazy var suggestionsViewController = {
+        UIHostingController(rootView: SuggestionsView(model: model, handler: { [weak self] action in
+            guard let self else { return }
+            switch action {
+            case .suggestionAccepted(let suggestion):
+                handler(.navigate(suggestion.text))
+                model.visibility = .hidden
+            }
+        }))
     }()
 
     lazy var tapGestureRecognizer = {
@@ -66,6 +86,8 @@ final class URLInputView: UIView {
         contentBox.contentView.addSubview(textFieldContainer)
         textFieldContainer.addSubview(textField)
 
+        contentBox.contentView.addSubview(suggestionsViewController.view)
+
         setupConstraints()
         setupObservers()
     }
@@ -78,7 +100,7 @@ final class URLInputView: UIView {
         contentBox.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             contentBox.widthAnchor.constraint(equalTo: widthAnchor),
-            contentBox.heightAnchor.constraint(equalToConstant: Metrics.contentBoxHeight),
+            contentBoxMinHeightConstraint,
             contentBox.bottomAnchor.constraint(equalTo: keyboardLayoutGuide.topAnchor)
         ])
 
@@ -93,8 +115,8 @@ final class URLInputView: UIView {
         NSLayoutConstraint.activate([
             textFieldContainer.leadingAnchor.constraint(equalTo: contentBox.leadingAnchor, constant: Metrics.margin),
             textFieldContainer.trailingAnchor.constraint(equalTo: contentBox.trailingAnchor, constant: -Metrics.margin),
-            textFieldContainer.heightAnchor.constraint(equalToConstant: Metrics.textFieldContainerHeight),
-            textFieldContainer.centerYAnchor.constraint(equalTo: contentBox.centerYAnchor)
+            textFieldContainer.topAnchor.constraint(equalTo: contentBox.topAnchor, constant: Metrics.margin),
+            textFieldContainer.heightAnchor.constraint(equalToConstant: Metrics.textFieldContainerHeight)
         ])
 
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -103,10 +125,18 @@ final class URLInputView: UIView {
             textField.trailingAnchor.constraint(equalTo: textFieldContainer.trailingAnchor, constant: -Metrics.textFieldMargin),
             textField.centerYAnchor.constraint(equalTo: textFieldContainer.centerYAnchor)
         ])
+
+        suggestionsViewController.view.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            suggestionsViewController.view.topAnchor.constraint(equalTo: textFieldContainer.bottomAnchor, constant: Metrics.margin),
+            suggestionsViewController.view.bottomAnchor.constraint(equalTo: contentBox.bottomAnchor, constant: -Metrics.margin),
+            suggestionsViewController.view.leftAnchor.constraint(equalTo: contentBox.leftAnchor),
+            suggestionsViewController.view.rightAnchor.constraint(equalTo: contentBox.rightAnchor)
+        ])
     }
 
     private func setupObservers() {
-        model.$mode.dropFirst().sink { [weak self] mode in
+        model.$visibility.dropFirst().sink { [weak self] mode in
             guard let self else { return }
             switch mode {
             case .showing(let initialValue):
@@ -122,19 +152,43 @@ final class URLInputView: UIView {
                 UIView.animate(withDuration: 0.2) {
                     self.layer.opacity = 0
                 }
+                model.suggesting = false
             }
+        }.store(in: &subscriptions)
+
+        model.$suggesting.dropFirst().sink { [weak self] suggesting in
+            guard let self else { return }
+            if suggesting {
+                UIView.animate(withDuration: 0.2) { [self] in
+                    self.contentBoxMinHeightConstraint.isActive = false
+                    self.contentBoxFullHeightConstraint.isActive = true
+                    self.layoutIfNeeded()
+                }
+            } else {
+                self.contentBoxMinHeightConstraint.isActive = true
+                self.contentBoxFullHeightConstraint.isActive = false
+            }
+        }.store(in: &subscriptions)
+
+        NotificationCenter.default.publisher(
+            for: UITextField.textDidChangeNotification,
+            object: textField
+        ).sink { [weak self] _ in
+            guard let self else { return }
+            model.suggesting = true
+            model.updateSuggestions(for: textField.text ?? "")
         }.store(in: &subscriptions)
     }
 
     @objc private func onDismiss() {
-        model.mode = .hidden
+        model.visibility = .hidden
     }
 
     @objc private func onPan() {
         let threshold: CGFloat = 25
         let translation = panGestureRecognizer.translation(in: contentBox)
         if translation.y > threshold {
-            model.mode = .hidden
+            model.visibility = .hidden
         }
     }
 }
@@ -144,7 +198,7 @@ extension URLInputView: UITextFieldDelegate {
         if let text = textField.text {
             handler(.navigate(text))
         }
-        model.mode = .hidden
+        model.visibility = .hidden
         return true
     }
 }
