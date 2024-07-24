@@ -22,6 +22,7 @@ final class SuggestionsView: UITableView {
         register(UITableViewCell.self, forCellReuseIdentifier: "SuggestionsViewCell")
         dataSource = self
         delegate = self
+        (self as UIScrollView).delegate = self
 
         setupObservers()
     }
@@ -58,5 +59,19 @@ extension SuggestionsView: UITableViewDelegate {
         print(">>> didSelectRowAt: \(indexPath)")
         let suggestion = suggestions[indexPath.item]
         handler(.suggestionAccepted(suggestion))
+    }
+}
+
+extension SuggestionsView: UIScrollViewDelegate {
+    func scrollViewDidScrollToTop(_ scrollView: UIScrollView) {
+        print(">>> didScrollToTop")
+    }
+
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        print(">> scrollViewDidEndDecelerating")
+    }
+
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        print(">>> scrollViewDidScroll")
     }
 }

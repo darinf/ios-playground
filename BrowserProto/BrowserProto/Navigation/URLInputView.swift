@@ -65,7 +65,9 @@ final class URLInputView: UIView {
     }()
 
     lazy var panGestureRecognizer = {
-        UIPanGestureRecognizer(target: self, action: #selector(onPan))
+        let gesture = UIPanGestureRecognizer(target: self, action: #selector(onPan))
+        gesture.delegate = self
+        return gesture
     }()
 
     init(model: URLInputViewModel, handler: @escaping (Action) -> Void) {
@@ -186,11 +188,17 @@ final class URLInputView: UIView {
         model.visibility = .hidden
     }
 
-    @objc private func onPan() {
-        let threshold: CGFloat = 25
+    @objc private func onPan(_ gesture: UIPanGestureRecognizer) {
+        let threshold: CGFloat = model.suggesting ? 50 : 25
         let translation = panGestureRecognizer.translation(in: contentBox)
-        if translation.y > threshold {
-            model.visibility = .hidden
+        contentBox.layer.setAffineTransform(.init(translationX: 0, y: abs(translation.y)))
+        if gesture.state == .ended {
+            if translation.y > threshold {
+                model.visibility = .hidden
+            }
+            UIView.animate(withDuration: 0.2) { [contentBox] in
+                contentBox.layer.setAffineTransform(.init(translationX: 0, y: 0))
+            }
         }
     }
 }
@@ -202,5 +210,17 @@ extension URLInputView: UITextFieldDelegate {
         }
         model.visibility = .hidden
         return true
+    }
+}
+
+extension URLInputView: UIGestureRecognizerDelegate {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        print(">>> shouldRecognizeSimultaneouslyWith")
+        if let gesture = otherGestureRecognizer as? UIPanGestureRecognizer {
+            if suggestionsView.contentOffset.y == 0 {
+                return true
+            }
+        }
+        return false
     }
 }
