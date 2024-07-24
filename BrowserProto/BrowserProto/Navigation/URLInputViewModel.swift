@@ -7,21 +7,15 @@ final class URLInputViewModel {
         case hidden
     }
 
-    struct Suggestion: Identifiable {
-        let text: String
-        // TODO: Add icon
-
-        var id: String { text }
-    }
+    let suggestionsViewModel = SuggestionsViewModel()
 
     @Published var visibility: Visibility = .hidden
     @Published var suggesting: Bool = false
-    @Published var suggestions: [Suggestion] = []
 
     func updateSuggestions(for input: String) {
         Task { @MainActor in
             do {
-                suggestions = try await SearchEngine.querySuggestions(for: input).map { .init(text: $0) }
+                suggestionsViewModel.suggestions = try await SearchEngine.querySuggestions(for: input).map { .init(text: $0) }
             } catch {
                 print(">>> error querying suggestions: \(error)")
             }

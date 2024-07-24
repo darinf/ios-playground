@@ -2,19 +2,17 @@ import Combine
 import UIKit
 
 final class SuggestionsView: UITableView {
-    typealias SuggestionsPublisher = AnyPublisher<[URLInputViewModel.Suggestion], Never>
-
     enum Action {
-        case suggestionAccepted(URLInputViewModel.Suggestion)
+        case suggestionAccepted(SuggestionsViewModel.Suggestion)
     }
 
-    private let suggestionsPublisher: SuggestionsPublisher
+    private let model: SuggestionsViewModel
     private let handler: (Action) -> Void
     private var subscriptions: Set<AnyCancellable> = []
-    private var suggestions: [URLInputViewModel.Suggestion] = []
+    private var suggestions: [SuggestionsViewModel.Suggestion] = []
 
-    init(suggestionsPublisher: SuggestionsPublisher, handler: @escaping (Action) -> Void) {
-        self.suggestionsPublisher = suggestionsPublisher
+    init(model: SuggestionsViewModel, handler: @escaping (Action) -> Void) {
+        self.model = model
         self.handler = handler
         super.init(frame: .zero, style: .plain)
 
@@ -33,7 +31,7 @@ final class SuggestionsView: UITableView {
     }
 
     private func setupObservers() {
-        suggestionsPublisher.dropFirst().sink { [weak self] suggestions in
+        model.$suggestions.dropFirst().sink { [weak self] suggestions in
             guard let self else { return }
             self.suggestions = suggestions
             reloadData()
@@ -48,7 +46,6 @@ extension SuggestionsView: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "SuggestionsViewCell", for: indexPath)
-//        let item = self.items[indexPath.item]
         let suggestion = suggestions[indexPath.item]
         cell.textLabel?.text = suggestion.text
         cell.backgroundColor = .clear

@@ -50,7 +50,7 @@ final class URLInputView: UIView {
     }()
 
     lazy var suggestionsView = {
-        SuggestionsView(suggestionsPublisher: model.$suggestions.eraseToAnyPublisher()) { [weak self] action in
+        SuggestionsView(model: model.suggestionsViewModel) { [weak self] action in
             guard let self else { return }
             switch action {
             case .suggestionAccepted(let suggestion):
@@ -59,17 +59,6 @@ final class URLInputView: UIView {
             }
         }
     }()
-
-//    lazy var suggestionsViewController = {
-//        UIHostingController(rootView: SuggestionsView(model: model, handler: { [weak self] action in
-//            guard let self else { return }
-//            switch action {
-//            case .suggestionAccepted(let suggestion):
-//                handler(.navigate(suggestion.text))
-//                model.visibility = .hidden
-//            }
-//        }))
-//    }()
 
     lazy var tapGestureRecognizer = {
         UITapGestureRecognizer(target: self, action: #selector(onDismiss))
@@ -95,8 +84,6 @@ final class URLInputView: UIView {
         addSubview(filler)
         contentBox.contentView.addSubview(textFieldContainer)
         textFieldContainer.addSubview(textField)
-
-//        contentBox.contentView.addSubview(suggestionsViewController.view)
 
         contentBox.contentView.addSubview(suggestionsView)
 
