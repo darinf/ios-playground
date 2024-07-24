@@ -1,7 +1,7 @@
 import Combine
 import Foundation
 
-final class URLInputViewModel: ObservableObject {
+final class URLInputViewModel {
     enum Visibility {
         case showing(initialValue: String)
         case hidden

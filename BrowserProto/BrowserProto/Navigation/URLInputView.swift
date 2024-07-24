@@ -1,5 +1,4 @@
 import Combine
-import SwiftUI
 import UIKit
 
 final class URLInputView: UIView {
