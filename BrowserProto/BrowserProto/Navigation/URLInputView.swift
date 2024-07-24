@@ -50,16 +50,27 @@ final class URLInputView: UIView {
         return textField
     }()
 
-    lazy var suggestionsViewController = {
-        UIHostingController(rootView: SuggestionsView(model: model, handler: { [weak self] action in
+    lazy var suggestionsView = {
+        SuggestionsView(suggestionsPublisher: model.$suggestions.eraseToAnyPublisher()) { [weak self] action in
             guard let self else { return }
             switch action {
             case .suggestionAccepted(let suggestion):
                 handler(.navigate(suggestion.text))
                 model.visibility = .hidden
             }
-        }))
+        }
     }()
+
+//    lazy var suggestionsViewController = {
+//        UIHostingController(rootView: SuggestionsView(model: model, handler: { [weak self] action in
+//            guard let self else { return }
+//            switch action {
+//            case .suggestionAccepted(let suggestion):
+//                handler(.navigate(suggestion.text))
+//                model.visibility = .hidden
+//            }
+//        }))
+//    }()
 
     lazy var tapGestureRecognizer = {
         UITapGestureRecognizer(target: self, action: #selector(onDismiss))
@@ -86,7 +97,9 @@ final class URLInputView: UIView {
         contentBox.contentView.addSubview(textFieldContainer)
         textFieldContainer.addSubview(textField)
 
-        contentBox.contentView.addSubview(suggestionsViewController.view)
+//        contentBox.contentView.addSubview(suggestionsViewController.view)
+
+        contentBox.contentView.addSubview(suggestionsView)
 
         setupConstraints()
         setupObservers()
@@ -123,15 +136,16 @@ final class URLInputView: UIView {
         NSLayoutConstraint.activate([
             textField.leadingAnchor.constraint(equalTo: textFieldContainer.leadingAnchor, constant: Metrics.textFieldMargin),
             textField.trailingAnchor.constraint(equalTo: textFieldContainer.trailingAnchor, constant: -Metrics.textFieldMargin),
-            textField.centerYAnchor.constraint(equalTo: textFieldContainer.centerYAnchor)
+            textField.topAnchor.constraint(equalTo: textFieldContainer.topAnchor, constant: Metrics.margin),
+            textField.bottomAnchor.constraint(equalTo: textFieldContainer.bottomAnchor, constant: -Metrics.margin)
         ])
 
-        suggestionsViewController.view.translatesAutoresizingMaskIntoConstraints = false
+        suggestionsView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            suggestionsViewController.view.topAnchor.constraint(equalTo: textFieldContainer.bottomAnchor, constant: Metrics.margin),
-            suggestionsViewController.view.bottomAnchor.constraint(equalTo: contentBox.bottomAnchor, constant: -Metrics.margin),
-            suggestionsViewController.view.leftAnchor.constraint(equalTo: contentBox.leftAnchor),
-            suggestionsViewController.view.rightAnchor.constraint(equalTo: contentBox.rightAnchor)
+            suggestionsView.topAnchor.constraint(equalTo: textFieldContainer.bottomAnchor, constant: Metrics.margin),
+            suggestionsView.bottomAnchor.constraint(equalTo: keyboardLayoutGuide.topAnchor),
+            suggestionsView.leftAnchor.constraint(equalTo: contentBox.leftAnchor),
+            suggestionsView.rightAnchor.constraint(equalTo: contentBox.rightAnchor)
         ])
     }
 
@@ -159,12 +173,14 @@ final class URLInputView: UIView {
         model.$suggesting.dropFirst().sink { [weak self] suggesting in
             guard let self else { return }
             if suggesting {
+                removeGestureRecognizer(tapGestureRecognizer)
                 UIView.animate(withDuration: 0.2) { [self] in
                     self.contentBoxMinHeightConstraint.isActive = false
                     self.contentBoxFullHeightConstraint.isActive = true
                     self.layoutIfNeeded()
                 }
             } else {
+                addGestureRecognizer(tapGestureRecognizer)
                 self.contentBoxMinHeightConstraint.isActive = true
                 self.contentBoxFullHeightConstraint.isActive = false
             }
