@@ -191,10 +191,10 @@ final class URLInputView: UIView {
     @objc private func onPan(_ gesture: UIPanGestureRecognizer) {
         let threshold: CGFloat = model.suggesting ? 50 : 25
         let translation = panGestureRecognizer.translation(in: contentBox)
-        if gesture.state == .began {
+        if translation.y > 0 {
             suggestionsView.isScrollEnabled = false
         }
-        contentBox.layer.setAffineTransform(.init(translationX: 0, y: abs(translation.y)))
+        contentBox.layer.setAffineTransform(.init(translationX: 0, y: max(translation.y, 0)))
         if gesture.state == .ended {
             if translation.y > threshold {
                 model.visibility = .hidden
@@ -219,7 +219,6 @@ extension URLInputView: UITextFieldDelegate {
 
 extension URLInputView: UIGestureRecognizerDelegate {
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        print(">>> shouldRecognizeSimultaneouslyWith")
         if otherGestureRecognizer is UIPanGestureRecognizer {
             if suggestionsView.contentOffset.y == 0 {
                 return true
