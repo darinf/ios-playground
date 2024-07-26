@@ -70,10 +70,18 @@ final class BottomBarView: UIVisualEffectView {
         return button
     }()
 
+    private lazy var mainMenu = {
+        MainMenu(model: model.mainMenuModel)
+    }()
+
     private lazy var menuButton = {
-        let button = CapsuleButton(cornerRadius: 20, systemImage: "ellipsis") { [weak self] in
-            self?.handler(.showMenu)
-        }
+        let button = CapsuleButton(cornerRadius: 20, systemImage: "ellipsis")
+//        let toggleIncognito = UIAction(title: "Incognito", image: UIImage(systemName: "square")) { _ in
+//            print(">>> toggleIncognito action")
+//        }
+//        button.menu = UIMenu(children: [toggleIncognito])
+        button.menu = mainMenu.menu
+        button.showsMenuAsPrimaryAction = true
         return button
     }()
 

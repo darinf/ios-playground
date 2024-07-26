@@ -1,10 +1,10 @@
 import UIKit
 
 class CapsuleButton: UIButton {
-    private let clicked: () -> Void
+    private let clicked: (() -> Void)?
     private let feedbackGenerator = UIImpactFeedbackGenerator(style: .soft)
 
-    init(cornerRadius: CGFloat, systemImage: String? = nil, clicked: @escaping () -> Void) {
+    init(cornerRadius: CGFloat, systemImage: String? = nil, clicked: (() -> Void)? = nil) {
         self.clicked = clicked
         super.init(frame: .zero)
 
@@ -18,7 +18,9 @@ class CapsuleButton: UIButton {
         tintColor = Colors.foregroundText
         setTitleColor(Colors.foregroundText, for: .normal)
 
-        addTarget(self, action: #selector(onPressed), for: .touchUpInside)
+        if clicked != nil {
+            addTarget(self, action: #selector(onPressed), for: .touchUpInside)
+        }
     }
 
     required init?(coder: NSCoder) {
@@ -27,7 +29,7 @@ class CapsuleButton: UIButton {
 
     @objc func onPressed() {
         feedbackGenerator.impactOccurred(intensity: 0.7)
-        self.clicked()
+        self.clicked?()
     }
 
     override var isHighlighted: Bool {

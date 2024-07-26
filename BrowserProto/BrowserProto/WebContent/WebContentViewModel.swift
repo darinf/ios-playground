@@ -11,6 +11,7 @@ final class WebContentViewModel {
     @Published private(set) var progress: Double?
     @Published var panningDeltaY: CGFloat?
     @Published private(set) var backStack: [WebViewRef] = [] // New items at the back
+    @Published var incognito: Bool = false
 
     var webView: WKWebView? {
         webViewRef?.webView
