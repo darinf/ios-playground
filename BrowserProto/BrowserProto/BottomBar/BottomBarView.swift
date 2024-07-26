@@ -17,8 +17,8 @@ final class BottomBarView: UIVisualEffectView {
         case goBack
         case goForward
         case showTabs
-        case showMenu
         case editURL
+        case mainMenu(MainMenu.Action)
     }
 
     private let model: BottomBarViewModel
@@ -70,17 +70,8 @@ final class BottomBarView: UIVisualEffectView {
         return button
     }()
 
-    private lazy var mainMenu = {
-        MainMenu(model: model.mainMenuModel)
-    }()
-
     private lazy var menuButton = {
         let button = CapsuleButton(cornerRadius: 20, systemImage: "ellipsis")
-//        let toggleIncognito = UIAction(title: "Incognito", image: UIImage(systemName: "square")) { _ in
-//            print(">>> toggleIncognito action")
-//        }
-//        button.menu = UIMenu(children: [toggleIncognito])
-        button.menu = mainMenu.menu
         button.showsMenuAsPrimaryAction = true
         return button
     }()
@@ -187,6 +178,10 @@ final class BottomBarView: UIVisualEffectView {
         model.$progress.dropFirst().removeDuplicates().sink { [weak self] progress in
             self?.urlBarView.setProgress(progress)
         }.store(in: &subscriptions)
+
+        model.$mainMenuConfig.removeDuplicates().sink { [weak self] config in
+            self?.rebuildMainMenu(with: config)
+        }.store(in: &subscriptions)
     }
 
     private func onPanGesture(translation: CGFloat) {
@@ -221,5 +216,17 @@ final class BottomBarView: UIVisualEffectView {
 
     @objc private func onPan() {
         onPanGesture(translation: panGestureRecognizer.translation(in: self).y)
+    }
+
+    private func rebuildMainMenu(with config: MainMenuConfig) {
+        print(">>> rebuildMainMenu")
+        menuButton.menu = MainMenu.build(with: config) { [weak self] action in
+            guard let self else { return }
+            switch action {
+            case .toggleIncognito(let incognitoEnabled):
+                model.mainMenuConfig = .init(incognitoChecked: incognitoEnabled)
+            }
+            handler(.mainMenu(action))
+        }
     }
 }

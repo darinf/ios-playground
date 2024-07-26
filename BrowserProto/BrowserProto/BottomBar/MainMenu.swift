@@ -1,38 +1,22 @@
-import Combine
 import UIKit
 
-final class MainMenu {
-    private let model: MainMenuModel
-    private let incognitoAction: UIAction
-    private var subscriptions: Set<AnyCancellable> = []
+final class MainMenu: UIMenu {
+    enum Action {
+        case toggleIncognito(Bool)
+    }
 
-    init(model: MainMenuModel) {
-        self.model = model
-
-        incognitoAction = .init(title: "Incognito", image: Self.image(forIncognito: false)) { _ in
-            print(">>> toggle incognito")
-            model.incognito.toggle()
+    static func build(with config: MainMenuConfig, handler: @escaping (Action) -> Void) -> UIMenu {
+        let incognitoAction: UIAction = .init(
+            title: "Incognito",
+            image: .init(systemName: config.incognitoChecked ? "checkmark.square" : "square")
+        ) { _ in
+            handler(.toggleIncognito(!config.incognitoChecked))
         }
 
-        setupObservers()
-    }
-
-    var menu: UIMenu {
-        .init(children: [incognitoAction])
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        return .init(children: [incognitoAction])
     }
     
-    func setupObservers() {
-        model.$incognito.dropFirst().removeDuplicates().sink { [weak self] incognito in
-            print(">>> update incognitoAction: \(incognito)")
-            self?.incognitoAction.image = Self.image(forIncognito: incognito)
-        }.store(in: &subscriptions)
-    }
-
-    private static func image(forIncognito incognito: Bool) -> UIImage? {
-        .init(systemName: incognito ? "checked.square" : "square")
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }

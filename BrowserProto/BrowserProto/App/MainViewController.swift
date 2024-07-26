@@ -43,8 +43,12 @@ class MainViewController: UIViewController {
                 model.webContentViewModel.goForward()
             case .showTabs:
                 print(">>> showTabs")
-            case .showMenu:
-                print(">>> showMenu")
+            case .mainMenu(let mainMenuAction):
+                print(">>> mainMenu: \(mainMenuAction)")
+                switch mainMenuAction {
+                case .toggleIncognito(let incognitoEnabled):
+                    model.webContentViewModel.incognito = incognitoEnabled
+                }
             }
         }
     }()
