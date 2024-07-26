@@ -47,9 +47,7 @@ final class WebContentView: UIView {
 
         super.init(frame: .zero)
 
-        let webViewID = WebViewID()
-        _ = Self.createWebView(id: webViewID, configuration: Self.configuration)
-        model.pushWebView(withID: webViewID)
+        model.pushWebView(withRef: .init(webView: Self.createWebView(configuration: Self.configuration)))
 
         setupObservers()
     }
@@ -117,10 +115,10 @@ final class WebContentView: UIView {
     }
 
     private func setupObservers() {
-        model.$id.sink { [weak self] id in
+        model.$webViewRef.sink { [weak self] ref in
             guard let self else { return }
-            if let id {
-                setWebView(WebViewStore.shared.lookup(byID: id))
+            if let ref {
+                setWebView(ref.webView)
             } else {
                 setWebView(nil)
             }
@@ -265,13 +263,13 @@ final class WebContentView: UIView {
         }
     }
 
-    private static func createWebView(id: WebViewID, configuration: WKWebViewConfiguration) -> WKWebView {
+    private static func createWebView(configuration: WKWebViewConfiguration) -> WKWebView {
         let webView = WKWebView(frame: .zero, configuration: configuration)
         webView.customUserAgent = userAgentString
         webView.allowsBackForwardNavigationGestures = true
         webView.scrollView.clipsToBounds = false
         webView.scrollView.contentInsetAdjustmentBehavior = .always
-        WebViewStore.shared.insert(webView, withID: id)
+//        WebViewStore.shared.insert(webView, withID: id)
         return webView
     }
 
@@ -298,14 +296,13 @@ extension WebContentView: WKUIDelegate {
     ) -> WKWebView? {
         print(">>> createWebView")
         
-        let newWebViewID = WebViewID()
-        let newWebView = Self.createWebView(id: newWebViewID, configuration: configuration)
+        let newWebViewRef = WebViewRef(webView: Self.createWebView(configuration: configuration))
 
         DispatchQueue.main.async { [self] in
-            model.pushWebView(withID: newWebViewID)
+            model.pushWebView(withRef: newWebViewRef)
         }
 
-        return newWebView
+        return newWebViewRef.webView
     }
 
     func webViewDidClose(_ webView: WKWebView) {
