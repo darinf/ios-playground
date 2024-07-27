@@ -48,6 +48,7 @@ class MainViewController: UIViewController {
                 switch mainMenuAction {
                 case .toggleIncognito(let incognitoEnabled):
                     model.webContentViewModel.incognito = incognitoEnabled
+                    model.urlInputViewModel.visibility = .showing(initialValue: "")
                 }
             }
         }

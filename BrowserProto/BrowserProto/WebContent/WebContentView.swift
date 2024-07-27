@@ -18,10 +18,19 @@ final class WebContentView: UIView {
     private var lastTranslation: CGPoint = .zero
     private var dragBackState: DragBackState?
 
-    private static var configuration = {
+    private static var normalConfiguration = {
         let configuration = WKWebViewConfiguration()
         configuration.allowsInlineMediaPlayback = true
         configuration.ignoresViewportScaleLimits = true
+        configuration.websiteDataStore = .default()
+        return configuration
+    }()
+
+    private static var incognitoConfiguration = {
+        let configuration = WKWebViewConfiguration()
+        configuration.allowsInlineMediaPlayback = true
+        configuration.ignoresViewportScaleLimits = true
+        configuration.websiteDataStore = .nonPersistent()
         return configuration
     }()
 
@@ -47,7 +56,9 @@ final class WebContentView: UIView {
 
         super.init(frame: .zero)
 
-        model.pushWebView(withRef: .init(webView: Self.createWebView(configuration: Self.configuration)))
+        model.pushWebView(withRef: .init(webView: Self.createWebView(
+            configuration: Self.configuration(forIncognito: model.incognito)
+        )))
 
         setupObservers()
     }
@@ -122,6 +133,13 @@ final class WebContentView: UIView {
             } else {
                 setWebView(nil)
             }
+        }.store(in: &subscriptions)
+
+        model.$incognito.dropFirst().removeDuplicates().sink { [weak self] incognito in
+            guard let self else { return }
+            model.replaceWebView(withRef: .init(
+                webView: Self.createWebView(configuration: Self.configuration(forIncognito: incognito))
+            ))
         }.store(in: &subscriptions)
     }
 
@@ -276,6 +294,11 @@ final class WebContentView: UIView {
     private static var userAgentString: String = {
         "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1"
     }()
+
+    private static func configuration(forIncognito incognito: Bool) -> WKWebViewConfiguration {
+        print(">>> configuration for incognito: \(incognito)")
+        return incognito ? incognitoConfiguration : normalConfiguration
+    }
 }
 
 extension WebContentView: UIGestureRecognizerDelegate {
