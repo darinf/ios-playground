@@ -13,6 +13,8 @@
 		938822E02C55633A00B4FE37 /* CardGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 938822DF2C55633A00B4FE37 /* CardGridView.swift */; };
 		938822E22C55634200B4FE37 /* CardGridViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 938822E12C55634200B4FE37 /* CardGridViewModel.swift */; };
 		938822EA2C55A60200B4FE37 /* IdentifiedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 938822E92C55A60200B4FE37 /* IdentifiedCollections */; };
+		938822EC2C57061B00B4FE37 /* UIImage+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 938822EB2C57061B00B4FE37 /* UIImage+Extensions.swift */; };
+		938822EE2C570A3A00B4FE37 /* CardGridCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 938822ED2C570A3A00B4FE37 /* CardGridCellView.swift */; };
 		93C94CD92C4F2C2D00E3BB13 /* SearchEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93C94CD82C4F2C2D00E3BB13 /* SearchEngine.swift */; };
 		93C94CDB2C4F34BB00E3BB13 /* SuggestionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93C94CDA2C4F34BB00E3BB13 /* SuggestionsView.swift */; };
 		93C94CDD2C51900400E3BB13 /* SuggestionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93C94CDC2C51900400E3BB13 /* SuggestionsViewModel.swift */; };
@@ -44,6 +46,8 @@
 		938822DC2C54484B00B4FE37 /* MainMenuConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuConfig.swift; sourceTree = "<group>"; };
 		938822DF2C55633A00B4FE37 /* CardGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardGridView.swift; sourceTree = "<group>"; };
 		938822E12C55634200B4FE37 /* CardGridViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardGridViewModel.swift; sourceTree = "<group>"; };
+		938822EB2C57061B00B4FE37 /* UIImage+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Extensions.swift"; sourceTree = "<group>"; };
+		938822ED2C570A3A00B4FE37 /* CardGridCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardGridCellView.swift; sourceTree = "<group>"; };
 		93C94CD82C4F2C2D00E3BB13 /* SearchEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchEngine.swift; sourceTree = "<group>"; };
 		93C94CDA2C4F34BB00E3BB13 /* SuggestionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsView.swift; sourceTree = "<group>"; };
 		93C94CDC2C51900400E3BB13 /* SuggestionsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsViewModel.swift; sourceTree = "<group>"; };
@@ -86,6 +90,7 @@
 		938822DE2C55632100B4FE37 /* CardGrid */ = {
 			isa = PBXGroup;
 			children = (
+				938822ED2C570A3A00B4FE37 /* CardGridCellView.swift */,
 				938822DF2C55633A00B4FE37 /* CardGridView.swift */,
 				938822E12C55634200B4FE37 /* CardGridViewModel.swift */,
 			);
@@ -201,6 +206,7 @@
 			isa = PBXGroup;
 			children = (
 				93D481182C31A24D0019921F /* UIColor+Extensions.swift */,
+				938822EB2C57061B00B4FE37 /* UIImage+Extensions.swift */,
 				93D481242C4AEBE80019921F /* UIView+Extensions.swift */,
 				93D4811E2C38C4680019921F /* URLInput.swift */,
 			);
@@ -295,6 +301,7 @@
 				938822DD2C54484B00B4FE37 /* MainMenuConfig.swift in Sources */,
 				93254B0B2C5332C000B66206 /* WebViewRef.swift in Sources */,
 				93D481042C2B08CB0019921F /* WebContentView.swift in Sources */,
+				938822EE2C570A3A00B4FE37 /* CardGridCellView.swift in Sources */,
 				93C94CDD2C51900400E3BB13 /* SuggestionsViewModel.swift in Sources */,
 				93254B0D2C53438B00B66206 /* MainMenu.swift in Sources */,
 				93D481142C2DE9400019921F /* WebContentDeckView.swift in Sources */,
@@ -307,6 +314,7 @@
 				93D481192C31A24D0019921F /* UIColor+Extensions.swift in Sources */,
 				93D480FF2C271E090019921F /* BottomBarViewModel.swift in Sources */,
 				93D480DE2C25D9600019921F /* AppDelegate.swift in Sources */,
+				938822EC2C57061B00B4FE37 /* UIImage+Extensions.swift in Sources */,
 				93D480F92C260DB90019921F /* CapsuleButton.swift in Sources */,
 				93D4811D2C38BE880019921F /* MainViewModel.swift in Sources */,
 			);

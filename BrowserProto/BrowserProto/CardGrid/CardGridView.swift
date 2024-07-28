@@ -14,7 +14,7 @@ final class CardGridView: UIView {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
+        collectionView.register(CardGridCellView.self, forCellWithReuseIdentifier: "cell")
 
         return collectionView
     }()
@@ -59,14 +59,23 @@ extension CardGridView: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! CardGridCellView
         let card = model.cards[indexPath.item]
-        if let thumbnail = card.thumbnail {
-            cell.backgroundColor = .clear
-            cell.backgroundView = UIImageView(image: thumbnail)
-        } else {
-            cell.backgroundColor = .systemTeal
-        }
+        cell.card = card
+//
+//
+//        if let thumbnail = card.thumbnail {
+//            cell.backgroundColor = .clear
+//            let imageView = UIImageView(image: thumbnail.resizeTopAlignedToFill(newWidth: cell.bounds.width))
+//            imageView.contentMode = .topLeft // .scaleAspectFill
+//            imageView.clipsToBounds = true
+//            DropShadow.apply(toLayer: imageView.layer)
+//            imageView.layer.cornerRadius = 10
+////            imageView.layer.masksToBounds = true
+//            cell.backgroundView = imageView
+//        } else {
+//            cell.backgroundColor = .systemTeal
+//        }
         return cell
     }
 }
