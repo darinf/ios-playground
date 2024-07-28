@@ -23,8 +23,23 @@ class MainViewController: UIViewController {
         }
     }()
 
+    private lazy var cardGridView = {
+        CardGridView(model: model.cardGridViewModel, zoomedView: webContentView)
+    }()
+
     private lazy var webContentView = {
-        WebContentView(model: model.webContentViewModel, handler: { _ in })
+        WebContentView(model: model.webContentViewModel) { [weak self] action in
+            guard let self else { return }
+            switch action {
+            case let .openedWebView(webViewRef, fromReferrer: referrerWebViewRef):
+                let newCard = Card(id: webViewRef.id)
+                if let referrerWebViewRef {
+                    model.cardGridViewModel.insertCard(newCard, after: referrerWebViewRef.id)
+                } else {
+                    model.cardGridViewModel.appendCard(newCard)
+                }
+            }
+        }
     }()
 
     private lazy var topBarView = {
@@ -42,7 +57,11 @@ class MainViewController: UIViewController {
             case .goForward:
                 model.webContentViewModel.goForward()
             case .showTabs:
-                print(">>> showTabs")
+                // Refresh thumbnail before showing grid.
+                if !model.cardGridViewModel.showGrid, let selectedID = model.cardGridViewModel.selectedID {
+                    model.cardGridViewModel.updateThumbnail(webContentView.captureAsImage(), forCardByID: selectedID)
+                }
+                model.cardGridViewModel.showGrid.toggle()
             case .mainMenu(let mainMenuAction):
                 print(">>> mainMenu: \(mainMenuAction)")
                 switch mainMenuAction {
@@ -71,7 +90,7 @@ class MainViewController: UIViewController {
 
         view.addSubview(topBarView)
         view.addSubview(bottomBarView)
-        view.addSubview(webContentView)
+        view.addSubview(cardGridView)
         view.addSubview(urlInputView)
 
         setupInitialConstraints()
@@ -117,6 +136,13 @@ class MainViewController: UIViewController {
             bottomBarView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             bottomBarView.widthAnchor.constraint(equalTo: view.widthAnchor),
             bottomBarViewHeightConstraint
+        ])
+
+        cardGridView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            cardGridView.topAnchor.constraint(equalTo: topBarView.bottomAnchor),
+            cardGridView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            cardGridView.widthAnchor.constraint(equalTo: view.widthAnchor)
         ])
 
         webContentView.translatesAutoresizingMaskIntoConstraints = false

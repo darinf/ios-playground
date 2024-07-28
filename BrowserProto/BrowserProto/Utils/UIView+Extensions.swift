@@ -10,4 +10,14 @@ extension UIView {
             bottomAnchor.constraint(equalTo: parent.bottomAnchor)
         ])
     }
+
+    func captureAsImage() -> UIImage? {
+        UIGraphicsBeginImageContextWithOptions(self.bounds.size, false, UIScreen.main.scale)
+        defer { UIGraphicsEndImageContext() }
+
+        guard let context = UIGraphicsGetCurrentContext() else { return nil }
+
+        self.layer.render(in: context)
+        return UIGraphicsGetImageFromCurrentImageContext()
+    }
 }

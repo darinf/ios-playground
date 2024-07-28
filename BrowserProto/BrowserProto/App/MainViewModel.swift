@@ -5,4 +5,5 @@ final class MainViewModel {
     let urlInputViewModel = URLInputViewModel()
     let bottomBarViewModel = BottomBarViewModel()
     let webContentViewModel = WebContentViewModel()
+    let cardGridViewModel = CardGridViewModel()
 }

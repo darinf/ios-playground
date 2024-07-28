@@ -10,6 +10,9 @@
 		93254B0B2C5332C000B66206 /* WebViewRef.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93254B0A2C5332C000B66206 /* WebViewRef.swift */; };
 		93254B0D2C53438B00B66206 /* MainMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93254B0C2C53438B00B66206 /* MainMenu.swift */; };
 		938822DD2C54484B00B4FE37 /* MainMenuConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 938822DC2C54484B00B4FE37 /* MainMenuConfig.swift */; };
+		938822E02C55633A00B4FE37 /* CardGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 938822DF2C55633A00B4FE37 /* CardGridView.swift */; };
+		938822E22C55634200B4FE37 /* CardGridViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 938822E12C55634200B4FE37 /* CardGridViewModel.swift */; };
+		938822EA2C55A60200B4FE37 /* IdentifiedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 938822E92C55A60200B4FE37 /* IdentifiedCollections */; };
 		93C94CD92C4F2C2D00E3BB13 /* SearchEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93C94CD82C4F2C2D00E3BB13 /* SearchEngine.swift */; };
 		93C94CDB2C4F34BB00E3BB13 /* SuggestionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93C94CDA2C4F34BB00E3BB13 /* SuggestionsView.swift */; };
 		93C94CDD2C51900400E3BB13 /* SuggestionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93C94CDC2C51900400E3BB13 /* SuggestionsViewModel.swift */; };
@@ -39,6 +42,8 @@
 		93254B0A2C5332C000B66206 /* WebViewRef.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewRef.swift; sourceTree = "<group>"; };
 		93254B0C2C53438B00B66206 /* MainMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenu.swift; sourceTree = "<group>"; };
 		938822DC2C54484B00B4FE37 /* MainMenuConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuConfig.swift; sourceTree = "<group>"; };
+		938822DF2C55633A00B4FE37 /* CardGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardGridView.swift; sourceTree = "<group>"; };
+		938822E12C55634200B4FE37 /* CardGridViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardGridViewModel.swift; sourceTree = "<group>"; };
 		93C94CD82C4F2C2D00E3BB13 /* SearchEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchEngine.swift; sourceTree = "<group>"; };
 		93C94CDA2C4F34BB00E3BB13 /* SuggestionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsView.swift; sourceTree = "<group>"; };
 		93C94CDC2C51900400E3BB13 /* SuggestionsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsViewModel.swift; sourceTree = "<group>"; };
@@ -71,12 +76,22 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				938822EA2C55A60200B4FE37 /* IdentifiedCollections in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		938822DE2C55632100B4FE37 /* CardGrid */ = {
+			isa = PBXGroup;
+			children = (
+				938822DF2C55633A00B4FE37 /* CardGridView.swift */,
+				938822E12C55634200B4FE37 /* CardGridViewModel.swift */,
+			);
+			path = CardGrid;
+			sourceTree = "<group>";
+		};
 		93D480D12C25D9600019921F = {
 			isa = PBXGroup;
 			children = (
@@ -98,6 +113,7 @@
 			children = (
 				93D481012C2B08770019921F /* App */,
 				93D480F62C2609A40019921F /* BottomBar */,
+				938822DE2C55632100B4FE37 /* CardGrid */,
 				93D480F72C260D860019921F /* DesignSystem */,
 				93D4810D2C2CC47B0019921F /* Navigation */,
 				93D481172C31A2300019921F /* Utils */,
@@ -207,6 +223,9 @@
 			dependencies = (
 			);
 			name = BrowserProto;
+			packageProductDependencies = (
+				938822E92C55A60200B4FE37 /* IdentifiedCollections */,
+			);
 			productName = BrowserProto;
 			productReference = 93D480DA2C25D9600019921F /* BrowserProto.app */;
 			productType = "com.apple.product-type.application";
@@ -235,6 +254,9 @@
 				Base,
 			);
 			mainGroup = 93D480D12C25D9600019921F;
+			packageReferences = (
+				938822E82C55A60200B4FE37 /* XCRemoteSwiftPackageReference "swift-identified-collections" */,
+			);
 			productRefGroup = 93D480DB2C25D9600019921F /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -277,7 +299,9 @@
 				93254B0D2C53438B00B66206 /* MainMenu.swift in Sources */,
 				93D481142C2DE9400019921F /* WebContentDeckView.swift in Sources */,
 				93D4810F2C2CC4DE0019921F /* URLInputView.swift in Sources */,
+				938822E02C55633A00B4FE37 /* CardGridView.swift in Sources */,
 				93D481162C2DE94C0019921F /* WebContentDeckViewModel.swift in Sources */,
+				938822E22C55634200B4FE37 /* CardGridViewModel.swift in Sources */,
 				93D480E22C25D9600019921F /* MainViewController.swift in Sources */,
 				93D480FD2C2704DF0019921F /* URLBarView.swift in Sources */,
 				93D481192C31A24D0019921F /* UIColor+Extensions.swift in Sources */,
@@ -499,6 +523,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		938822E82C55A60200B4FE37 /* XCRemoteSwiftPackageReference "swift-identified-collections" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-identified-collections.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		938822E92C55A60200B4FE37 /* IdentifiedCollections */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 938822E82C55A60200B4FE37 /* XCRemoteSwiftPackageReference "swift-identified-collections" */;
+			productName = IdentifiedCollections;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 93D480D22C25D9600019921F /* Project object */;
 }
