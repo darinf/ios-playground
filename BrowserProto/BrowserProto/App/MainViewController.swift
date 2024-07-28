@@ -28,18 +28,18 @@ class MainViewController: UIViewController {
     }()
 
     private lazy var webContentView = {
-        WebContentView(model: model.webContentViewModel) { [weak self] action in
-            guard let self else { return }
-            switch action {
-            case let .openedWebView(webViewRef, fromReferrer: referrerWebViewRef):
-                let newCard = Card(id: webViewRef.id)
-                if let referrerWebViewRef {
-                    model.cardGridViewModel.insertCard(newCard, after: referrerWebViewRef.id)
-                } else {
-                    model.cardGridViewModel.appendCard(newCard)
-                }
-            }
-        }
+        WebContentView(model: model.webContentViewModel) { _ in }
+//            guard let self else { return }
+//            switch action {
+//            case let .openedWebView(webViewRef, fromReferrer: referrerWebViewRef):
+//                let newCard = Card(id: webViewRef.id)
+//                if let referrerWebViewRef {
+//                    model.cardGridViewModel.insertCard(newCard, after: referrerWebViewRef.id)
+//                } else {
+//                    model.cardGridViewModel.appendCard(newCard)
+//                }
+//            }
+//        }
     }()
 
     private lazy var topBarView = {
@@ -184,6 +184,26 @@ class MainViewController: UIViewController {
 
         model.webContentViewModel.$panningDeltaY.dropFirst().sink { [weak self] panningDeltaY in
             self?.updateBottomBarOffset(panningDeltaY: panningDeltaY)
+        }.store(in: &subscriptions)
+
+        Publishers.CombineLatest(
+            model.webContentViewModel.$webViewRef,
+            model.webContentViewModel.$backStack
+        ).sink { [weak self] (newRef, backStack) in
+            guard let self else { return }
+            guard let newRef else {
+                model.cardGridViewModel.selectedID = nil
+                return
+            }
+            if !model.cardGridViewModel.containsCard(byID: newRef.id) {
+                let newCard = Card(id: newRef.id)
+                if let previousRef = backStack.last {
+                    model.cardGridViewModel.insertCard(newCard, after: previousRef.id)
+                } else {
+                    model.cardGridViewModel.appendCard(newCard)
+                }
+            }
+            model.cardGridViewModel.selectedID = newRef.id
         }.store(in: &subscriptions)
     }
 

@@ -3,9 +3,7 @@ import UIKit
 import WebKit
 
 final class WebContentView: UIView {
-    enum Action {
-        case openedWebView(WebViewRef, fromReferrer: WebViewRef?)
-    }
+    enum Action {}
 
     private struct DragBackState {
         let revealedWebView: WKWebView?
@@ -62,7 +60,7 @@ final class WebContentView: UIView {
             configuration: Self.configuration(forIncognito: model.incognito)
         ))
         model.pushWebView(withRef: webViewRef)
-        handler(.openedWebView(webViewRef, fromReferrer: nil))
+//        handler(.openedWebView(webViewRef, fromReferrer: nil))
 
         setupObservers()
     }
@@ -328,7 +326,7 @@ extension WebContentView: WKUIDelegate {
         DispatchQueue.main.async { [self] in
             let referrerRef = model.webViewRef
             model.pushWebView(withRef: newWebViewRef)
-            handler(.openedWebView(newWebViewRef, fromReferrer: referrerRef))
+//            handler(.openedWebView(newWebViewRef, fromReferrer: referrerRef))
         }
 
         return newWebViewRef.webView

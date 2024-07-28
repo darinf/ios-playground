@@ -25,6 +25,10 @@ final class CardGridViewModel {
     private(set) var cards: IdentifiedArrayOf<Card> = []
     let cardsChanges = PassthroughSubject<CardsChange, Never>()
 
+    func containsCard(byID cardID: Card.ID) -> Bool {
+        cards[id: cardID] != nil
+    }
+
     func appendCard(_ card: Card) {
         cards.append(card)
         cardsChanges.send(.appended(card))
