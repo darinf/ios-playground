@@ -58,8 +58,11 @@ class MainViewController: UIViewController {
                 model.webContentViewModel.goForward()
             case .showTabs:
                 // Refresh thumbnail before showing grid.
-                if !model.cardGridViewModel.showGrid, let selectedID = model.cardGridViewModel.selectedID {
-                    model.cardGridViewModel.updateThumbnail(webContentView.captureAsImage(), forCardByID: selectedID)
+//                if !model.cardGridViewModel.showGrid, let selectedID = model.cardGridViewModel.selectedID {
+//                    model.cardGridViewModel.updateThumbnail(webContentView.captureAsImage(), forCardByID: selectedID)
+//                }
+                if !model.cardGridViewModel.showGrid {
+                    webContentView.updateThumbnail()
                 }
                 model.cardGridViewModel.showGrid.toggle()
             case .mainMenu(let mainMenuAction):
@@ -184,6 +187,12 @@ class MainViewController: UIViewController {
 
         model.webContentViewModel.$panningDeltaY.dropFirst().sink { [weak self] panningDeltaY in
             self?.updateBottomBarOffset(panningDeltaY: panningDeltaY)
+        }.store(in: &subscriptions)
+
+        model.webContentViewModel.$thumbnail.sink { [weak self] thumbnail in
+            guard let self else { return }
+            guard let selectedID = model.cardGridViewModel.selectedID else { return }
+            model.cardGridViewModel.updateThumbnail(thumbnail, forCardByID: selectedID)
         }.store(in: &subscriptions)
 
         Publishers.CombineLatest(

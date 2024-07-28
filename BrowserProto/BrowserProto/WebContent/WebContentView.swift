@@ -60,7 +60,6 @@ final class WebContentView: UIView {
             configuration: Self.configuration(forIncognito: model.incognito)
         ))
         model.pushWebView(withRef: webViewRef)
-//        handler(.openedWebView(webViewRef, fromReferrer: nil))
 
         setupObservers()
     }
@@ -69,7 +68,7 @@ final class WebContentView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func setWebView(_ webView: WKWebView?) {
+    private func setWebView(_ webView: WKWebView?) {
         if let existingWebView = self.webView {
             existingWebView.uiDelegate = nil
             existingWebView.scrollView.removeGestureRecognizer(panGestureRecognizer)
@@ -125,6 +124,10 @@ final class WebContentView: UIView {
             bottom: insets.bottom - super.safeAreaInsets.bottom,
             right: 0
         )
+    }
+
+    func updateThumbnail() {
+        model.thumbnail = captureAsImage()
     }
 
     private func setupObservers() {
@@ -289,7 +292,6 @@ final class WebContentView: UIView {
         webView.allowsBackForwardNavigationGestures = true
         webView.scrollView.clipsToBounds = false
         webView.scrollView.contentInsetAdjustmentBehavior = .always
-//        WebViewStore.shared.insert(webView, withID: id)
         return webView
     }
 
@@ -320,13 +322,12 @@ extension WebContentView: WKUIDelegate {
         windowFeatures: WKWindowFeatures
     ) -> WKWebView? {
         print(">>> createWebView")
-        
+
         let newWebViewRef = WebViewRef(webView: Self.createWebView(configuration: configuration))
 
         DispatchQueue.main.async { [self] in
-            let referrerRef = model.webViewRef
+            updateThumbnail()
             model.pushWebView(withRef: newWebViewRef)
-//            handler(.openedWebView(newWebViewRef, fromReferrer: referrerRef))
         }
 
         return newWebViewRef.webView

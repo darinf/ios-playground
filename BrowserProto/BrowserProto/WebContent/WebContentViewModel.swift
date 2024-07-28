@@ -12,6 +12,7 @@ final class WebContentViewModel {
     @Published var panningDeltaY: CGFloat?
     @Published private(set) var backStack: [WebViewRef] = [] // New items at the back
     @Published var incognito: Bool = false
+    @Published var thumbnail: UIImage?
 
     var webView: WKWebView? {
         webViewRef?.webView
