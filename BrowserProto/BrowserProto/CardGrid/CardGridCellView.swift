@@ -7,6 +7,17 @@ final class CardGridCellView: UICollectionViewCell {
         }
     }
 
+    override var isSelected: Bool {
+        didSet {
+            if isSelected {
+                backgroundView?.layer.borderWidth = 2
+                backgroundView?.layer.borderColor = UIColor.systemTeal.withAlphaComponent(0.5).cgColor
+            } else {
+                backgroundView?.layer.borderWidth = 0
+            }
+        }
+    }
+
     override init(frame: CGRect) {
         super.init(frame: frame)
 
