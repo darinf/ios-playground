@@ -1,11 +1,22 @@
 import WebKit
 
 struct WebViewRef: Identifiable {
-    let id: UUID
+    typealias ID = UUID
+
+    let id: ID
     let webView: WKWebView
 
+    private static var allRefs = [ID: WebViewRef]()
+
     init(webView: WKWebView) {
-        self.id = .init()
+        id = .init()
         self.webView = webView
+
+        Self.allRefs[id] = self // TODO: How do we avoid leaks?
+    }
+
+    static func from(id: ID?) -> WebViewRef? {
+        guard let id else { return nil }
+        return allRefs[id]
     }
 }

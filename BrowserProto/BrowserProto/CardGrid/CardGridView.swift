@@ -86,7 +86,8 @@ extension CardGridView: UICollectionViewDelegate {
         didSelectItemAt indexPath: IndexPath
     ) {
         print(">>> didSelectItemAt: \(indexPath)")
-//        model.selectedID = model.cards[indexPath.item].id
+        model.selectedID = model.cards[indexPath.item].id
+        model.showGrid = false
     }
 }
 

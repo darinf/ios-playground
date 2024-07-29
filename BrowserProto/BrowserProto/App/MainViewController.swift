@@ -29,17 +29,6 @@ class MainViewController: UIViewController {
 
     private lazy var webContentView = {
         WebContentView(model: model.webContentViewModel) { _ in }
-//            guard let self else { return }
-//            switch action {
-//            case let .openedWebView(webViewRef, fromReferrer: referrerWebViewRef):
-//                let newCard = Card(id: webViewRef.id)
-//                if let referrerWebViewRef {
-//                    model.cardGridViewModel.insertCard(newCard, after: referrerWebViewRef.id)
-//                } else {
-//                    model.cardGridViewModel.appendCard(newCard)
-//                }
-//            }
-//        }
     }()
 
     private lazy var topBarView = {
@@ -58,9 +47,6 @@ class MainViewController: UIViewController {
                 model.webContentViewModel.goForward()
             case .showTabs:
                 // Refresh thumbnail before showing grid.
-//                if !model.cardGridViewModel.showGrid, let selectedID = model.cardGridViewModel.selectedID {
-//                    model.cardGridViewModel.updateThumbnail(webContentView.captureAsImage(), forCardByID: selectedID)
-//                }
                 if !model.cardGridViewModel.showGrid {
                     webContentView.updateThumbnail()
                 }
@@ -213,6 +199,11 @@ class MainViewController: UIViewController {
                 }
             }
             model.cardGridViewModel.selectedID = newRef.id
+        }.store(in: &subscriptions)
+
+        model.cardGridViewModel.$selectedID.removeDuplicates().sink { [weak self] selectedID in
+            guard let self else { return }
+            model.webContentViewModel.replaceWebView(withRef: .from(id: selectedID))
         }.store(in: &subscriptions)
     }
 

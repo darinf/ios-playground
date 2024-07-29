@@ -63,7 +63,8 @@ final class WebContentViewModel {
         webViewRef = newWebViewRef
     }
 
-    func replaceWebView(withRef newWebViewRef: WebViewRef) {
+    func replaceWebView(withRef newWebViewRef: WebViewRef?) {
+        print(">>> replaceWebView")
         backStack = []
         webViewRef = newWebViewRef
     }
