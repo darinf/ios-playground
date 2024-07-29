@@ -9,12 +9,7 @@ final class CardGridCellView: UICollectionViewCell {
 
     override var isSelected: Bool {
         didSet {
-            if isSelected {
-                backgroundView?.layer.borderWidth = 2
-                backgroundView?.layer.borderColor = UIColor.systemTeal.withAlphaComponent(0.5).cgColor
-            } else {
-                backgroundView?.layer.borderWidth = 0
-            }
+            updateSelectionIndicator()
         }
     }
 
@@ -43,5 +38,16 @@ final class CardGridCellView: UICollectionViewCell {
         backgroundView = imageView
 
         DropShadow.apply(toLayer: layer)
+
+        updateSelectionIndicator()
+    }
+
+    private func updateSelectionIndicator() {
+        if isSelected {
+            backgroundView?.layer.borderWidth = 2
+            backgroundView?.layer.borderColor = UIColor.systemTeal.withAlphaComponent(0.5).cgColor
+        } else {
+            backgroundView?.layer.borderWidth = 0
+        }
     }
 }

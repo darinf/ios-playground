@@ -16,7 +16,7 @@ final class CardGridViewModel {
         case inserted(Card, atIndex: Int)
         case removed(atIndex: Int)
         case removedAll
-        case thumbnailUpdated(atIndex: Int)
+        case updated(Card, atIndex: Int)
     }
 
     @Published var showGrid = false
@@ -58,10 +58,10 @@ final class CardGridViewModel {
     func updateThumbnail(_ thumbnail: UIImage?, forCardByID cardID: Card.ID) {
         let cardIndex = indexByID(cardID)
         cards[cardIndex].thumbnail = thumbnail
-        cardsChanges.send(.thumbnailUpdated(atIndex: cardIndex))
+        cardsChanges.send(.updated(cards[cardIndex], atIndex: cardIndex))
     }
 
-    private func indexByID(_ cardID: Card.ID) -> IdentifiedArrayOf<Card>.Index {
+    func indexByID(_ cardID: Card.ID) -> IdentifiedArrayOf<Card>.Index {
         guard let index = cards.index(id: cardID) else {
             fatalError("Unexpected Card ID")
         }

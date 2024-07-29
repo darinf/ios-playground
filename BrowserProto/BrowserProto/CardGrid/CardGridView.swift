@@ -44,11 +44,25 @@ final class CardGridView: UIView {
             self?.zoomedView.isHidden = showGrid
         }.store(in: &subscriptions)
 
+        model.$selectedID.sink { [weak self] selectedID in
+            guard let self else { return }
+            guard let selectedID else {
+                collectionView.selectItem(at: nil, animated: false, scrollPosition: .top)
+                return
+            }
+            let index = model.indexByID(selectedID)
+            collectionView.selectItem(at: .init(item: index, section: 0), animated: false, scrollPosition: .top)
+        }.store(in: &subscriptions)
+
         model.cardsChanges.sink { [weak self] change in
             guard let self else { return }
             print(">>> cards change: \(change)")
-            // XXX hack
-            collectionView.reloadData()
+            switch change {
+            case let .updated(card, atIndex: index):
+                (collectionView.cellForItem(at: .init(item: index, section: 0)) as! CardGridCellView).card = card
+            default:
+                collectionView.reloadData()
+            }
         }.store(in: &subscriptions)
     }
 }
@@ -62,21 +76,17 @@ extension CardGridView: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! CardGridCellView
         let card = model.cards[indexPath.item]
         cell.card = card
-//
-//
-//        if let thumbnail = card.thumbnail {
-//            cell.backgroundColor = .clear
-//            let imageView = UIImageView(image: thumbnail.resizeTopAlignedToFill(newWidth: cell.bounds.width))
-//            imageView.contentMode = .topLeft // .scaleAspectFill
-//            imageView.clipsToBounds = true
-//            DropShadow.apply(toLayer: imageView.layer)
-//            imageView.layer.cornerRadius = 10
-////            imageView.layer.masksToBounds = true
-//            cell.backgroundView = imageView
-//        } else {
-//            cell.backgroundColor = .systemTeal
-//        }
         return cell
+    }
+}
+
+extension CardGridView: UICollectionViewDelegate {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        didSelectItemAt indexPath: IndexPath
+    ) {
+        print(">>> didSelectItemAt: \(indexPath)")
+//        model.selectedID = model.cards[indexPath.item].id
     }
 }
 
