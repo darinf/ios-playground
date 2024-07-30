@@ -1,9 +1,16 @@
 import UIKit
 
 final class CardGridCellView: UICollectionViewCell {
+    private enum Metrics {
+        static let closeButtonRadius: CGFloat = 10
+        static let margin: CGFloat = 5
+    }
+
+    var model: CardGridViewModel?
+
     var card: Card? {
         didSet {
-            updateThumbnail(card?.thumbnail)
+            thumbnailView.image = card?.thumbnail?.resizeTopAlignedToFill(newWidth: bounds.width)
         }
     }
 
@@ -13,6 +20,13 @@ final class CardGridCellView: UICollectionViewCell {
         imageView.layer.cornerRadius = 10
         imageView.clipsToBounds = true
         return imageView
+    }()
+
+    private lazy var closeButton = {
+        CapsuleButton(cornerRadius: Metrics.closeButtonRadius, systemImage: "multiply") { [weak self] in
+            guard let self, let model, let card else { return }
+            model.removeCard(byID: card.id)
+        }
     }()
 
     override var isSelected: Bool {
@@ -31,13 +45,30 @@ final class CardGridCellView: UICollectionViewCell {
 
         backgroundView = thumbnailView
         DropShadow.apply(toLayer: layer)
+
+        contentView.addSubview(closeButton)
+
+        setupConstraints()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private func updateThumbnail(_ thumbnail: UIImage?) {
-        thumbnailView.image = thumbnail?.resizeTopAlignedToFill(newWidth: bounds.width)
+    override func prepareForReuse() {
+        super.prepareForReuse()
+
+        model = nil
+        card = nil
+    }
+
+    private func setupConstraints() {
+        closeButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            closeButton.widthAnchor.constraint(equalToConstant: Metrics.closeButtonRadius * 2),
+            closeButton.heightAnchor.constraint(equalToConstant: Metrics.closeButtonRadius * 2),
+            closeButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: Metrics.margin),
+            closeButton.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -Metrics.margin)
+        ])
     }
 }
