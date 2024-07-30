@@ -7,16 +7,30 @@ final class CardGridCellView: UICollectionViewCell {
         }
     }
 
+    private var thumbnailView = {
+        let imageView = UIImageView(image: nil)
+        imageView.contentMode = .topLeft
+        imageView.layer.cornerRadius = 10
+        imageView.clipsToBounds = true
+        return imageView
+    }()
+
     override var isSelected: Bool {
         didSet {
-            updateSelectionIndicator()
+            if isSelected {
+                thumbnailView.layer.borderWidth = 2
+                thumbnailView.layer.borderColor = UIColor.systemTeal.withAlphaComponent(0.5).cgColor
+            } else {
+                thumbnailView.layer.borderWidth = 0
+            }
         }
     }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        backgroundColor = .systemTeal
+        backgroundView = thumbnailView
+        DropShadow.apply(toLayer: layer)
     }
     
     required init?(coder: NSCoder) {
@@ -24,30 +38,6 @@ final class CardGridCellView: UICollectionViewCell {
     }
 
     private func updateThumbnail(_ thumbnail: UIImage?) {
-        guard let thumbnail else {
-            backgroundColor = .systemTeal // TODO: use better fallback
-            return
-        }
-
-        backgroundColor = .clear
-
-        let imageView = UIImageView(image: thumbnail.resizeTopAlignedToFill(newWidth: bounds.width))
-        imageView.contentMode = .topLeft
-        imageView.layer.cornerRadius = 10
-        imageView.clipsToBounds = true
-        backgroundView = imageView
-
-        DropShadow.apply(toLayer: layer)
-
-        updateSelectionIndicator()
-    }
-
-    private func updateSelectionIndicator() {
-        if isSelected {
-            backgroundView?.layer.borderWidth = 2
-            backgroundView?.layer.borderColor = UIColor.systemTeal.withAlphaComponent(0.5).cgColor
-        } else {
-            backgroundView?.layer.borderWidth = 0
-        }
+        thumbnailView.image = thumbnail?.resizeTopAlignedToFill(newWidth: bounds.width)
     }
 }
