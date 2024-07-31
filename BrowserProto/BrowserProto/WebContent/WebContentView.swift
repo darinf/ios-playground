@@ -119,6 +119,7 @@ final class WebContentView: UIView {
             }
         }.store(in: &subscriptions)
 
+        // TODO: This is a hack since we don't have a "new tab" feature yet.
         model.$incognito.dropFirst().removeDuplicates().sink { [weak self] incognito in
             guard let self else { return }
             model.openWebView(withRef: .init(forIncognito: incognito))
