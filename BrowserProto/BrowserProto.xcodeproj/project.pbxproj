@@ -32,8 +32,6 @@
 		93D4810C2C2C493B0019921F /* DropShadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D4810B2C2C493A0019921F /* DropShadow.swift */; };
 		93D4810F2C2CC4DE0019921F /* URLInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D4810E2C2CC4DE0019921F /* URLInputView.swift */; };
 		93D481112C2DA5F00019921F /* URLInputViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D481102C2DA5F00019921F /* URLInputViewModel.swift */; };
-		93D481142C2DE9400019921F /* WebContentDeckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D481132C2DE9400019921F /* WebContentDeckView.swift */; };
-		93D481162C2DE94C0019921F /* WebContentDeckViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D481152C2DE94C0019921F /* WebContentDeckViewModel.swift */; };
 		93D481192C31A24D0019921F /* UIColor+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D481182C31A24D0019921F /* UIColor+Extensions.swift */; };
 		93D4811D2C38BE880019921F /* MainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D4811C2C38BE880019921F /* MainViewModel.swift */; };
 		93D4811F2C38C4680019921F /* URLInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D4811E2C38C4680019921F /* URLInput.swift */; };
@@ -67,8 +65,6 @@
 		93D4810B2C2C493A0019921F /* DropShadow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropShadow.swift; sourceTree = "<group>"; };
 		93D4810E2C2CC4DE0019921F /* URLInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLInputView.swift; sourceTree = "<group>"; };
 		93D481102C2DA5F00019921F /* URLInputViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLInputViewModel.swift; sourceTree = "<group>"; };
-		93D481132C2DE9400019921F /* WebContentDeckView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebContentDeckView.swift; sourceTree = "<group>"; };
-		93D481152C2DE94C0019921F /* WebContentDeckViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebContentDeckViewModel.swift; sourceTree = "<group>"; };
 		93D481182C31A24D0019921F /* UIColor+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extensions.swift"; sourceTree = "<group>"; };
 		93D4811C2C38BE880019921F /* MainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewModel.swift; sourceTree = "<group>"; };
 		93D4811E2C38C4680019921F /* URLInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLInput.swift; sourceTree = "<group>"; };
@@ -123,7 +119,6 @@
 				93D4810D2C2CC47B0019921F /* Navigation */,
 				93D481172C31A2300019921F /* Utils */,
 				93D481002C2B08690019921F /* WebContent */,
-				93D481122C2DE8EE0019921F /* WebContentDeck */,
 			);
 			path = BrowserProto;
 			sourceTree = "<group>";
@@ -191,15 +186,6 @@
 				93D481102C2DA5F00019921F /* URLInputViewModel.swift */,
 			);
 			path = Navigation;
-			sourceTree = "<group>";
-		};
-		93D481122C2DE8EE0019921F /* WebContentDeck */ = {
-			isa = PBXGroup;
-			children = (
-				93D481132C2DE9400019921F /* WebContentDeckView.swift */,
-				93D481152C2DE94C0019921F /* WebContentDeckViewModel.swift */,
-			);
-			path = WebContentDeck;
 			sourceTree = "<group>";
 		};
 		93D481172C31A2300019921F /* Utils */ = {
@@ -304,10 +290,8 @@
 				938822EE2C570A3A00B4FE37 /* CardGridCellView.swift in Sources */,
 				93C94CDD2C51900400E3BB13 /* SuggestionsViewModel.swift in Sources */,
 				93254B0D2C53438B00B66206 /* MainMenu.swift in Sources */,
-				93D481142C2DE9400019921F /* WebContentDeckView.swift in Sources */,
 				93D4810F2C2CC4DE0019921F /* URLInputView.swift in Sources */,
 				938822E02C55633A00B4FE37 /* CardGridView.swift in Sources */,
-				93D481162C2DE94C0019921F /* WebContentDeckViewModel.swift in Sources */,
 				938822E22C55634200B4FE37 /* CardGridViewModel.swift in Sources */,
 				93D480E22C25D9600019921F /* MainViewController.swift in Sources */,
 				93D480FD2C2704DF0019921F /* URLBarView.swift in Sources */,

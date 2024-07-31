@@ -18,22 +18,6 @@ final class WebContentView: UIView {
     private var lastTranslation: CGPoint = .zero
     private var dragBackState: DragBackState?
 
-    private static var normalConfiguration = {
-        let configuration = WKWebViewConfiguration()
-        configuration.allowsInlineMediaPlayback = true
-        configuration.ignoresViewportScaleLimits = true
-        configuration.websiteDataStore = .default()
-        return configuration
-    }()
-
-    private static var incognitoConfiguration = {
-        let configuration = WKWebViewConfiguration()
-        configuration.allowsInlineMediaPlayback = true
-        configuration.ignoresViewportScaleLimits = true
-        configuration.websiteDataStore = .nonPersistent()
-        return configuration
-    }()
-
     private var webView: WKWebView?
 
     private lazy var panGestureRecognizer = {
@@ -55,11 +39,6 @@ final class WebContentView: UIView {
         self.handler = handler
 
         super.init(frame: .zero)
-
-        let webViewRef = WebViewRef(webView: Self.createWebView(
-            configuration: Self.configuration(forIncognito: model.incognito)
-        ))
-        model.pushWebView(withRef: webViewRef)
 
         setupObservers()
     }
@@ -131,9 +110,9 @@ final class WebContentView: UIView {
     }
 
     private func setupObservers() {
-        model.$webViewRef.sink { [weak self] ref in
+        model.webViewRefChanges.sink { [weak self] _ in
             guard let self else { return }
-            if let ref {
+            if let ref = model.webViewRef {
                 setWebView(ref.webView)
             } else {
                 setWebView(nil)
@@ -142,9 +121,7 @@ final class WebContentView: UIView {
 
         model.$incognito.dropFirst().removeDuplicates().sink { [weak self] incognito in
             guard let self else { return }
-            model.replaceWebView(withRef: .init(
-                webView: Self.createWebView(configuration: Self.configuration(forIncognito: incognito))
-            ))
+            model.replaceWebView(withRef: .init(forIncognito: incognito))
         }.store(in: &subscriptions)
     }
 
@@ -155,17 +132,15 @@ final class WebContentView: UIView {
             self?.model.url = url
         }.store(in: &webViewSubscriptions)
 
-        Publishers.CombineLatest(
-            model.$backStack,
-            webView.publisher(for: \.canGoBack, options: [.initial])
-        ).sink { [weak self] (backStack, canGoBack) in
+        webView.publisher(for: \.canGoBack, options: [.initial]).sink { [weak self] canGoBack in
             guard let self else { return }
             webView.removeGestureRecognizer(edgeSwipeGestureRecognizer)
             if canGoBack {
                 model.canGoBack = true
             } else {
-                model.canGoBack = !backStack.isEmpty
-                if !backStack.isEmpty {
+                let hasOpenerRef = model.webViewRef?.openerRef != nil
+                model.canGoBack = hasOpenerRef
+                if hasOpenerRef {
                     webView.addGestureRecognizer(edgeSwipeGestureRecognizer)
                 }
             }
@@ -285,24 +260,6 @@ final class WebContentView: UIView {
             }
         }
     }
-
-    private static func createWebView(configuration: WKWebViewConfiguration) -> WKWebView {
-        let webView = WKWebView(frame: .zero, configuration: configuration)
-        webView.customUserAgent = userAgentString
-        webView.allowsBackForwardNavigationGestures = true
-        webView.scrollView.clipsToBounds = false
-        webView.scrollView.contentInsetAdjustmentBehavior = .always
-        return webView
-    }
-
-    private static var userAgentString: String = {
-        "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1"
-    }()
-
-    private static func configuration(forIncognito incognito: Bool) -> WKWebViewConfiguration {
-        print(">>> configuration for incognito: \(incognito)")
-        return incognito ? incognitoConfiguration : normalConfiguration
-    }
 }
 
 extension WebContentView: UIGestureRecognizerDelegate {
@@ -323,11 +280,14 @@ extension WebContentView: WKUIDelegate {
     ) -> WKWebView? {
         print(">>> createWebView")
 
-        let newWebViewRef = WebViewRef(webView: Self.createWebView(configuration: configuration))
+        let newWebViewRef = WebViewRef(
+            webView: WebViewRef.createWebView(configuration: configuration),
+            openerRef: model.webViewRef
+        )
 
         DispatchQueue.main.async { [self] in
             updateThumbnail()
-            model.pushWebView(withRef: newWebViewRef)
+            model.openWebView(withRef: newWebViewRef)
         }
 
         return newWebViewRef.webView

@@ -4,13 +4,20 @@ import UIKit
 import WebKit
 
 final class WebContentViewModel {
-    @Published private(set) var webViewRef: WebViewRef?
+    enum WebViewRefChange {
+        case opened
+        case switched
+        case poppedBack(from: WebViewRef)
+    }
+
+    private(set) var webViewRef: WebViewRef?
+    let webViewRefChanges = PassthroughSubject<WebViewRefChange, Never>()
+
     @Published var url: URL?
     @Published var canGoBack: Bool = false
     @Published var canGoForward: Bool = false
     @Published private(set) var progress: Double?
     @Published var panningDeltaY: CGFloat?
-    @Published private(set) var backStack: [WebViewRef] = [] // New items at the back
     @Published var incognito: Bool = false
     @Published var thumbnail: UIImage?
 
@@ -19,7 +26,7 @@ final class WebContentViewModel {
     }
 
     var previousWebView: WKWebView? {
-        backStack.last?.webView
+        webViewRef?.openerRef?.webView
     }
 
     func updateProgress(isLoading: Bool, estimatedProgress: Double) {
@@ -51,21 +58,23 @@ final class WebContentViewModel {
         webView?.goForward()
     }
 
-    func popBack() {
-        guard !backStack.isEmpty else { return }
-        webViewRef = backStack.popLast()
+    func openWebView() {
+        openWebView(withRef: WebViewRef(forIncognito: incognito))
     }
 
-    func pushWebView(withRef newWebViewRef: WebViewRef) {
-        if let webViewRef {
-            backStack.append(webViewRef)
-        }
+    func openWebView(withRef newWebViewRef: WebViewRef) {
         webViewRef = newWebViewRef
+        webViewRefChanges.send(.opened)
+    }
+
+    func popBack() {
+        guard let fromRef = webViewRef, fromRef.openerRef != nil else { return }
+        webViewRef = fromRef.openerRef
+        webViewRefChanges.send(.poppedBack(from: fromRef))
     }
 
     func replaceWebView(withRef newWebViewRef: WebViewRef?) {
-        print(">>> replaceWebView")
-        backStack = []
         webViewRef = newWebViewRef
+        webViewRefChanges.send(.switched)
     }
 }

@@ -97,6 +97,7 @@ class MainViewController: UIViewController {
         super.viewDidAppear(animated)
         view.setNeedsUpdateConstraints()
 
+        model.webContentViewModel.openWebView()
         model.webContentViewModel.navigate(to: URL(string: "https://news.ycombinator.com/"))
     }
 
@@ -181,24 +182,23 @@ class MainViewController: UIViewController {
             model.cardGridViewModel.updateThumbnail(thumbnail, forCardByID: selectedID)
         }.store(in: &subscriptions)
 
-        Publishers.CombineLatest(
-            model.webContentViewModel.$webViewRef,
-            model.webContentViewModel.$backStack
-        ).sink { [weak self] (newRef, backStack) in
+        model.webContentViewModel.webViewRefChanges.sink { [weak self] change in
             guard let self else { return }
-            guard let newRef else {
-                model.cardGridViewModel.selectedID = nil
-                return
-            }
-            if !model.cardGridViewModel.containsCard(byID: newRef.id) {
-                let newCard = Card(id: newRef.id)
-                if let previousRef = backStack.last {
-                    model.cardGridViewModel.insertCard(newCard, after: previousRef.id)
+            let currentRef = model.webContentViewModel.webViewRef
+            switch change {
+            case .opened:
+                let newCard = Card(id: currentRef!.id)
+                if let openerRef = currentRef?.openerRef {
+                    model.cardGridViewModel.insertCard(newCard, after: openerRef.id)
                 } else {
                     model.cardGridViewModel.appendCard(newCard)
                 }
+            case .switched:
+                break
+            case let .poppedBack(from: closedRef):
+                model.cardGridViewModel.removeCard(byID: closedRef.id)
             }
-            model.cardGridViewModel.selectedID = newRef.id
+            model.cardGridViewModel.selectedID = currentRef?.id
         }.store(in: &subscriptions)
 
         model.cardGridViewModel.$selectedID.removeDuplicates().sink { [weak self] selectedID in
