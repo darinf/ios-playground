@@ -121,7 +121,7 @@ final class WebContentView: UIView {
 
         model.$incognito.dropFirst().removeDuplicates().sink { [weak self] incognito in
             guard let self else { return }
-            model.replaceWebView(withRef: .init(forIncognito: incognito))
+            model.openWebView(withRef: .init(forIncognito: incognito))
         }.store(in: &subscriptions)
     }
 

@@ -55,6 +55,9 @@ class MainViewController: UIViewController {
                 print(">>> mainMenu: \(mainMenuAction)")
                 switch mainMenuAction {
                 case .toggleIncognito(let incognitoEnabled):
+                    // TODO: Figure out how to provide memory for existing cards.
+                    model.cardGridViewModel.showGrid = false
+                    model.cardGridViewModel.removeAllCards()
                     model.webContentViewModel.incognito = incognitoEnabled
                     model.urlInputViewModel.visibility = .showing(initialValue: "")
                 }
