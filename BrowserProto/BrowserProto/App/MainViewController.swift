@@ -197,6 +197,7 @@ class MainViewController: UIViewController {
                 break
             case let .poppedBack(from: closedRef):
                 model.cardGridViewModel.removeCard(byID: closedRef.id)
+                // TODO: If currentRef is nil, then we need to select a different card.
             }
             model.cardGridViewModel.selectedID = currentRef?.id
         }.store(in: &subscriptions)

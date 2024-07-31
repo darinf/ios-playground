@@ -68,8 +68,8 @@ final class WebContentViewModel {
     }
 
     func popBack() {
-        guard let fromRef = webViewRef, fromRef.openerRef != nil else { return }
-        webViewRef = fromRef.openerRef
+        guard let fromRef = webViewRef else { return }
+        webViewRef = fromRef.openerRef // Can be nil, corresponding to window.close().
         webViewRefChanges.send(.poppedBack(from: fromRef))
     }
 
