@@ -7,8 +7,6 @@ final class BottomBarView: UIVisualEffectView {
         static let buttonDiameter = 2 * buttonRadius
         static let margin: CGFloat = 12
         static let horizontalMargin: CGFloat = 1.5 * margin
-//        static let urlBarViewCompactRightOffset = -2 * (buttonDiameter + margin)
-//        static let urlBarViewExpandedRightOffset: CGFloat = 0
         static let contentBoxHeight = buttonDiameter
     }
 
@@ -25,29 +23,9 @@ final class BottomBarView: UIVisualEffectView {
     private let handler: (Action) -> Void
     private var subscriptions: Set<AnyCancellable> = []
 
-//    private lazy var urlBarViewRightConstraint = {
-//        urlBarView.rightAnchor.constraint(equalTo: contentBox.rightAnchor, constant: Metrics.urlBarViewCompactRightOffset)
-//    }()
-
     private lazy var contentBox = {
         UIView()
     }()
-
-//    private lazy var backButton = {
-//        let button = CapsuleButton(cornerRadius: Metrics.buttonRadius, systemImage: "chevron.left") { [weak self] in
-//            self?.handler(.goBack)
-//        }
-//        button.isEnabled = false
-//        return button
-//    }()
-//
-//    private lazy var forwardButton = {
-//        let button = CapsuleButton(cornerRadius: Metrics.buttonRadius, systemImage: "chevron.right") { [weak self] in
-//            self?.handler(.goForward)
-//        }
-//        button.isEnabled = false
-//        return button
-//    }()
 
     private lazy var centerButtonView = {
         CenterButtonView(cornerRadius: Metrics.buttonRadius) { [weak self] action in
@@ -86,10 +64,6 @@ final class BottomBarView: UIVisualEffectView {
         return button
     }()
 
-//    private lazy var panGestureRecognizer = {
-//        UIPanGestureRecognizer(target: self, action: #selector(onPan))
-//    }()
-
     init(model: BottomBarViewModel, handler: @escaping (Action) -> Void) {
         self.model = model
         self.handler = handler
@@ -99,15 +73,8 @@ final class BottomBarView: UIVisualEffectView {
 
         contentView.addSubview(contentBox)
         contentBox.addSubview(centerButtonView)
-//        contentBox.addSubview(backButton)
-//        contentBox.addSubview(forwardButton)
         contentBox.addSubview(tabsButton)
         contentBox.addSubview(menuButton)
-
-//        backButton.layer.opacity = 0.0
-//        forwardButton.layer.opacity = 0.0
-
-//        addGestureRecognizer(panGestureRecognizer)
 
         setupConstraints()
     }
@@ -126,22 +93,6 @@ final class BottomBarView: UIVisualEffectView {
             centerButtonView.topAnchor.constraint(equalTo: contentBox.topAnchor),
             centerButtonView.heightAnchor.constraint(equalToConstant: Metrics.buttonDiameter)
         ])
-
-//        backButton.translatesAutoresizingMaskIntoConstraints = false
-//        NSLayoutConstraint.activate([
-//            backButton.bottomAnchor.constraint(equalTo: contentBox.bottomAnchor),
-//            backButton.leftAnchor.constraint(equalTo: contentBox.leftAnchor),
-//            backButton.widthAnchor.constraint(equalToConstant: Metrics.buttonDiameter),
-//            backButton.heightAnchor.constraint(equalToConstant: Metrics.buttonDiameter)
-//        ])
-//
-//        forwardButton.translatesAutoresizingMaskIntoConstraints = false
-//        NSLayoutConstraint.activate([
-//            forwardButton.bottomAnchor.constraint(equalTo: contentBox.bottomAnchor),
-//            forwardButton.leftAnchor.constraint(equalTo: backButton.rightAnchor, constant: Metrics.margin),
-//            forwardButton.widthAnchor.constraint(equalToConstant: Metrics.buttonDiameter),
-//            forwardButton.heightAnchor.constraint(equalToConstant: Metrics.buttonDiameter)
-//        ])
 
         tabsButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -167,18 +118,6 @@ final class BottomBarView: UIVisualEffectView {
     }
 
     private func setupObservers() {
-//        model.$expanded.dropFirst().removeDuplicates().sink { [weak self] expanded in
-//            self?.onUpdateLayout(expanded: expanded)
-//        }.store(in: &subscriptions)
-//
-//        model.$canGoBack.dropFirst().removeDuplicates().sink { [weak self] canGoBack in
-//            self?.backButton.isEnabled = canGoBack
-//        }.store(in: &subscriptions)
-//
-//        model.$canGoForward.dropFirst().removeDuplicates().sink { [weak self] canGoForward in
-//            self?.forwardButton.isEnabled = canGoForward
-//        }.store(in: &subscriptions)
-
         model.$url.dropFirst().removeDuplicates().sink { [weak self] url in
             guard let self else { return }
             guard !model.configureForAllTabs else { return }
@@ -198,46 +137,19 @@ final class BottomBarView: UIVisualEffectView {
         model.$configureForAllTabs.sink { [weak self] configureForAllTabs in
             guard let self else { return }
             if configureForAllTabs {
-                self.centerButtonView.resetProgressWithoutAnimation()
-                self.centerButtonView.setDisplayText("")
-                self.centerButtonView.setImage(.init(systemName: "plus"))
-                NSLayoutConstraint.deactivate(self.centerButtonViewFullWidthConstraints)
-                NSLayoutConstraint.activate(self.centerButtonViewNarrowConstraints)
+                centerButtonView.resetProgressWithoutAnimation()
+                centerButtonView.setDisplayText("")
+                centerButtonView.setImage(.init(systemName: "plus"))
+                NSLayoutConstraint.deactivate(centerButtonViewFullWidthConstraints)
+                NSLayoutConstraint.activate(centerButtonViewNarrowConstraints)
             } else {
-                self.centerButtonView.setDisplayText(self.model.url?.host() ?? "")
-                self.centerButtonView.setImage(nil)
-                NSLayoutConstraint.deactivate(self.centerButtonViewNarrowConstraints)
-                NSLayoutConstraint.activate(self.centerButtonViewFullWidthConstraints)
+                centerButtonView.setDisplayText(model.url?.host() ?? "")
+                centerButtonView.setImage(nil)
+                NSLayoutConstraint.deactivate(centerButtonViewNarrowConstraints)
+                NSLayoutConstraint.activate(centerButtonViewFullWidthConstraints)
             }
         }.store(in: &subscriptions)
     }
-
-//    private func onPanGesture(translation: CGFloat) {
-//        let threshold: CGFloat = 25
-//
-//        if translation < threshold {
-//            model.expanded = true
-//        } else if translation > threshold {
-//            model.expanded = false
-//        }
-//    }
-
-    private func onUpdateLayout() {
-//        UIView.animate(withDuration: 0.2, delay: 0) { [self] in
-//            if expanded {
-//                backButton.layer.opacity = 1.0
-//                forwardButton.layer.opacity = 1.0
-//            } else {
-//                backButton.layer.opacity = 0.0
-//                forwardButton.layer.opacity = 0.0
-//            }
-//            layoutIfNeeded()
-//        }
-    }
-
-//    @objc private func onPan() {
-//        onPanGesture(translation: panGestureRecognizer.translation(in: self).y)
-//    }
 
     private func rebuildMainMenu(with config: MainMenuConfig) {
         print(">>> rebuildMainMenu")
