@@ -3,7 +3,7 @@ import Foundation
 
 final class URLInputViewModel {
     enum Visibility {
-        case showing(initialValue: String)
+        case showing(initialValue: String, forTarget: NavigationTarget)
         case hidden
     }
 
@@ -21,4 +21,14 @@ final class URLInputViewModel {
             }
         }
     }
+
+    var navigationTarget: NavigationTarget? {
+        guard case .showing(_, let target) = visibility else { return nil }
+        return target
+    }
+}
+
+enum NavigationTarget {
+    case currentTab
+    case newTab
 }

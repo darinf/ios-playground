@@ -17,8 +17,14 @@ class MainViewController: UIViewController {
         URLInputView(model: model.urlInputViewModel) { [weak self] action in
             guard let self else { return }
             switch action {
-            case .navigate(let text):
+            case let .navigate(text, target):
+                if case .newTab = target {
+                    model.webContentViewModel.openWebView()
+                }
                 model.webContentViewModel.navigate(to: URLInput.url(from: text))
+                if model.cardGridViewModel.showGrid {
+                    model.cardGridViewModel.showGrid = false
+                }
             }
         }
     }()
@@ -40,7 +46,10 @@ class MainViewController: UIViewController {
             guard let self else { return }
             switch action {
             case .editURL:
-                model.urlInputViewModel.visibility = .showing(initialValue: model.webContentViewModel.url?.absoluteString ?? "")
+                model.urlInputViewModel.visibility = .showing(
+                    initialValue: model.webContentViewModel.url?.absoluteString ?? "",
+                    forTarget: .currentTab
+                )
             case .goBack:
                 model.webContentViewModel.goBack()
             case .goForward:
@@ -51,6 +60,8 @@ class MainViewController: UIViewController {
                     webContentView.updateThumbnail()
                 }
                 model.cardGridViewModel.showGrid.toggle()
+            case .addTab:
+                model.urlInputViewModel.visibility = .showing(initialValue: "", forTarget: .newTab)
             case .mainMenu(let mainMenuAction):
                 print(">>> mainMenu: \(mainMenuAction)")
                 switch mainMenuAction {
@@ -59,7 +70,7 @@ class MainViewController: UIViewController {
                     model.cardGridViewModel.showGrid = false
                     model.cardGridViewModel.removeAllCards()
                     model.webContentViewModel.incognito = incognitoEnabled
-                    model.urlInputViewModel.visibility = .showing(initialValue: "")
+                    model.urlInputViewModel.visibility = .showing(initialValue: "", forTarget: .newTab)
                 }
             }
         }
@@ -110,7 +121,7 @@ class MainViewController: UIViewController {
     }
 
     override func updateViewConstraints() {
-        updateLayout(expanded: model.bottomBarViewModel.expanded, animated: false)
+        updateLayout(animated: false)
         super.updateViewConstraints()
     }
 
@@ -154,22 +165,18 @@ class MainViewController: UIViewController {
     }
 
     private func setupObservers() {
-        model.bottomBarViewModel.$expanded.dropFirst().sink { [weak self] expanded in
-            self?.updateLayout(expanded: expanded, animated: true)
-        }.store(in: &subscriptions)
-
         model.webContentViewModel.$url.dropFirst().sink { [weak self] url in
             self?.model.bottomBarViewModel.url = url
             self?.resetBottomBarOffset()
         }.store(in: &subscriptions)
 
-        model.webContentViewModel.$canGoBack.dropFirst().sink { [weak self] canGoBack in
-            self?.model.bottomBarViewModel.canGoBack = canGoBack
-        }.store(in: &subscriptions)
-
-        model.webContentViewModel.$canGoForward.dropFirst().sink { [weak self] canGoForward in
-            self?.model.bottomBarViewModel.canGoForward = canGoForward
-        }.store(in: &subscriptions)
+//        model.webContentViewModel.$canGoBack.dropFirst().sink { [weak self] canGoBack in
+//            self?.model.bottomBarViewModel.canGoBack = canGoBack
+//        }.store(in: &subscriptions)
+//
+//        model.webContentViewModel.$canGoForward.dropFirst().sink { [weak self] canGoForward in
+//            self?.model.bottomBarViewModel.canGoForward = canGoForward
+//        }.store(in: &subscriptions)
 
         model.webContentViewModel.$progress.dropFirst().sink { [weak self] progress in
             self?.model.bottomBarViewModel.progress = progress
@@ -209,12 +216,16 @@ class MainViewController: UIViewController {
             guard let self else { return }
             model.webContentViewModel.replaceWebView(withRef: .from(id: selectedID))
         }.store(in: &subscriptions)
+
+        model.cardGridViewModel.$showGrid.sink { [weak self] showGrid in
+            self?.model.bottomBarViewModel.configureForAllTabs = showGrid
+        }.store(in: &subscriptions)
     }
 
-    private func updateLayout(expanded: Bool, animated: Bool) {
+    private func updateLayout(animated: Bool) {
         let safeAreaInsets = view.safeAreaInsets
 
-        let contentBoxHeight: CGFloat = expanded ? BottomBarView.Metrics.contentBoxExpandedHeight : BottomBarView.Metrics.contentBoxCompactHeight
+        let contentBoxHeight: CGFloat = BottomBarView.Metrics.contentBoxHeight
 
         let newHeight = safeAreaInsets.bottom + contentBoxHeight + BottomBarView.Metrics.margin
 
@@ -238,8 +249,7 @@ class MainViewController: UIViewController {
     }
 
     private var bottomBarMaxOffset: CGFloat {
-        let expanded = model.bottomBarViewModel.expanded
-        return (expanded ? BottomBarView.Metrics.contentBoxExpandedHeight : BottomBarView.Metrics.contentBoxCompactHeight) + BottomBarView.Metrics.margin
+        return BottomBarView.Metrics.contentBoxHeight + BottomBarView.Metrics.margin
     }
 
     private func updateBottomBarOffset(panningDeltaY: CGFloat?) {

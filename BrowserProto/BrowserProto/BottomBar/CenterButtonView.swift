@@ -1,7 +1,7 @@
 import Combine
 import UIKit
 
-final class URLBarView: CapsuleButton {
+final class CenterButtonView: CapsuleButton {
     enum Action {
         case clicked
     }
@@ -31,6 +31,10 @@ final class URLBarView: CapsuleButton {
         fatalError("init(coder:) has not been implemented")
     }
 
+    func resetProgressWithoutAnimation() {
+        progressContainerView.progress = nil
+    }
+
     func setProgress(_ progress: Double?) {
         if let progress {
             UIView.animate(withDuration: 0.2) { [self] in
@@ -52,6 +56,10 @@ final class URLBarView: CapsuleButton {
 
     func setDisplayText(_ displayText: String) {
         setTitle(displayText, for: .normal)
+    }
+
+    func setImage(_ image: UIImage?) {
+        setImage(image, for: .normal)
     }
 
     private func setupConstraints() {

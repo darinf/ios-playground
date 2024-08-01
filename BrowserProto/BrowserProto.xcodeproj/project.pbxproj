@@ -24,7 +24,7 @@
 		93D480EA2C25D9610019921F /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 93D480E92C25D9610019921F /* Base */; };
 		93D480F42C2609950019921F /* BottomBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D480F32C2609950019921F /* BottomBarView.swift */; };
 		93D480F92C260DB90019921F /* CapsuleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D480F82C260DB90019921F /* CapsuleButton.swift */; };
-		93D480FD2C2704DF0019921F /* URLBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D480FC2C2704DF0019921F /* URLBarView.swift */; };
+		93D480FD2C2704DF0019921F /* CenterButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D480FC2C2704DF0019921F /* CenterButtonView.swift */; };
 		93D480FF2C271E090019921F /* BottomBarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D480FE2C271E090019921F /* BottomBarViewModel.swift */; };
 		93D481042C2B08CB0019921F /* WebContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D481032C2B08CB0019921F /* WebContentView.swift */; };
 		93D481062C2B08D80019921F /* WebContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D481052C2B08D80019921F /* WebContentViewModel.swift */; };
@@ -57,7 +57,7 @@
 		93D480EB2C25D9610019921F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		93D480F32C2609950019921F /* BottomBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomBarView.swift; sourceTree = "<group>"; };
 		93D480F82C260DB90019921F /* CapsuleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapsuleButton.swift; sourceTree = "<group>"; };
-		93D480FC2C2704DF0019921F /* URLBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLBarView.swift; sourceTree = "<group>"; };
+		93D480FC2C2704DF0019921F /* CenterButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CenterButtonView.swift; sourceTree = "<group>"; };
 		93D480FE2C271E090019921F /* BottomBarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomBarViewModel.swift; sourceTree = "<group>"; };
 		93D481032C2B08CB0019921F /* WebContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebContentView.swift; sourceTree = "<group>"; };
 		93D481052C2B08D80019921F /* WebContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebContentViewModel.swift; sourceTree = "<group>"; };
@@ -128,9 +128,9 @@
 			children = (
 				93D480F32C2609950019921F /* BottomBarView.swift */,
 				93D480FE2C271E090019921F /* BottomBarViewModel.swift */,
+				93D480FC2C2704DF0019921F /* CenterButtonView.swift */,
 				93254B0C2C53438B00B66206 /* MainMenu.swift */,
 				938822DC2C54484B00B4FE37 /* MainMenuConfig.swift */,
-				93D480FC2C2704DF0019921F /* URLBarView.swift */,
 			);
 			path = BottomBar;
 			sourceTree = "<group>";
@@ -294,7 +294,7 @@
 				938822E02C55633A00B4FE37 /* CardGridView.swift in Sources */,
 				938822E22C55634200B4FE37 /* CardGridViewModel.swift in Sources */,
 				93D480E22C25D9600019921F /* MainViewController.swift in Sources */,
-				93D480FD2C2704DF0019921F /* URLBarView.swift in Sources */,
+				93D480FD2C2704DF0019921F /* CenterButtonView.swift in Sources */,
 				93D481192C31A24D0019921F /* UIColor+Extensions.swift in Sources */,
 				93D480FF2C271E090019921F /* BottomBarViewModel.swift in Sources */,
 				93D480DE2C25D9600019921F /* AppDelegate.swift in Sources */,

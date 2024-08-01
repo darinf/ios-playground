@@ -14,7 +14,7 @@ final class URLInputView: UIView {
     }
 
     enum Action {
-        case navigate(String)
+        case navigate(String, target: NavigationTarget)
     }
 
     lazy var contentBox = {
@@ -54,7 +54,9 @@ final class URLInputView: UIView {
             guard let self else { return }
             switch action {
             case .suggestionAccepted(let suggestion):
-                handler(.navigate(suggestion.text))
+                if let target = model.navigationTarget {
+                    handler(.navigate(suggestion.text, target: target))
+                }
                 model.visibility = .hidden
             }
         }
@@ -141,7 +143,7 @@ final class URLInputView: UIView {
         model.$visibility.dropFirst().sink { [weak self] mode in
             guard let self else { return }
             switch mode {
-            case .showing(let initialValue):
+            case let .showing(initialValue, target):
                 superview?.bringSubviewToFront(self)
                 UIView.animate(withDuration: 0.2) {
                     self.layer.opacity = 1
@@ -209,8 +211,8 @@ final class URLInputView: UIView {
 
 extension URLInputView: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if let text = textField.text {
-            handler(.navigate(text))
+        if let target = model.navigationTarget, let text = textField.text {
+            handler(.navigate(text, target: target))
         }
         model.visibility = .hidden
         return true
