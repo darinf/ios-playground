@@ -42,12 +42,12 @@ final class BottomBarView: UIVisualEffectView {
     }()
 
     private lazy var centerButtonViewFullWidthConstraints = {[
-        centerButtonView.leftAnchor.constraint(equalTo: tabsButton.rightAnchor, constant: Metrics.margin),
-        centerButtonView.rightAnchor.constraint(equalTo: menuButton.leftAnchor, constant: -Metrics.margin)
+//        centerButtonView.leftAnchor.constraint(equalTo: tabsButton.rightAnchor, constant: Metrics.margin),
+//        centerButtonView.rightAnchor.constraint(equalTo: menuButton.leftAnchor, constant: -Metrics.margin)
+        centerButtonView.widthAnchor.constraint(equalTo: contentBox.widthAnchor, constant: -(Metrics.buttonDiameter + Metrics.margin) * 2)
     ]}()
 
     private lazy var centerButtonViewNarrowConstraints = {[
-        centerButtonView.centerXAnchor.constraint(equalTo: contentBox.centerXAnchor),
         centerButtonView.widthAnchor.constraint(equalToConstant: 100)
     ]}()
 
@@ -91,7 +91,8 @@ final class BottomBarView: UIVisualEffectView {
         centerButtonView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             centerButtonView.topAnchor.constraint(equalTo: contentBox.topAnchor),
-            centerButtonView.heightAnchor.constraint(equalToConstant: Metrics.buttonDiameter)
+            centerButtonView.heightAnchor.constraint(equalToConstant: Metrics.buttonDiameter),
+            centerButtonView.centerXAnchor.constraint(equalTo: contentBox.centerXAnchor)
         ])
 
         tabsButton.translatesAutoresizingMaskIntoConstraints = false
@@ -135,19 +136,7 @@ final class BottomBarView: UIVisualEffectView {
         }.store(in: &subscriptions)
 
         model.$configureForAllTabs.sink { [weak self] configureForAllTabs in
-            guard let self else { return }
-            if configureForAllTabs {
-                centerButtonView.resetProgressWithoutAnimation()
-                centerButtonView.setDisplayText("")
-                centerButtonView.setImage(.init(systemName: "plus"))
-                NSLayoutConstraint.deactivate(centerButtonViewFullWidthConstraints)
-                NSLayoutConstraint.activate(centerButtonViewNarrowConstraints)
-            } else {
-                centerButtonView.setDisplayText(model.url?.host() ?? "")
-                centerButtonView.setImage(nil)
-                NSLayoutConstraint.deactivate(centerButtonViewNarrowConstraints)
-                NSLayoutConstraint.activate(centerButtonViewFullWidthConstraints)
-            }
+            self?.updateLayout(configureForAllTabs: configureForAllTabs)
         }.store(in: &subscriptions)
     }
 
@@ -160,6 +149,52 @@ final class BottomBarView: UIVisualEffectView {
                 model.mainMenuConfig = .init(incognitoChecked: incognitoEnabled)
             }
             handler(.mainMenu(action))
+        }
+    }
+
+    private func updateLayout(configureForAllTabs: Bool) {
+        if configureForAllTabs {
+            centerButtonView.resetProgressWithoutAnimation()
+//            centerButtonView.setDisplayText("")
+//            centerButtonView.setImage(.init(systemName: "plus"))
+            NSLayoutConstraint.deactivate(centerButtonViewFullWidthConstraints)
+            NSLayoutConstraint.activate(centerButtonViewNarrowConstraints)
+        } else {
+//            centerButtonView.setDisplayText(model.url?.host() ?? "")
+//            centerButtonView.setImage(nil)
+            NSLayoutConstraint.deactivate(centerButtonViewNarrowConstraints)
+            NSLayoutConstraint.activate(centerButtonViewFullWidthConstraints)
+        }
+        UIView.animate(withDuration: 0.4) {
+            self.layoutIfNeeded()
+//            if configureForAllTabs {
+//                self.centerButtonView.frame.size.width = 100
+//            } else {
+//                self.centerButtonView.frame.size.width = 200
+//            }
+        }
+        if configureForAllTabs {
+            UIView.animate(withDuration: 0.1) {
+                self.centerButtonView.titleLabel?.layer.opacity = 0
+            } completion: { _ in
+                self.centerButtonView.setDisplayText("")
+                self.centerButtonView.setImage(.init(systemName: "plus"))
+                self.centerButtonView.imageView?.layer.opacity = 0
+                UIView.animate(withDuration: 0.1, delay: 0.2) {
+                    self.centerButtonView.imageView?.layer.opacity = 1
+                }
+            }
+        } else {
+            UIView.animate(withDuration: 0.1) {
+                self.centerButtonView.imageView?.layer.opacity = 0
+            } completion: { _ in
+                self.centerButtonView.setDisplayText(self.model.url?.host() ?? "")
+                self.centerButtonView.setImage(nil)
+                self.centerButtonView.titleLabel?.layer.opacity = 0
+                UIView.animate(withDuration: 0.1, delay: 0.2) {
+                    self.centerButtonView.titleLabel?.layer.opacity = 1
+                }
+            }
         }
     }
 }
