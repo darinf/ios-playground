@@ -28,28 +28,19 @@ final class BottomBarView: UIVisualEffectView {
     }()
 
     private lazy var centerButtonView = {
-        CenterButtonView(cornerRadius: Metrics.buttonRadius) { [weak self] action in
+        CenterButtonView(model: model.centerButtonViewModel, cornerRadius: Metrics.buttonRadius) { [weak self] action in
             guard let self else { return }
             switch action {
             case .clicked:
-                if model.configureForAllTabs {
-                    handler(.addTab)
-                } else {
+                switch model.centerButtonViewModel.mode {
+                case .showAsText:
                     handler(.editURL)
+                case .showAsPlus:
+                    handler(.addTab)
                 }
             }
         }
     }()
-
-    private lazy var centerButtonViewFullWidthConstraints = {[
-//        centerButtonView.leftAnchor.constraint(equalTo: tabsButton.rightAnchor, constant: Metrics.margin),
-//        centerButtonView.rightAnchor.constraint(equalTo: menuButton.leftAnchor, constant: -Metrics.margin)
-        centerButtonView.widthAnchor.constraint(equalTo: contentBox.widthAnchor, constant: -(Metrics.buttonDiameter + Metrics.margin) * 2)
-    ]}()
-
-    private lazy var centerButtonViewNarrowConstraints = {[
-        centerButtonView.widthAnchor.constraint(equalToConstant: 100)
-    ]}()
 
     private lazy var tabsButton = {
         let button = CapsuleButton(cornerRadius: Metrics.buttonRadius, systemImage: "square.on.square") { [weak self] in
@@ -92,7 +83,8 @@ final class BottomBarView: UIVisualEffectView {
         NSLayoutConstraint.activate([
             centerButtonView.topAnchor.constraint(equalTo: contentBox.topAnchor),
             centerButtonView.heightAnchor.constraint(equalToConstant: Metrics.buttonDiameter),
-            centerButtonView.centerXAnchor.constraint(equalTo: contentBox.centerXAnchor)
+            centerButtonView.leftAnchor.constraint(equalTo: tabsButton.rightAnchor, constant: Metrics.margin),
+            centerButtonView.rightAnchor.constraint(equalTo: menuButton.leftAnchor, constant: -Metrics.margin)
         ])
 
         tabsButton.translatesAutoresizingMaskIntoConstraints = false
@@ -119,24 +111,8 @@ final class BottomBarView: UIVisualEffectView {
     }
 
     private func setupObservers() {
-        model.$url.dropFirst().removeDuplicates().sink { [weak self] url in
-            guard let self else { return }
-            guard !model.configureForAllTabs else { return }
-            centerButtonView.setDisplayText(url?.host() ?? "")
-        }.store(in: &subscriptions)
-
-        model.$progress.dropFirst().removeDuplicates().sink { [weak self] progress in
-            guard let self else { return }
-            guard !model.configureForAllTabs else { return }
-            centerButtonView.setProgress(progress)
-        }.store(in: &subscriptions)
-
         model.$mainMenuConfig.removeDuplicates().sink { [weak self] config in
             self?.rebuildMainMenu(with: config)
-        }.store(in: &subscriptions)
-
-        model.$configureForAllTabs.sink { [weak self] configureForAllTabs in
-            self?.updateLayout(configureForAllTabs: configureForAllTabs)
         }.store(in: &subscriptions)
     }
 
@@ -149,52 +125,6 @@ final class BottomBarView: UIVisualEffectView {
                 model.mainMenuConfig = .init(incognitoChecked: incognitoEnabled)
             }
             handler(.mainMenu(action))
-        }
-    }
-
-    private func updateLayout(configureForAllTabs: Bool) {
-        if configureForAllTabs {
-            centerButtonView.resetProgressWithoutAnimation()
-//            centerButtonView.setDisplayText("")
-//            centerButtonView.setImage(.init(systemName: "plus"))
-            NSLayoutConstraint.deactivate(centerButtonViewFullWidthConstraints)
-            NSLayoutConstraint.activate(centerButtonViewNarrowConstraints)
-        } else {
-//            centerButtonView.setDisplayText(model.url?.host() ?? "")
-//            centerButtonView.setImage(nil)
-            NSLayoutConstraint.deactivate(centerButtonViewNarrowConstraints)
-            NSLayoutConstraint.activate(centerButtonViewFullWidthConstraints)
-        }
-        UIView.animate(withDuration: 0.4) {
-            self.layoutIfNeeded()
-//            if configureForAllTabs {
-//                self.centerButtonView.frame.size.width = 100
-//            } else {
-//                self.centerButtonView.frame.size.width = 200
-//            }
-        }
-        if configureForAllTabs {
-            UIView.animate(withDuration: 0.1) {
-                self.centerButtonView.titleLabel?.layer.opacity = 0
-            } completion: { _ in
-                self.centerButtonView.setDisplayText("")
-                self.centerButtonView.setImage(.init(systemName: "plus"))
-                self.centerButtonView.imageView?.layer.opacity = 0
-                UIView.animate(withDuration: 0.1, delay: 0.2) {
-                    self.centerButtonView.imageView?.layer.opacity = 1
-                }
-            }
-        } else {
-            UIView.animate(withDuration: 0.1) {
-                self.centerButtonView.imageView?.layer.opacity = 0
-            } completion: { _ in
-                self.centerButtonView.setDisplayText(self.model.url?.host() ?? "")
-                self.centerButtonView.setImage(nil)
-                self.centerButtonView.titleLabel?.layer.opacity = 0
-                UIView.animate(withDuration: 0.1, delay: 0.2) {
-                    self.centerButtonView.titleLabel?.layer.opacity = 1
-                }
-            }
         }
     }
 }

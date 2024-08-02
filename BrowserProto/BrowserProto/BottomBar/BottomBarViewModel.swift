@@ -2,8 +2,7 @@ import Combine
 import Foundation
 
 final class BottomBarViewModel {
-    @Published var url: URL?
-    @Published var progress: Double?
+    let centerButtonViewModel = CenterButtonViewModel()
+
     @Published var mainMenuConfig: MainMenuConfig = .init(incognitoChecked: false)
-    @Published var configureForAllTabs: Bool = false
 }

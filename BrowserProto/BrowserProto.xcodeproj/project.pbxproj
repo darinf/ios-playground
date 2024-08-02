@@ -15,6 +15,7 @@
 		938822EA2C55A60200B4FE37 /* IdentifiedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 938822E92C55A60200B4FE37 /* IdentifiedCollections */; };
 		938822EC2C57061B00B4FE37 /* UIImage+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 938822EB2C57061B00B4FE37 /* UIImage+Extensions.swift */; };
 		938822EE2C570A3A00B4FE37 /* CardGridCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 938822ED2C570A3A00B4FE37 /* CardGridCellView.swift */; };
+		938822F02C5C3E2400B4FE37 /* CenterButtonViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 938822EF2C5C3E2400B4FE37 /* CenterButtonViewModel.swift */; };
 		93C94CD92C4F2C2D00E3BB13 /* SearchEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93C94CD82C4F2C2D00E3BB13 /* SearchEngine.swift */; };
 		93C94CDB2C4F34BB00E3BB13 /* SuggestionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93C94CDA2C4F34BB00E3BB13 /* SuggestionsView.swift */; };
 		93C94CDD2C51900400E3BB13 /* SuggestionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93C94CDC2C51900400E3BB13 /* SuggestionsViewModel.swift */; };
@@ -46,6 +47,7 @@
 		938822E12C55634200B4FE37 /* CardGridViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardGridViewModel.swift; sourceTree = "<group>"; };
 		938822EB2C57061B00B4FE37 /* UIImage+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Extensions.swift"; sourceTree = "<group>"; };
 		938822ED2C570A3A00B4FE37 /* CardGridCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardGridCellView.swift; sourceTree = "<group>"; };
+		938822EF2C5C3E2400B4FE37 /* CenterButtonViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CenterButtonViewModel.swift; sourceTree = "<group>"; };
 		93C94CD82C4F2C2D00E3BB13 /* SearchEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchEngine.swift; sourceTree = "<group>"; };
 		93C94CDA2C4F34BB00E3BB13 /* SuggestionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsView.swift; sourceTree = "<group>"; };
 		93C94CDC2C51900400E3BB13 /* SuggestionsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsViewModel.swift; sourceTree = "<group>"; };
@@ -129,6 +131,7 @@
 				93D480F32C2609950019921F /* BottomBarView.swift */,
 				93D480FE2C271E090019921F /* BottomBarViewModel.swift */,
 				93D480FC2C2704DF0019921F /* CenterButtonView.swift */,
+				938822EF2C5C3E2400B4FE37 /* CenterButtonViewModel.swift */,
 				93254B0C2C53438B00B66206 /* MainMenu.swift */,
 				938822DC2C54484B00B4FE37 /* MainMenuConfig.swift */,
 			);
@@ -293,6 +296,7 @@
 				93D4810F2C2CC4DE0019921F /* URLInputView.swift in Sources */,
 				938822E02C55633A00B4FE37 /* CardGridView.swift in Sources */,
 				938822E22C55634200B4FE37 /* CardGridViewModel.swift in Sources */,
+				938822F02C5C3E2400B4FE37 /* CenterButtonViewModel.swift in Sources */,
 				93D480E22C25D9600019921F /* MainViewController.swift in Sources */,
 				93D480FD2C2704DF0019921F /* CenterButtonView.swift in Sources */,
 				93D481192C31A24D0019921F /* UIColor+Extensions.swift in Sources */,

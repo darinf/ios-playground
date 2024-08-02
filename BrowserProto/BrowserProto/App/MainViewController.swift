@@ -166,7 +166,7 @@ class MainViewController: UIViewController {
 
     private func setupObservers() {
         model.webContentViewModel.$url.dropFirst().sink { [weak self] url in
-            self?.model.bottomBarViewModel.url = url
+            self?.model.bottomBarViewModel.centerButtonViewModel.text = url?.host() ?? ""
             self?.resetBottomBarOffset()
         }.store(in: &subscriptions)
 
@@ -179,7 +179,7 @@ class MainViewController: UIViewController {
 //        }.store(in: &subscriptions)
 
         model.webContentViewModel.$progress.dropFirst().sink { [weak self] progress in
-            self?.model.bottomBarViewModel.progress = progress
+            self?.model.bottomBarViewModel.centerButtonViewModel.progress = progress
         }.store(in: &subscriptions)
 
         model.webContentViewModel.$panningDeltaY.dropFirst().sink { [weak self] panningDeltaY in
@@ -218,7 +218,7 @@ class MainViewController: UIViewController {
         }.store(in: &subscriptions)
 
         model.cardGridViewModel.$showGrid.sink { [weak self] showGrid in
-            self?.model.bottomBarViewModel.configureForAllTabs = showGrid
+            self?.model.bottomBarViewModel.centerButtonViewModel.mode = showGrid ? .showAsPlus : .showAsText
         }.store(in: &subscriptions)
     }
 
