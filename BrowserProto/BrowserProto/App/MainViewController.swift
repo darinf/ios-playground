@@ -217,7 +217,7 @@ class MainViewController: UIViewController {
             model.webContentViewModel.replaceWebView(withRef: .from(id: selectedID))
         }.store(in: &subscriptions)
 
-        model.cardGridViewModel.$showGrid.sink { [weak self] showGrid in
+        model.cardGridViewModel.$showGrid.dropFirst().removeDuplicates().sink { [weak self] showGrid in
             self?.model.bottomBarViewModel.centerButtonViewModel.mode = showGrid ? .showAsPlus : .showAsText
         }.store(in: &subscriptions)
     }

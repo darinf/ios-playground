@@ -134,6 +134,9 @@ final class CenterButtonView: UIView {
         ])
 
         progressContainerView.activateContainmentConstraints(inside: backgroundView)
+
+        backgroundViewMinWidthConstraint.isActive = false
+        backgroundViewFullWidthConstraint.isActive = true
     }
 
     private func setupObservers() {
@@ -145,7 +148,7 @@ final class CenterButtonView: UIView {
             self?.setProgress(progress)
         }.store(in: &subscriptions)
 
-        model.$mode.sink { [weak self] mode in
+        model.$mode.dropFirst().removeDuplicates().sink { [weak self] mode in
             self?.updateLayout(forMode: mode)
         }.store(in: &subscriptions)
     }
@@ -161,7 +164,8 @@ final class CenterButtonView: UIView {
             UIView.animate(withDuration: 0.15) {
                 self.labelView.layer.opacity = 0
             } completion: { _ in
-                UIView.animate(withDuration: 0.15, delay: 0.15) {
+                guard case .showAsPlus = self.model.mode else { return }
+                UIView.animate(withDuration: 0.15) {
                     self.imageView.layer.opacity = 1
                 }
             }
@@ -174,7 +178,8 @@ final class CenterButtonView: UIView {
             UIView.animate(withDuration: 0.15) {
                 self.imageView.layer.opacity = 0
             } completion: { _ in
-                UIView.animate(withDuration: 0.15, delay: 0.15) {
+                guard case .showAsText = self.model.mode else { return }
+                UIView.animate(withDuration: 0.15) {
                     self.labelView.layer.opacity = 1
                 }
             }

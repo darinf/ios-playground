@@ -16,6 +16,7 @@
 		938822EC2C57061B00B4FE37 /* UIImage+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 938822EB2C57061B00B4FE37 /* UIImage+Extensions.swift */; };
 		938822EE2C570A3A00B4FE37 /* CardGridCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 938822ED2C570A3A00B4FE37 /* CardGridCellView.swift */; };
 		938822F02C5C3E2400B4FE37 /* CenterButtonViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 938822EF2C5C3E2400B4FE37 /* CenterButtonViewModel.swift */; };
+		938822F32C5C78E500B4FE37 /* TabModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 938822F22C5C78E500B4FE37 /* TabModel.swift */; };
 		93C94CD92C4F2C2D00E3BB13 /* SearchEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93C94CD82C4F2C2D00E3BB13 /* SearchEngine.swift */; };
 		93C94CDB2C4F34BB00E3BB13 /* SuggestionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93C94CDA2C4F34BB00E3BB13 /* SuggestionsView.swift */; };
 		93C94CDD2C51900400E3BB13 /* SuggestionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93C94CDC2C51900400E3BB13 /* SuggestionsViewModel.swift */; };
@@ -48,6 +49,7 @@
 		938822EB2C57061B00B4FE37 /* UIImage+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Extensions.swift"; sourceTree = "<group>"; };
 		938822ED2C570A3A00B4FE37 /* CardGridCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardGridCellView.swift; sourceTree = "<group>"; };
 		938822EF2C5C3E2400B4FE37 /* CenterButtonViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CenterButtonViewModel.swift; sourceTree = "<group>"; };
+		938822F22C5C78E500B4FE37 /* TabModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabModel.swift; sourceTree = "<group>"; };
 		93C94CD82C4F2C2D00E3BB13 /* SearchEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchEngine.swift; sourceTree = "<group>"; };
 		93C94CDA2C4F34BB00E3BB13 /* SuggestionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsView.swift; sourceTree = "<group>"; };
 		93C94CDC2C51900400E3BB13 /* SuggestionsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsViewModel.swift; sourceTree = "<group>"; };
@@ -95,6 +97,14 @@
 			path = CardGrid;
 			sourceTree = "<group>";
 		};
+		938822F12C5C78D700B4FE37 /* Tabs */ = {
+			isa = PBXGroup;
+			children = (
+				938822F22C5C78E500B4FE37 /* TabModel.swift */,
+			);
+			path = Tabs;
+			sourceTree = "<group>";
+		};
 		93D480D12C25D9600019921F = {
 			isa = PBXGroup;
 			children = (
@@ -119,6 +129,7 @@
 				938822DE2C55632100B4FE37 /* CardGrid */,
 				93D480F72C260D860019921F /* DesignSystem */,
 				93D4810D2C2CC47B0019921F /* Navigation */,
+				938822F12C5C78D700B4FE37 /* Tabs */,
 				93D481172C31A2300019921F /* Utils */,
 				93D481002C2B08690019921F /* WebContent */,
 			);
@@ -283,6 +294,7 @@
 				93D481252C4AEBE80019921F /* UIView+Extensions.swift in Sources */,
 				93C94CD92C4F2C2D00E3BB13 /* SearchEngine.swift in Sources */,
 				93D480F42C2609950019921F /* BottomBarView.swift in Sources */,
+				938822F32C5C78E500B4FE37 /* TabModel.swift in Sources */,
 				93D4810A2C2B275F0019921F /* Colors.swift in Sources */,
 				93C94CDB2C4F34BB00E3BB13 /* SuggestionsView.swift in Sources */,
 				93D4811F2C38C4680019921F /* URLInput.swift in Sources */,
