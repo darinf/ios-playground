@@ -9,12 +9,11 @@ final class CardGridCellView: UICollectionViewCell {
 
     var card: Card? {
         didSet {
-            guard let card else {
-                cardView?.removeFromSuperview()
-                cardView = nil
-                cardViewModel = nil
-                return
-            }
+            cardView?.removeFromSuperview()
+            cardView = nil
+            cardViewModel = nil
+
+            guard let card else { return }
 
             let model = CardViewModel(selected: isSelected, thumbnail: card.thumbnail)
             let view = CardView(model: model) { [weak self] action in
