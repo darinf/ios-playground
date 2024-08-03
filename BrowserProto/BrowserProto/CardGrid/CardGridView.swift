@@ -43,7 +43,6 @@ final class CardGridView: UIView {
         model.$showGrid.dropFirst().sink { [weak self] showGrid in
             guard let self, let selectedID = model.selectedID else { return }
             let card = model.cards[id: selectedID]
-//            let rect = CGRect.zero
 
             // TODO: handle case of a cell that is not visible
             let index = model.indexByID(selectedID)
@@ -58,7 +57,6 @@ final class CardGridView: UIView {
             } else {
                 model.overlayCardViewModel.state = .transitionToZoomed(thumbnail: card?.thumbnail, cardAt: rect)
             }
-//            self?.zoomedView.isHidden = showGrid
         }.store(in: &subscriptions)
 
         model.$selectedID.sink { [weak self] selectedID in

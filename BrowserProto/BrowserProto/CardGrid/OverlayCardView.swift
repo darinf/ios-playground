@@ -14,14 +14,7 @@ final class OverlayCardView: UIView {
         self.zoomedView = zoomedView
         super.init(frame: .zero)
 
-//        isUserInteractionEnabled = false
-
-//        backgroundColor = .systemMint.withAlphaComponent(0.5)
-
         addSubview(zoomedView)
-//        zoomedView.isHidden = true
-
-//        isHidden = true
 
         setupObservers()
     }
@@ -103,9 +96,7 @@ final class OverlayCardView: UIView {
             cardViewModel.disableCornerRadius = true
             layoutIfNeeded()
         } completion: { [self] _ in
-            print(">>> A")
             guard case .transitionToZoomed = model.state else { return }
-            print(">>> B")
             isUserInteractionEnabled = true
             model.state = .hidden
             zoomedView.isHidden = false
@@ -130,7 +121,6 @@ final class OverlayCardView: UIView {
     }
 
     private func removeCardView() {
-        print(">>> removeCardView")
         cardView?.removeFromSuperview()
         cardView = nil
         cardViewModel = nil
