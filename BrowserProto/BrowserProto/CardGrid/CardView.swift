@@ -109,5 +109,15 @@ final class CardView: UIView {
             )
             thumbnailViewHeightConstraint?.isActive = true
         }.store(in: &subscriptions)
+
+        model.$hideCloseButton.dropFirst().sink { [weak self] hide in
+            self?.closeButton.layer.opacity = hide ? 0 : 1
+        }.store(in: &subscriptions)
+
+        model.$disableCornerRadius.dropFirst().sink { [weak self] disable in
+            guard let self else { return }
+            thumbnailShadowView.layer.cornerRadius = disable ? 0 : Metrics.cornerRadius
+            thumbnailClipView.layer.cornerRadius = disable ? 0 : Metrics.cornerRadius
+        }.store(in: &subscriptions)
     }
 }

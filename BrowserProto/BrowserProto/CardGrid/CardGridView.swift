@@ -3,7 +3,7 @@ import UIKit
 
 final class CardGridView: UIView {
     private let model: CardGridViewModel
-    private let zoomedView: UIView
+    private let overlayCardView: OverlayCardView
     private var subscriptions: Set<AnyCancellable> = []
 
     private lazy var collectionView = {
@@ -21,16 +21,16 @@ final class CardGridView: UIView {
 
     init(model: CardGridViewModel, zoomedView: UIView) {
         self.model = model
-        self.zoomedView = zoomedView
+        self.overlayCardView = .init(model: model.overlayCardViewModel, zoomedView: zoomedView)
         super.init(frame: .zero)
 
         addSubview(collectionView)
-        addSubview(zoomedView)
+        addSubview(overlayCardView)
 
         collectionView.activateContainmentConstraints(inside: self)
-        zoomedView.activateContainmentConstraints(inside: self)
+        overlayCardView.activateContainmentConstraints(inside: self)
 
-        self.bringSubviewToFront(zoomedView)
+        self.bringSubviewToFront(overlayCardView)
 
         setupObservers()
     }
@@ -41,7 +41,24 @@ final class CardGridView: UIView {
 
     private func setupObservers() {
         model.$showGrid.dropFirst().sink { [weak self] showGrid in
-            self?.zoomedView.isHidden = showGrid
+            guard let self, let selectedID = model.selectedID else { return }
+            let card = model.cards[id: selectedID]
+//            let rect = CGRect.zero
+
+            // TODO: handle case of a cell that is not visible
+            let index = model.indexByID(selectedID)
+//            collectionView.indexPathsForVisibleItems
+//            collectionView.scrollToItem(at: .init(item: index, section: 0), at: .top, animated: <#T##Bool#>)
+
+            let attributes = collectionView.layoutAttributesForItem(at: .init(item: index, section: 0))
+            let rect = attributes?.frame
+
+            if showGrid {
+                model.overlayCardViewModel.state = .transitionToGrid(thumbnail: card?.thumbnail, cardAt: rect)
+            } else {
+                model.overlayCardViewModel.state = .transitionToZoomed(thumbnail: card?.thumbnail, cardAt: rect)
+            }
+//            self?.zoomedView.isHidden = showGrid
         }.store(in: &subscriptions)
 
         model.$selectedID.sink { [weak self] selectedID in

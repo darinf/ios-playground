@@ -25,6 +25,8 @@ final class CardGridViewModel {
     private(set) var cards: IdentifiedArrayOf<Card> = []
     let cardsChanges = PassthroughSubject<CardsChange, Never>()
 
+    let overlayCardViewModel = OverlayCardViewModel()
+
     func containsCard(byID cardID: Card.ID) -> Bool {
         cards[id: cardID] != nil
     }
