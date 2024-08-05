@@ -143,7 +143,7 @@ final class URLInputView: UIView {
         model.$visibility.dropFirst().sink { [weak self] mode in
             guard let self else { return }
             switch mode {
-            case let .showing(initialValue, target):
+            case let .showing(initialValue, _):
                 superview?.bringSubviewToFront(self)
                 UIView.animate(withDuration: 0.2) {
                     self.layer.opacity = 1

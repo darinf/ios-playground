@@ -166,28 +166,8 @@ class MainViewController: UIViewController {
     }
 
     private func setupObservers() {
-        model.webContentViewModel.$url.dropFirst().sink { [weak self] url in
-            self?.model.bottomBarViewModel.centerButtonViewModel.text = url?.host() ?? ""
-            self?.resetBottomBarOffset()
-        }.store(in: &subscriptions)
-
-        model.webContentViewModel.$title.dropFirst().sink { [weak self] title in
-            guard let self, let ref = model.webContentViewModel.webViewRef else { return }
-            model.cardGridViewModel.updateTitle(title, forCardByID: ref.id)
-        }.store(in: &subscriptions)
-
-        model.webContentViewModel.$progress.dropFirst().sink { [weak self] progress in
-            self?.model.bottomBarViewModel.centerButtonViewModel.progress = progress
-        }.store(in: &subscriptions)
-
         model.webContentViewModel.$panningDeltaY.dropFirst().sink { [weak self] panningDeltaY in
             self?.updateBottomBarOffset(panningDeltaY: panningDeltaY)
-        }.store(in: &subscriptions)
-
-        model.webContentViewModel.$thumbnail.sink { [weak self] thumbnail in
-            guard let self else { return }
-            guard let selectedID = model.cardGridViewModel.selectedID else { return }
-            model.cardGridViewModel.updateThumbnail(thumbnail, forCardByID: selectedID)
         }.store(in: &subscriptions)
 
         model.webContentViewModel.webViewRefChanges.sink { [weak self] change in
@@ -208,6 +188,7 @@ class MainViewController: UIViewController {
                 // TODO: If currentRef is nil, then we need to select a different card.
             }
             model.cardGridViewModel.selectedID = currentRef?.id
+            setupWebContentObservers(for: currentRef)
         }.store(in: &subscriptions)
 
         model.cardGridViewModel.$selectedID.removeDuplicates().sink { [weak self] selectedID in
@@ -220,8 +201,31 @@ class MainViewController: UIViewController {
         }.store(in: &subscriptions)
     }
 
-    private func setupWebContentModelObservers() {
+    private func setupWebContentObservers(for ref: WebViewRef?) {
+        guard let ref else {
+            webContentSubscriptions.removeAll()
+            return
+        }
 
+        ref.model.$url.dropFirst().sink { [weak self] url in
+            self?.model.bottomBarViewModel.centerButtonViewModel.text = url?.host() ?? ""
+            self?.resetBottomBarOffset()
+        }.store(in: &webContentSubscriptions)
+
+        ref.model.$title.dropFirst().sink { [weak self] title in
+            guard let self, let ref = model.webContentViewModel.webViewRef else { return }
+            model.cardGridViewModel.updateTitle(title, forCardByID: ref.id)
+        }.store(in: &webContentSubscriptions)
+
+        ref.model.$progress.dropFirst().sink { [weak self] progress in
+            self?.model.bottomBarViewModel.centerButtonViewModel.progress = progress
+        }.store(in: &webContentSubscriptions)
+
+        ref.model.$thumbnail.sink { [weak self] thumbnail in
+            guard let self else { return }
+            guard let selectedID = model.cardGridViewModel.selectedID else { return }
+            model.cardGridViewModel.updateThumbnail(thumbnail, forCardByID: selectedID)
+        }.store(in: &webContentSubscriptions)
     }
 
     private func updateLayout(animated: Bool) {
