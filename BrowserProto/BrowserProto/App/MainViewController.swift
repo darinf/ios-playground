@@ -5,6 +5,7 @@ class MainViewController: UIViewController {
     let model = MainViewModel()
 
     private var subscriptions: Set<AnyCancellable> = []
+    private var webContentSubscriptions: Set<AnyCancellable> = []
     private var bottomBarOffset: CGFloat = .zero
 
     private lazy var backgroundView = {
@@ -217,6 +218,10 @@ class MainViewController: UIViewController {
         model.cardGridViewModel.$showGrid.dropFirst().removeDuplicates().sink { [weak self] showGrid in
             self?.model.bottomBarViewModel.centerButtonViewModel.mode = showGrid ? .showAsPlus : .showAsText
         }.store(in: &subscriptions)
+    }
+
+    private func setupWebContentModelObservers() {
+
     }
 
     private func updateLayout(animated: Bool) {

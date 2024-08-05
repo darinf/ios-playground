@@ -13,7 +13,7 @@ final class WebContentView: UIView {
     private let model: WebContentViewModel
     private let handler: (Action) -> Void
     private var subscriptions: Set<AnyCancellable> = []
-    private var webViewSubscriptions: Set<AnyCancellable> = []
+    private var webContentSubscriptions: Set<AnyCancellable> = []
     private var overrideSafeAreaInsets: UIEdgeInsets?
     private var lastTranslation: CGPoint = .zero
     private var dragBackState: DragBackState?
@@ -53,7 +53,7 @@ final class WebContentView: UIView {
             existingWebView.scrollView.removeGestureRecognizer(panGestureRecognizer)
             existingWebView.scrollView.refreshControl = nil
             existingWebView.removeFromSuperview()
-            webViewSubscriptions.removeAll()
+            webContentSubscriptions.removeAll()
         }
 
         self.webView = webView
@@ -77,7 +77,18 @@ final class WebContentView: UIView {
         addSubview(webView)
         webView.activateContainmentConstraints(inside: self)
 
-        setupWebViewObservers()
+        setupWebContentModelObservers()
+    }
+
+    private func setupWebContentModelObservers() {
+        model.webViewRef?.model.$canGoBackToOpener.sink { [weak self] canGoBackToOpener in
+            guard let self else { return }
+            if canGoBackToOpener {
+                addGestureRecognizer(edgeSwipeGestureRecognizer)
+            } else {
+                removeGestureRecognizer(edgeSwipeGestureRecognizer)
+            }
+        }.store(in: &webContentSubscriptions)
     }
 
     func updateLayout(insets: UIEdgeInsets) {
@@ -106,7 +117,7 @@ final class WebContentView: UIView {
     }
 
     func updateThumbnail() {
-        model.thumbnail = captureAsImage()
+        model.webContentModel?.thumbnail = captureAsImage()
     }
 
     private func setupObservers() {
@@ -124,43 +135,6 @@ final class WebContentView: UIView {
             guard let self else { return }
             model.openWebView(withRef: .init(forIncognito: incognito))
         }.store(in: &subscriptions)
-    }
-
-    private func setupWebViewObservers() {
-        guard let webView else { return }
-
-        webView.publisher(for: \.url, options: [.initial]).sink { [weak self] url in
-            self?.model.url = url
-        }.store(in: &webViewSubscriptions)
-
-        webView.publisher(for: \.title, options: [.new]).sink { [weak self] title in
-            self?.model.title = title
-        }.store(in: &webViewSubscriptions)
-
-        webView.publisher(for: \.canGoBack, options: [.initial]).sink { [weak self] canGoBack in
-            guard let self else { return }
-            webView.removeGestureRecognizer(edgeSwipeGestureRecognizer)
-            if canGoBack {
-                model.canGoBack = true
-            } else {
-                let hasOpenerRef = model.webViewRef?.openerRef != nil
-                model.canGoBack = hasOpenerRef
-                if hasOpenerRef {
-                    webView.addGestureRecognizer(edgeSwipeGestureRecognizer)
-                }
-            }
-        }.store(in: &webViewSubscriptions)
-
-        webView.publisher(for: \.canGoForward, options: [.initial]).sink { [weak self] canGoForward in
-            self?.model.canGoForward = canGoForward
-        }.store(in: &webViewSubscriptions)
-
-        Publishers.CombineLatest(
-            webView.publisher(for: \.isLoading, options: [.initial]),
-            webView.publisher(for: \.estimatedProgress, options: [.initial])
-        ).sink { [weak self] in
-            self?.model.updateProgress(isLoading: $0.0, estimatedProgress: $0.1)
-        }.store(in: &webViewSubscriptions)
     }
 
     override var safeAreaInsets: UIEdgeInsets {
