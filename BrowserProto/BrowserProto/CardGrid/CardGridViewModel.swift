@@ -56,6 +56,12 @@ final class CardGridViewModel {
         cardsChanges.send(.updated(cards[cardIndex], atIndex: cardIndex))
     }
 
+    func updateFavicon(_ favicon: UIImage?, forCardByID cardID: Card.ID) {
+        let cardIndex = indexByID(cardID)
+        cards[cardIndex].favicon = favicon
+        cardsChanges.send(.updated(cards[cardIndex], atIndex: cardIndex))
+    }
+
     func updateThumbnail(_ thumbnail: UIImage?, forCardByID cardID: Card.ID) {
         let cardIndex = indexByID(cardID)
         cards[cardIndex].thumbnail = thumbnail

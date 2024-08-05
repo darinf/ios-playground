@@ -41,6 +41,10 @@ final class WebContent: Identifiable {
         return allWebContent[id]
     }
 
+    static func from(webView: WKWebView) -> WebContent? {
+        allWebContent.first(where: { $0.value.webView == webView })?.value
+    }
+
     static func createWebView(configuration: WebContentConfiguration) -> WKWebView {
         let webView = WKWebView(frame: .zero, configuration: configuration)
         webView.customUserAgent = WebContentConfiguration.userAgentString

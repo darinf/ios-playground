@@ -217,6 +217,11 @@ class MainViewController: UIViewController {
             model.cardGridViewModel.updateTitle(title, forCardByID: webContent.id)
         }.store(in: &webContentSubscriptions)
 
+        webContent.$favicon.dropFirst().sink { [weak self] favicon in
+            guard let self, let webContent = model.webContentViewModel.webContent else { return }
+            model.cardGridViewModel.updateFavicon(favicon, forCardByID: webContent.id)
+        }.store(in: &webContentSubscriptions)
+
         webContent.$progress.dropFirst().sink { [weak self] progress in
             self?.model.bottomBarViewModel.centerButtonViewModel.progress = progress
         }.store(in: &webContentSubscriptions)

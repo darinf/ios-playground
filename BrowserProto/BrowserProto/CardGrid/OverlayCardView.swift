@@ -54,8 +54,7 @@ final class OverlayCardView: UIView {
 
         zoomedView.isHidden = true
         cardViewModel.selected = false
-        cardViewModel.hideCloseButton = true
-        cardViewModel.disableCornerRadius = true
+        cardViewModel.hideDecorations = true
 
         layoutIfNeeded()
 
@@ -64,8 +63,7 @@ final class OverlayCardView: UIView {
 
         UIView.animate(withDuration: 0.3) { [self] in
             cardViewModel.selected = true
-            cardViewModel.hideCloseButton = false
-            cardViewModel.disableCornerRadius = false
+            cardViewModel.hideDecorations = false
             layoutIfNeeded()
         } completion: { [self] _ in
             guard case .transitionToGrid = model.state else { return }
@@ -79,8 +77,7 @@ final class OverlayCardView: UIView {
 
         zoomedView.isHidden = true
         cardViewModel.selected = true
-        cardViewModel.hideCloseButton = false
-        cardViewModel.disableCornerRadius = false
+        cardViewModel.hideDecorations = false
 
         cardViewRect = cardRect
         setNeedsLayout()
@@ -92,8 +89,7 @@ final class OverlayCardView: UIView {
 
         UIView.animate(withDuration: 0.3) { [self] in
             cardViewModel.selected = false
-            cardViewModel.hideCloseButton = true
-            cardViewModel.disableCornerRadius = true
+            cardViewModel.hideDecorations = true
             layoutIfNeeded()
         } completion: { [self] _ in
             guard case .transitionToZoomed = model.state else { return }
@@ -109,7 +105,7 @@ final class OverlayCardView: UIView {
             return cardViewModel
         }
 
-        let cardViewModel = CardViewModel(selected: false, thumbnail: card?.thumbnail, title: card?.title)
+        let cardViewModel = CardViewModel(selected: false, thumbnail: card?.thumbnail, title: card?.title, favicon: card?.favicon)
         let cardView = CardView(model: cardViewModel)
 
         self.cardViewModel = cardViewModel
