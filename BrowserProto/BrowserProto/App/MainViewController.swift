@@ -171,8 +171,8 @@ class MainViewController: UIViewController {
         }.store(in: &subscriptions)
 
         model.webContentViewModel.$title.dropFirst().sink { [weak self] title in
-            guard let self, let selectedID = model.cardGridViewModel.selectedID else { return }
-            model.cardGridViewModel.updateTitle(title, forCardByID: selectedID)
+            guard let self, let ref = model.webContentViewModel.webViewRef else { return }
+            model.cardGridViewModel.updateTitle(title, forCardByID: ref.id)
         }.store(in: &subscriptions)
 
         model.webContentViewModel.$progress.dropFirst().sink { [weak self] progress in
