@@ -20,7 +20,7 @@ class MainViewController: UIViewController {
             switch action {
             case let .navigate(text, target):
                 if case .newTab = target {
-                    model.webContentViewModel.openWebView()
+                    model.webContentViewModel.openWebContent()
                 }
                 model.webContentViewModel.navigate(to: URLInput.url(from: text))
                 if model.cardGridViewModel.showGrid {
@@ -112,7 +112,7 @@ class MainViewController: UIViewController {
         super.viewDidAppear(animated)
         view.setNeedsUpdateConstraints()
 
-        model.webContentViewModel.openWebView()
+        model.webContentViewModel.openWebContent()
         model.webContentViewModel.navigate(to: URL(string: "https://news.ycombinator.com/"))
     }
 
@@ -170,30 +170,30 @@ class MainViewController: UIViewController {
             self?.updateBottomBarOffset(panningDeltaY: panningDeltaY)
         }.store(in: &subscriptions)
 
-        model.webContentViewModel.webViewRefChanges.sink { [weak self] change in
+        model.webContentViewModel.webContentChanges.sink { [weak self] change in
             guard let self else { return }
-            let currentRef = model.webContentViewModel.webViewRef
+            let currentWebContent = model.webContentViewModel.webContent
             switch change {
             case .opened:
-                let newCard = Card(id: currentRef!.id)
-                if let openerRef = currentRef?.openerRef {
-                    model.cardGridViewModel.insertCard(newCard, after: openerRef.id)
+                let newCard = Card(id: currentWebContent!.id)
+                if let opener = currentWebContent?.opener {
+                    model.cardGridViewModel.insertCard(newCard, after: opener.id)
                 } else {
                     model.cardGridViewModel.appendCard(newCard)
                 }
             case .switched:
                 break
-            case let .poppedBack(from: closedRef):
-                model.cardGridViewModel.removeCard(byID: closedRef.id)
-                // TODO: If currentRef is nil, then we need to select a different card.
+            case let .poppedBack(from: closedWebContent):
+                model.cardGridViewModel.removeCard(byID: closedWebContent.id)
+                // TODO: If currentWebContent is nil, then we need to select a different card.
             }
-            model.cardGridViewModel.selectedID = currentRef?.id
-            setupWebContentObservers(for: currentRef)
+            model.cardGridViewModel.selectedID = currentWebContent?.id
+            setupWebContentObservers(for: currentWebContent)
         }.store(in: &subscriptions)
 
         model.cardGridViewModel.$selectedID.removeDuplicates().sink { [weak self] selectedID in
             guard let self else { return }
-            model.webContentViewModel.replaceWebView(withRef: .from(id: selectedID))
+            model.webContentViewModel.replaceWebContent(with: .from(id: selectedID))
         }.store(in: &subscriptions)
 
         model.cardGridViewModel.$showGrid.dropFirst().removeDuplicates().sink { [weak self] showGrid in
@@ -201,27 +201,27 @@ class MainViewController: UIViewController {
         }.store(in: &subscriptions)
     }
 
-    private func setupWebContentObservers(for ref: WebViewRef?) {
-        guard let ref else {
+    private func setupWebContentObservers(for webContent: WebContent?) {
+        guard let webContent else {
             webContentSubscriptions.removeAll()
             return
         }
 
-        ref.model.$url.dropFirst().sink { [weak self] url in
+        webContent.$url.dropFirst().sink { [weak self] url in
             self?.model.bottomBarViewModel.centerButtonViewModel.text = url?.host() ?? ""
             self?.resetBottomBarOffset()
         }.store(in: &webContentSubscriptions)
 
-        ref.model.$title.dropFirst().sink { [weak self] title in
-            guard let self, let ref = model.webContentViewModel.webViewRef else { return }
-            model.cardGridViewModel.updateTitle(title, forCardByID: ref.id)
+        webContent.$title.dropFirst().sink { [weak self] title in
+            guard let self, let webContent = model.webContentViewModel.webContent else { return }
+            model.cardGridViewModel.updateTitle(title, forCardByID: webContent.id)
         }.store(in: &webContentSubscriptions)
 
-        ref.model.$progress.dropFirst().sink { [weak self] progress in
+        webContent.$progress.dropFirst().sink { [weak self] progress in
             self?.model.bottomBarViewModel.centerButtonViewModel.progress = progress
         }.store(in: &webContentSubscriptions)
 
-        ref.model.$thumbnail.sink { [weak self] thumbnail in
+        webContent.$thumbnail.sink { [weak self] thumbnail in
             guard let self else { return }
             guard let selectedID = model.cardGridViewModel.selectedID else { return }
             model.cardGridViewModel.updateThumbnail(thumbnail, forCardByID: selectedID)

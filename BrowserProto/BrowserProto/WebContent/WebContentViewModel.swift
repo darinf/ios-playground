@@ -4,28 +4,24 @@ import UIKit
 import WebKit
 
 final class WebContentViewModel {
-    enum WebViewRefChange {
+    enum WebContentChange {
         case opened
         case switched
-        case poppedBack(from: WebViewRef)
+        case poppedBack(from: WebContent)
     }
 
-    private(set) var webViewRef: WebViewRef?
-    let webViewRefChanges = PassthroughSubject<WebViewRefChange, Never>()
+    private(set) var webContent: WebContent?
+    let webContentChanges = PassthroughSubject<WebContentChange, Never>()
 
     @Published var panningDeltaY: CGFloat?
     @Published var incognito: Bool = false
 
     var webView: WKWebView? {
-        webViewRef?.webView
+        webContent?.webView
     }
 
     var previousWebView: WKWebView? {
-        webViewRef?.openerRef?.webView
-    }
-
-    var webContentModel: WebContentModel? {
-        webViewRef?.model
+        webContent?.opener?.webView
     }
 
     func navigate(to url: URL?) {
@@ -45,29 +41,29 @@ final class WebContentViewModel {
         webView?.goForward()
     }
 
-    func openWebView() {
-        openWebView(withRef: WebViewRef(forIncognito: incognito))
+    func openWebContent() {
+        openWebContent(with: WebContent(forIncognito: incognito))
     }
 
-    func openWebView(withRef newWebViewRef: WebViewRef) {
-        webViewRef = newWebViewRef
-        webViewRefChanges.send(.opened)
+    func openWebContent(with newWebContent: WebContent) {
+        webContent = newWebContent
+        webContentChanges.send(.opened)
     }
 
     func popBack() {
-        guard let fromRef = webViewRef else { return }
-        webViewRef = fromRef.openerRef // Can be nil, corresponding to window.close().
-        webViewRefChanges.send(.poppedBack(from: fromRef))
+        guard let fromWebContent = webContent else { return }
+        webContent = fromWebContent.opener // Can be nil, corresponding to window.close().
+        webContentChanges.send(.poppedBack(from: fromWebContent))
     }
 
-    func replaceWebView(withRef newWebViewRef: WebViewRef?) {
-        webViewRef = newWebViewRef
-        webViewRefChanges.send(.switched)
+    func replaceWebContent(with newWebContent: WebContent?) {
+        webContent = newWebContent
+        webContentChanges.send(.switched)
     }
 }
 
 extension WebContentViewModel {
     var url: URL? {
-        webContentModel?.url
+        webContent?.url
     }
 }

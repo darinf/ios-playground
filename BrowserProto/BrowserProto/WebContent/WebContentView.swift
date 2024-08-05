@@ -81,7 +81,7 @@ final class WebContentView: UIView {
     }
 
     private func setupWebContentModelObservers() {
-        model.webViewRef?.model.$canGoBackToOpener.sink { [weak self] canGoBackToOpener in
+        model.webContent?.$canGoBackToOpener.sink { [weak self] canGoBackToOpener in
             guard let self else { return }
             if canGoBackToOpener {
                 addGestureRecognizer(edgeSwipeGestureRecognizer)
@@ -117,14 +117,14 @@ final class WebContentView: UIView {
     }
 
     func updateThumbnail() {
-        model.webContentModel?.thumbnail = captureAsImage()
+        model.webContent?.thumbnail = captureAsImage()
     }
 
     private func setupObservers() {
-        model.webViewRefChanges.sink { [weak self] _ in
+        model.webContentChanges.sink { [weak self] _ in
             guard let self else { return }
-            if let ref = model.webViewRef {
-                setWebView(ref.webView)
+            if let webContent = model.webContent {
+                setWebView(webContent.webView)
             } else {
                 setWebView(nil)
             }
@@ -133,7 +133,7 @@ final class WebContentView: UIView {
         // TODO: This is a hack since we don't have a "new tab" feature yet.
         model.$incognito.dropFirst().removeDuplicates().sink { [weak self] incognito in
             guard let self else { return }
-            model.openWebView(withRef: .init(forIncognito: incognito))
+            model.openWebContent(with: .init(forIncognito: incognito))
         }.store(in: &subscriptions)
     }
 
@@ -259,17 +259,17 @@ extension WebContentView: WKUIDelegate {
     ) -> WKWebView? {
         print(">>> createWebView")
 
-        let newWebViewRef = WebViewRef(
-            webView: WebViewRef.createWebView(configuration: configuration),
-            openerRef: model.webViewRef
+        let newWebContent = WebContent(
+            webView: WebContent.createWebView(configuration: configuration),
+            opener: model.webContent
         )
 
         DispatchQueue.main.async { [self] in
             updateThumbnail()
-            model.openWebView(withRef: newWebViewRef)
+            model.openWebContent(with: newWebContent)
         }
 
-        return newWebViewRef.webView
+        return newWebContent.webView
     }
 
     func webViewDidClose(_ webView: WKWebView) {

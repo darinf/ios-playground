@@ -13,7 +13,7 @@ final class TabsModel {
     private(set) var tabs: TabsData = .init()
     let tabsChanges = PassthroughSubject<TabsChange, Never>()
 
-    private(set) var webViewRefs: [WebViewRef.ID: WebViewRef] = [:]
+    private(set) var liveWebContent: [WebContent.ID: WebContent] = [:]
 }
 
 enum TabsSection: Hashable, Codable {
