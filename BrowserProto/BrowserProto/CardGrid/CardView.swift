@@ -120,21 +120,9 @@ final class CardView: UIView {
 
         iconView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-//            iconView.topAnchor.constraint(equalTo: footerView.topAnchor),
-//            iconView.bottomAnchor.constraint(equalTo: footerView.bottomAnchor),
-//            iconView.leftAnchor.constraint(equalTo: footerView.leftAnchor),
             iconView.widthAnchor.constraint(equalToConstant: Metrics.footerIconDimension),
             iconView.heightAnchor.constraint(equalToConstant: Metrics.footerIconDimension)
         ])
-//
-//        titleView.translatesAutoresizingMaskIntoConstraints = false
-//        NSLayoutConstraint.activate([
-//            titleView.topAnchor.constraint(equalTo: footerView.topAnchor),
-//            titleView.bottomAnchor.constraint(equalTo: footerView.bottomAnchor),
-//            titleView.leftAnchor.constraint(equalTo: iconView.rightAnchor, constant: Metrics.footerPadding)
-////            titleView.leftAnchor.constraint(equalTo: footerView.leftAnchor, constant: Metrics.footerIconDimension + Metrics.footerPadding),
-////            titleView.rightAnchor.constraint(equalTo: footerView.rightAnchor)
-//        ])
     }
 
     private func setupObservers() {
@@ -173,6 +161,10 @@ final class CardView: UIView {
             guard let self else { return }
             thumbnailShadowView.layer.cornerRadius = disable ? 0 : Metrics.cornerRadius
             thumbnailClipView.layer.cornerRadius = disable ? 0 : Metrics.cornerRadius
+        }.store(in: &subscriptions)
+
+        model.$title.sink { [weak self] title in
+            self?.titleView.text = title ?? ""
         }.store(in: &subscriptions)
     }
 }

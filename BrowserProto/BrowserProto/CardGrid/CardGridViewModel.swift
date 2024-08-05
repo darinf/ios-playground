@@ -3,13 +3,6 @@ import Foundation
 import IdentifiedCollections
 import UIKit
 
-struct Card: Identifiable {
-    typealias ID = UUID
-
-    let id: ID
-    var thumbnail: UIImage?
-}
-
 final class CardGridViewModel {
     enum CardsChange {
         case appended(Card)
@@ -55,6 +48,12 @@ final class CardGridViewModel {
         cards = []
         cardsChanges.send(.removedAll)
         selectedID = nil
+    }
+
+    func updateTitle(_ title: String?, forCardByID cardID: Card.ID) {
+        let cardIndex = indexByID(cardID)
+        cards[cardIndex].title = title
+        cardsChanges.send(.updated(cards[cardIndex], atIndex: cardIndex))
     }
 
     func updateThumbnail(_ thumbnail: UIImage?, forCardByID cardID: Card.ID) {

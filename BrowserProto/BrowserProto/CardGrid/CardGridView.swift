@@ -53,9 +53,9 @@ final class CardGridView: UIView {
             let rect = attributes?.frame
 
             if showGrid {
-                model.overlayCardViewModel.state = .transitionToGrid(thumbnail: card?.thumbnail, cardAt: rect)
+                model.overlayCardViewModel.state = .transitionToGrid(card: card, cardAt: rect)
             } else {
-                model.overlayCardViewModel.state = .transitionToZoomed(thumbnail: card?.thumbnail, cardAt: rect)
+                model.overlayCardViewModel.state = .transitionToZoomed(card: card, cardAt: rect)
             }
         }.store(in: &subscriptions)
 
@@ -74,7 +74,8 @@ final class CardGridView: UIView {
             print(">>> cards change: \(change)")
             switch change {
             case let .updated(card, atIndex: index):
-                (collectionView.cellForItem(at: .init(item: index, section: 0)) as! CardGridCellView).card = card
+                guard let cell = collectionView.cellForItem(at: .init(item: index, section: 0)) else { return }
+                (cell as! CardGridCellView).card = card
             default:
                 collectionView.reloadData()
             }

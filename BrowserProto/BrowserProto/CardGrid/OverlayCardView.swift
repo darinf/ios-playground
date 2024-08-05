@@ -41,16 +41,16 @@ final class OverlayCardView: UIView {
             switch state {
             case .hidden:
                 removeCardView()
-            case let .transitionToGrid(thumbnail: thumbnail, cardAt: cardRect):
-                transitionToGrid(thumbnail: thumbnail, cardAt: cardRect)
-            case let .transitionToZoomed(thumbnail: thumbnail, cardAt: cardRect):
-                transitionToZoomed(thumbnail: thumbnail, cardAt: cardRect)
+            case let .transitionToGrid(card: card, cardAt: cardRect):
+                transitionToGrid(card: card, cardAt: cardRect)
+            case let .transitionToZoomed(card: card, cardAt: cardRect):
+                transitionToZoomed(card: card, cardAt: cardRect)
             }
         }.store(in: &subscriptions)
     }
 
-    private func transitionToGrid(thumbnail: UIImage?, cardAt cardRect: CGRect?) {
-        let cardViewModel = createCardViewIfNeeded(thumbnail: thumbnail)
+    private func transitionToGrid(card: Card?, cardAt cardRect: CGRect?) {
+        let cardViewModel = createCardViewIfNeeded(card: card)
 
         zoomedView.isHidden = true
         cardViewModel.selected = false
@@ -74,8 +74,8 @@ final class OverlayCardView: UIView {
         }
     }
 
-    private func transitionToZoomed(thumbnail: UIImage?, cardAt cardRect: CGRect?) {
-        let cardViewModel = createCardViewIfNeeded(thumbnail: thumbnail)
+    private func transitionToZoomed(card: Card?, cardAt cardRect: CGRect?) {
+        let cardViewModel = createCardViewIfNeeded(card: card)
 
         zoomedView.isHidden = true
         cardViewModel.selected = true
@@ -104,12 +104,12 @@ final class OverlayCardView: UIView {
         }
     }
 
-    private func createCardViewIfNeeded(thumbnail: UIImage?) -> CardViewModel {
+    private func createCardViewIfNeeded(card: Card?) -> CardViewModel {
         if let cardViewModel {
             return cardViewModel
         }
 
-        let cardViewModel = CardViewModel(selected: false, thumbnail: thumbnail)
+        let cardViewModel = CardViewModel(selected: false, thumbnail: card?.thumbnail, title: card?.title)
         let cardView = CardView(model: cardViewModel)
 
         self.cardViewModel = cardViewModel

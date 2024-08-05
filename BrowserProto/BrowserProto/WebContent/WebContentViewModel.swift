@@ -14,6 +14,7 @@ final class WebContentViewModel {
     let webViewRefChanges = PassthroughSubject<WebViewRefChange, Never>()
 
     @Published var url: URL?
+    @Published var title: String?
     @Published var canGoBack: Bool = false
     @Published var canGoForward: Bool = false
     @Published private(set) var progress: Double?

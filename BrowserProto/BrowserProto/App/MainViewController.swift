@@ -170,13 +170,10 @@ class MainViewController: UIViewController {
             self?.resetBottomBarOffset()
         }.store(in: &subscriptions)
 
-//        model.webContentViewModel.$canGoBack.dropFirst().sink { [weak self] canGoBack in
-//            self?.model.bottomBarViewModel.canGoBack = canGoBack
-//        }.store(in: &subscriptions)
-//
-//        model.webContentViewModel.$canGoForward.dropFirst().sink { [weak self] canGoForward in
-//            self?.model.bottomBarViewModel.canGoForward = canGoForward
-//        }.store(in: &subscriptions)
+        model.webContentViewModel.$title.dropFirst().sink { [weak self] title in
+            guard let self, let selectedID = model.cardGridViewModel.selectedID else { return }
+            model.cardGridViewModel.updateTitle(title, forCardByID: selectedID)
+        }.store(in: &subscriptions)
 
         model.webContentViewModel.$progress.dropFirst().sink { [weak self] progress in
             self?.model.bottomBarViewModel.centerButtonViewModel.progress = progress

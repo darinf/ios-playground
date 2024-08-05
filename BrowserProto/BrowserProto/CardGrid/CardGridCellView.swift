@@ -15,7 +15,7 @@ final class CardGridCellView: UICollectionViewCell {
 
             guard let card else { return }
 
-            let model = CardViewModel(selected: isSelected, thumbnail: card.thumbnail)
+            let model = CardViewModel(selected: isSelected, thumbnail: card.thumbnail, title: card.title)
             let view = CardView(model: model) { [weak self] action in
                 guard let self else { return }
                 switch action {
