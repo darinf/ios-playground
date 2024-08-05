@@ -8,7 +8,7 @@ final class CardGridView: UIView {
 
     private lazy var collectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.minimumLineSpacing = 10
+        layout.minimumLineSpacing = 16 + CardView.Metrics.bottomMargin
         layout.minimumInteritemSpacing = 10
 
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)

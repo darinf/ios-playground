@@ -6,10 +6,15 @@ final class CardView: UIView {
         case closed
     }
 
-    private enum Metrics {
+    enum Metrics {
         static let closeButtonRadius: CGFloat = 10
         static let margin: CGFloat = 5
         static let cornerRadius: CGFloat = 10
+        static let footerHeight: CGFloat = 16
+        static let footerPadding: CGFloat = 4
+        static let footerIconDimension: CGFloat = footerHeight
+        static let titleFontSize: CGFloat = 12
+        static let bottomMargin = footerHeight + footerPadding
     }
 
     private let model: CardViewModel
@@ -20,6 +25,26 @@ final class CardView: UIView {
         CapsuleButton(cornerRadius: Metrics.closeButtonRadius, systemImage: "multiply") { [weak self] in
             self?.handler(.closed)
         }
+    }()
+
+    private lazy var footerView = {
+        let view = UIStackView()
+        view.spacing = Metrics.footerPadding
+        return view
+    }()
+
+    private lazy var titleView = {
+        let label = UILabel()
+        label.tintColor = .black
+        label.font = .systemFont(ofSize: Metrics.titleFontSize, weight: .medium)
+        label.text = "Hello World"
+        return label
+    }()
+
+    private lazy var iconView = {
+        let view = UIImageView(image: .init(systemName: "globe"))
+        view.tintColor = .black
+        return view
     }()
 
     private lazy var thumbnailShadowView = {
@@ -51,6 +76,10 @@ final class CardView: UIView {
 
         addSubview(thumbnailShadowView)
         addSubview(closeButton)
+        addSubview(footerView)
+
+        footerView.addArrangedSubview(iconView)
+        footerView.addArrangedSubview(titleView)
 
         thumbnailShadowView.addSubview(thumbnailClipView)
         thumbnailClipView.addSubview(thumbnailView)
@@ -80,6 +109,32 @@ final class CardView: UIView {
             thumbnailView.topAnchor.constraint(equalTo: thumbnailClipView.topAnchor),
             thumbnailView.widthAnchor.constraint(equalTo: thumbnailClipView.widthAnchor),
         ])
+
+        footerView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            footerView.topAnchor.constraint(equalTo: bottomAnchor, constant: Metrics.footerPadding),
+            footerView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            footerView.widthAnchor.constraint(lessThanOrEqualTo: widthAnchor),
+            footerView.heightAnchor.constraint(equalToConstant: Metrics.footerHeight)
+        ])
+
+        iconView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+//            iconView.topAnchor.constraint(equalTo: footerView.topAnchor),
+//            iconView.bottomAnchor.constraint(equalTo: footerView.bottomAnchor),
+//            iconView.leftAnchor.constraint(equalTo: footerView.leftAnchor),
+            iconView.widthAnchor.constraint(equalToConstant: Metrics.footerIconDimension),
+            iconView.heightAnchor.constraint(equalToConstant: Metrics.footerIconDimension)
+        ])
+//
+//        titleView.translatesAutoresizingMaskIntoConstraints = false
+//        NSLayoutConstraint.activate([
+//            titleView.topAnchor.constraint(equalTo: footerView.topAnchor),
+//            titleView.bottomAnchor.constraint(equalTo: footerView.bottomAnchor),
+//            titleView.leftAnchor.constraint(equalTo: iconView.rightAnchor, constant: Metrics.footerPadding)
+////            titleView.leftAnchor.constraint(equalTo: footerView.leftAnchor, constant: Metrics.footerIconDimension + Metrics.footerPadding),
+////            titleView.rightAnchor.constraint(equalTo: footerView.rightAnchor)
+//        ])
     }
 
     private func setupObservers() {
