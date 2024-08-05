@@ -133,7 +133,7 @@ final class WebContentView: UIView {
             self?.model.url = url
         }.store(in: &webViewSubscriptions)
 
-        webView.publisher(for: \.title, options: [.initial]).sink { [weak self] title in
+        webView.publisher(for: \.title, options: [.new]).sink { [weak self] title in
             self?.model.title = title
         }.store(in: &webViewSubscriptions)
 

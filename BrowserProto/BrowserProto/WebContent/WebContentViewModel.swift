@@ -15,6 +15,7 @@ final class WebContentViewModel {
 
     @Published var url: URL?
     @Published var title: String?
+    @Published var favicon: UIImage?
     @Published var canGoBack: Bool = false
     @Published var canGoForward: Bool = false
     @Published private(set) var progress: Double?

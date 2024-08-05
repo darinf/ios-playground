@@ -22,6 +22,9 @@
 		938822FD2C5DA6A900B4FE37 /* OverlayCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 938822FC2C5DA6A900B4FE37 /* OverlayCardView.swift */; };
 		938822FF2C5DA6B100B4FE37 /* OverlayCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 938822FE2C5DA6B100B4FE37 /* OverlayCardViewModel.swift */; };
 		938823012C6089DC00B4FE37 /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 938823002C6089DC00B4FE37 /* Card.swift */; };
+		938823032C612F1D00B4FE37 /* FaviconObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 938823022C612F1D00B4FE37 /* FaviconObserver.swift */; };
+		938823052C612F9E00B4FE37 /* WebViewConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 938823042C612F9E00B4FE37 /* WebViewConfiguration.swift */; };
+		938823082C61348800B4FE37 /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = 938823072C61348800B4FE37 /* SDWebImage */; };
 		93C94CD92C4F2C2D00E3BB13 /* SearchEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93C94CD82C4F2C2D00E3BB13 /* SearchEngine.swift */; };
 		93C94CDB2C4F34BB00E3BB13 /* SuggestionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93C94CDA2C4F34BB00E3BB13 /* SuggestionsView.swift */; };
 		93C94CDD2C51900400E3BB13 /* SuggestionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93C94CDC2C51900400E3BB13 /* SuggestionsViewModel.swift */; };
@@ -60,6 +63,8 @@
 		938822FC2C5DA6A900B4FE37 /* OverlayCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayCardView.swift; sourceTree = "<group>"; };
 		938822FE2C5DA6B100B4FE37 /* OverlayCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayCardViewModel.swift; sourceTree = "<group>"; };
 		938823002C6089DC00B4FE37 /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
+		938823022C612F1D00B4FE37 /* FaviconObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FaviconObserver.swift; sourceTree = "<group>"; };
+		938823042C612F9E00B4FE37 /* WebViewConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewConfiguration.swift; sourceTree = "<group>"; };
 		93C94CD82C4F2C2D00E3BB13 /* SearchEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchEngine.swift; sourceTree = "<group>"; };
 		93C94CDA2C4F34BB00E3BB13 /* SuggestionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsView.swift; sourceTree = "<group>"; };
 		93C94CDC2C51900400E3BB13 /* SuggestionsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsViewModel.swift; sourceTree = "<group>"; };
@@ -90,6 +95,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				938823082C61348800B4FE37 /* SDWebImage in Frameworks */,
 				938822EA2C55A60200B4FE37 /* IdentifiedCollections in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -177,8 +183,10 @@
 		93D481002C2B08690019921F /* WebContent */ = {
 			isa = PBXGroup;
 			children = (
+				938823022C612F1D00B4FE37 /* FaviconObserver.swift */,
 				93D481032C2B08CB0019921F /* WebContentView.swift */,
 				93D481052C2B08D80019921F /* WebContentViewModel.swift */,
+				938823042C612F9E00B4FE37 /* WebViewConfiguration.swift */,
 				93254B0A2C5332C000B66206 /* WebViewRef.swift */,
 			);
 			path = WebContent;
@@ -246,6 +254,7 @@
 			name = BrowserProto;
 			packageProductDependencies = (
 				938822E92C55A60200B4FE37 /* IdentifiedCollections */,
+				938823072C61348800B4FE37 /* SDWebImage */,
 			);
 			productName = BrowserProto;
 			productReference = 93D480DA2C25D9600019921F /* BrowserProto.app */;
@@ -277,6 +286,7 @@
 			mainGroup = 93D480D12C25D9600019921F;
 			packageReferences = (
 				938822E82C55A60200B4FE37 /* XCRemoteSwiftPackageReference "swift-identified-collections" */,
+				938823062C61348800B4FE37 /* XCRemoteSwiftPackageReference "SDWebImage" */,
 			);
 			productRefGroup = 93D480DB2C25D9600019921F /* Products */;
 			projectDirPath = "";
@@ -316,6 +326,7 @@
 				93D4811F2C38C4680019921F /* URLInput.swift in Sources */,
 				938823012C6089DC00B4FE37 /* Card.swift in Sources */,
 				93D481062C2B08D80019921F /* WebContentViewModel.swift in Sources */,
+				938823032C612F1D00B4FE37 /* FaviconObserver.swift in Sources */,
 				938822DD2C54484B00B4FE37 /* MainMenuConfig.swift in Sources */,
 				93254B0B2C5332C000B66206 /* WebViewRef.swift in Sources */,
 				93D481042C2B08CB0019921F /* WebContentView.swift in Sources */,
@@ -324,6 +335,7 @@
 				93C94CDD2C51900400E3BB13 /* SuggestionsViewModel.swift in Sources */,
 				938822F92C5D8DEE00B4FE37 /* CardView.swift in Sources */,
 				93254B0D2C53438B00B66206 /* MainMenu.swift in Sources */,
+				938823052C612F9E00B4FE37 /* WebViewConfiguration.swift in Sources */,
 				93D4810F2C2CC4DE0019921F /* URLInputView.swift in Sources */,
 				938822E02C55633A00B4FE37 /* CardGridView.swift in Sources */,
 				938822E22C55634200B4FE37 /* CardGridViewModel.swift in Sources */,
@@ -561,6 +573,14 @@
 				minimumVersion = 1.1.0;
 			};
 		};
+		938823062C61348800B4FE37 /* XCRemoteSwiftPackageReference "SDWebImage" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SDWebImage/SDWebImage.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.19.5;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -568,6 +588,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 938822E82C55A60200B4FE37 /* XCRemoteSwiftPackageReference "swift-identified-collections" */;
 			productName = IdentifiedCollections;
+		};
+		938823072C61348800B4FE37 /* SDWebImage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 938823062C61348800B4FE37 /* XCRemoteSwiftPackageReference "SDWebImage" */;
+			productName = SDWebImage;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
