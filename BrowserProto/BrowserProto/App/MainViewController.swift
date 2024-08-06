@@ -68,7 +68,6 @@ class MainViewController: UIViewController {
                 switch mainMenuAction {
                 case .toggleIncognito(let incognitoEnabled):
                     // TODO: Figure out how to provide memory for existing cards.
-                    model.cardGridViewModel.showGrid = false
                     model.cardGridViewModel.removeAllCards()
                     model.webContentViewModel.incognito = incognitoEnabled
                     model.urlInputViewModel.visibility = .showing(initialValue: "", forTarget: .newTab)
@@ -194,10 +193,18 @@ class MainViewController: UIViewController {
         model.cardGridViewModel.$selectedID.removeDuplicates().sink { [weak self] selectedID in
             guard let self else { return }
             model.webContentViewModel.replaceWebContent(with: .from(id: selectedID))
+            if selectedID == nil {
+                model.cardGridViewModel.showGrid = true
+            }
         }.store(in: &subscriptions)
 
         model.cardGridViewModel.$showGrid.dropFirst().removeDuplicates().sink { [weak self] showGrid in
             self?.model.bottomBarViewModel.centerButtonViewModel.mode = showGrid ? .showAsPlus : .showAsText
+        }.store(in: &subscriptions)
+
+        model.cardGridViewModel.cardsChanges.sink { [weak self] _ in
+            guard let self else { return }
+            model.bottomBarViewModel.tabsButtonEnabled = !model.cardGridViewModel.cards.isEmpty
         }.store(in: &subscriptions)
     }
 

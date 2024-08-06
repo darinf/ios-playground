@@ -111,6 +111,10 @@ final class BottomBarView: UIVisualEffectView {
     }
 
     private func setupObservers() {
+        model.$tabsButtonEnabled.dropFirst().sink { [weak self] isEnabled in
+            self?.tabsButton.isEnabled = isEnabled
+        }.store(in: &subscriptions)
+
         model.$mainMenuConfig.removeDuplicates().sink { [weak self] config in
             self?.rebuildMainMenu(with: config)
         }.store(in: &subscriptions)
