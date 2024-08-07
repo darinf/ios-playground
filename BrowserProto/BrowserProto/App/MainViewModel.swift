@@ -6,4 +6,5 @@ final class MainViewModel {
     let bottomBarViewModel = BottomBarViewModel()
     let webContentViewModel = WebContentViewModel()
     let cardGridViewModel = CardGridViewModel()
+    let tabsModel = TabsModel()
 }

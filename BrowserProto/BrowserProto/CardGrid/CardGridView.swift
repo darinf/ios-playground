@@ -2,7 +2,12 @@ import Combine
 import UIKit
 
 final class CardGridView: UIView {
+    enum Action {
+        case removeCard(byID: Card.ID)
+    }
+
     private let model: CardGridViewModel
+    private let handler: (Action) -> Void
     private let overlayCardView: OverlayCardView
     private var subscriptions: Set<AnyCancellable> = []
 
@@ -19,8 +24,9 @@ final class CardGridView: UIView {
         return collectionView
     }()
 
-    init(model: CardGridViewModel, zoomedView: UIView) {
+    init(model: CardGridViewModel, zoomedView: UIView, handler: @escaping (Action) -> Void) {
         self.model = model
+        self.handler = handler
         self.overlayCardView = .init(model: model.overlayCardViewModel, zoomedView: zoomedView)
         super.init(frame: .zero)
 
@@ -91,10 +97,11 @@ extension CardGridView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! CardGridCellView
         let card = model.cards[indexPath.item]
-        cell.handler = { [model] action in
+        cell.handler = { [weak self] action in
+            guard let self else { return }
             switch action {
             case .closed:
-                model.removeCard(byID: card.id)
+                handler(.removeCard(byID: card.id))
             }
         }
         cell.card = card

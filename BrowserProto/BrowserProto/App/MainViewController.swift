@@ -31,7 +31,13 @@ class MainViewController: UIViewController {
     }()
 
     private lazy var cardGridView = {
-        CardGridView(model: model.cardGridViewModel, zoomedView: webContentView)
+        CardGridView(model: model.cardGridViewModel, zoomedView: webContentView) { [weak self] action in
+            guard let self else { return }
+            switch action {
+            case let .removeCard(byID: cardID):
+                model.cardGridViewModel.removeCard(byID: cardID)
+            }
+        }
     }()
 
     private lazy var webContentView = {

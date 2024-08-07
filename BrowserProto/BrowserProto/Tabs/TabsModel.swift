@@ -1,33 +1,70 @@
 import Combine
 import Foundation
+import IdentifiedCollections
+import UIKit
 
 final class TabsModel {
     enum TabsChange {
-        case appended(TabsSection, Tab)
-        case inserted(TabsSection, Tab, atIndex: Int)
-        case removed(TabsSection, atIndex: Int)
-        case removedAll(TabsSection)
-        case updated(TabsSection, Tab, atIndex: Int)
+        case appended(TabData, inSection: TabsSection)
+        case inserted(TabData, atIndex: Int, inSection: TabsSection)
+        case removed(atIndex: Int, inSection: TabsSection)
+        case removedAll(inSection: TabsSection)
+        case updated(TabData.MutableField, atIndex: Int, inSection: TabsSection)
     }
 
-    private(set) var tabs: TabsData = .init()
+    private(set) var data: TabsData = .init()
     let tabsChanges = PassthroughSubject<TabsChange, Never>()
 
     private(set) var liveWebContent: [WebContent.ID: WebContent] = [:]
 }
 
-enum TabsSection: Hashable, Codable {
-    case `default`
-    case incognito
-}
+extension TabsModel {
+    func containsTab(byID tabID: TabData.ID, inSection section: TabsSection) -> Bool {
+        data.sections[id: section]!.tabs[id: tabID] != nil
+    }
 
-struct TabsData: Codable {
-    var tabs: [TabsSection: [Tab]] = [:]
-}
+    func appendTab(_ tab: TabData, inSection section: TabsSection) {
+        data.sections[id: section]!.tabs.append(tab)
+        tabsChanges.send(.appended(tab, inSection: section))
+    }
 
-struct Tab: Codable {
-    let id: UUID
-    var url: URL?
+    func insertTab(_ tab: TabData, inSection section: TabsSection, after previousID: TabData.ID) {
+        let insertionIndex = indexByID(previousID, inSection: section) + 1
+        data.sections[id: section]!.tabs.insert(tab, at: insertionIndex)
+        tabsChanges.send(.inserted(tab, atIndex: insertionIndex, inSection: section))
+    }
 
-    // TODO: extend data model
+    func removeTab(byID tabID: TabData.ID, inSection section: TabsSection) {
+        let removalIndex = indexByID(tabID, inSection: section)
+        data.sections[id: section]!.tabs.remove(at: removalIndex)
+        tabsChanges.send(.removed(atIndex: removalIndex, inSection: section))
+    }
+
+    func removeAllTabs(inSection section: TabsSection) {
+        data.sections[id: section]!.tabs = []
+        tabsChanges.send(.removedAll(inSection: section))
+    }
+
+    func updateURL(_ url: URL?, forTabByID tabID: TabData.ID, inSection section: TabsSection) {
+        let tabIndex = indexByID(tabID, inSection: section)
+        data.sections[id: section]!.tabs[tabIndex].url = url
+        tabsChanges.send(.updated(.url(url), atIndex: tabIndex, inSection: section))
+    }
+
+    func updateTitle(_ title: String?, forTabByID tabID: TabData.ID, inSection section: TabsSection) {
+        let tabIndex = indexByID(tabID, inSection: section)
+        data.sections[id: section]!.tabs[tabIndex].title = title
+        tabsChanges.send(.updated(.title(title), atIndex: tabIndex, inSection: section))
+    }
+
+    func updateFaviconURL(_ faviconURL: URL?, forTabByID tabID: TabData.ID, inSection section: TabsSection) {
+        let tabIndex = indexByID(tabID, inSection: section)
+        data.sections[id: section]!.tabs[tabIndex].faviconURL = faviconURL
+        tabsChanges.send(.updated(.faviconURL(faviconURL), atIndex: tabIndex, inSection: section))
+    }
+
+    func indexByID(_ tabID: TabData.ID, inSection section: TabsSection) -> IdentifiedArrayOf<TabData>.Index {
+        let section = data.sections[id: section]!
+        return section.tabs.index(id: tabID)!
+    }
 }
