@@ -175,6 +175,34 @@ class MainViewController: UIViewController {
             self?.updateBottomBarOffset(panningDeltaY: panningDeltaY)
         }.store(in: &subscriptions)
 
+        model.tabsModel.tabsChanges.sink { [weak self] change in
+            guard let self else { return }
+            switch change {
+            case let .appended(tab, inSection: section):
+                guard model.currentTabsSection == section else { return }
+                model.cardGridViewModel.appendCard(.init(from: tab))
+            case let .inserted(tab, atIndex: index, inSection: section):
+                guard model.currentTabsSection == section else { return }
+                model.cardGridViewModel.insertCard(.init(from: tab), atIndex: index)
+            case let .removed(atIndex: index, inSection: section):
+                guard model.currentTabsSection == section else { return }
+                model.cardGridViewModel.removeCard(atIndex: index)
+            case let .removedAll(inSection: section):
+                guard model.currentTabsSection == section else { return }
+                model.cardGridViewModel.removeAllCards()
+            case let .updated(field, atIndex: index, inSection: section):
+                guard model.currentTabsSection == section else { return }
+                switch field {
+                case .url:
+                    break
+                case let .title(title):
+                    model.cardGridViewModel.updateTitle(title, forCardAtIndex: index)
+                case .faviconURL:
+                    break
+                }
+            }
+        }.store(in: &subscriptions)
+
         model.webContentViewModel.webContentChanges.sink { [weak self] change in
             guard let self else { return }
             let currentWebContent = model.webContentViewModel.webContent
@@ -226,13 +254,11 @@ class MainViewController: UIViewController {
         }.store(in: &webContentSubscriptions)
 
         webContent.$title.dropFirst().sink { [weak self] title in
-            guard let self, let webContent = model.webContentViewModel.webContent else { return }
-            model.cardGridViewModel.updateTitle(title, forCardByID: webContent.id)
+            self?.model.cardGridViewModel.updateTitle(title, forCardByID: webContent.id)
         }.store(in: &webContentSubscriptions)
 
         webContent.$favicon.dropFirst().sink { [weak self] favicon in
-            guard let self, let webContent = model.webContentViewModel.webContent else { return }
-            model.cardGridViewModel.updateFavicon(favicon, forCardByID: webContent.id)
+            self?.model.cardGridViewModel.updateFavicon(favicon, forCardByID: webContent.id)
         }.store(in: &webContentSubscriptions)
 
         webContent.$progress.dropFirst().sink { [weak self] progress in
@@ -240,9 +266,7 @@ class MainViewController: UIViewController {
         }.store(in: &webContentSubscriptions)
 
         webContent.$thumbnail.sink { [weak self] thumbnail in
-            guard let self else { return }
-            guard let selectedID = model.cardGridViewModel.selectedID else { return }
-            model.cardGridViewModel.updateThumbnail(thumbnail, forCardByID: selectedID)
+            self?.model.cardGridViewModel.updateThumbnail(thumbnail, forCardByID: webContent.id)
         }.store(in: &webContentSubscriptions)
     }
 
@@ -311,5 +335,11 @@ class MainViewController: UIViewController {
 
     private func resetBottomBarOffset() {
         animateBottomBarOffset(to: 0)
+    }
+}
+
+extension Card {
+    init(from tab: TabData) {
+        self.init(id: tab.id, title: tab.title, favicon: nil, thumbnail: nil)
     }
 }

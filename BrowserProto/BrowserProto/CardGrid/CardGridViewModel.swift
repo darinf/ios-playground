@@ -33,15 +33,24 @@ extension CardGridViewModel {
 
     func insertCard(_ card: Card, after previousID: Card.ID) {
         let insertionIndex = indexByID(previousID) + 1
-        cards.insert(card, at: insertionIndex)
-        cardsChanges.send(.inserted(card, atIndex: insertionIndex))
+        insertCard(card, atIndex: insertionIndex)
+    }
+
+    func insertCard(_ card: Card, atIndex index: Int) {
+        cards.insert(card, at: index)
+        cardsChanges.send(.inserted(card, atIndex: index))
     }
 
     func removeCard(byID cardID: Card.ID) {
         let removalIndex = indexByID(cardID)
-        cards.remove(at: removalIndex)
-        cardsChanges.send(.removed(atIndex: removalIndex))
-        if selectedID == cardID {
+        removeCard(atIndex: removalIndex)
+    }
+
+    func removeCard(atIndex index: Int) {
+        let card = cards[index]
+        cards.remove(at: index)
+        cardsChanges.send(.removed(atIndex: index))
+        if selectedID == card.id {
             selectedID = nil
         }
     }
@@ -54,20 +63,32 @@ extension CardGridViewModel {
 
     func updateTitle(_ title: String?, forCardByID cardID: Card.ID) {
         let cardIndex = indexByID(cardID)
-        cards[cardIndex].title = title
-        cardsChanges.send(.updated(cards[cardIndex], atIndex: cardIndex))
+        updateTitle(title, forCardAtIndex: cardIndex)
+    }
+
+    func updateTitle(_ title: String?, forCardAtIndex index: Int) {
+        cards[index].title = title
+        cardsChanges.send(.updated(cards[index], atIndex: index))
     }
 
     func updateFavicon(_ favicon: UIImage?, forCardByID cardID: Card.ID) {
         let cardIndex = indexByID(cardID)
-        cards[cardIndex].favicon = favicon
-        cardsChanges.send(.updated(cards[cardIndex], atIndex: cardIndex))
+        updateFavicon(favicon, forCardAtIndex: cardIndex)
+    }
+
+    func updateFavicon(_ favicon: UIImage?, forCardAtIndex index: Int) {
+        cards[index].favicon = favicon
+        cardsChanges.send(.updated(cards[index], atIndex: index))
     }
 
     func updateThumbnail(_ thumbnail: UIImage?, forCardByID cardID: Card.ID) {
         let cardIndex = indexByID(cardID)
-        cards[cardIndex].thumbnail = thumbnail
-        cardsChanges.send(.updated(cards[cardIndex], atIndex: cardIndex))
+        updateThumbnail(thumbnail, forCardAtIndex: cardIndex)
+    }
+
+    func updateThumbnail(_ thumbnail: UIImage?, forCardAtIndex index: Int) {
+        cards[index].thumbnail = thumbnail
+        cardsChanges.send(.updated(cards[index], atIndex: index))
     }
 
     func indexByID(_ cardID: Card.ID) -> IdentifiedArrayOf<Card>.Index {

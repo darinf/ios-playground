@@ -7,7 +7,7 @@ struct TabsData: Codable {
 
 enum TabsSection: Hashable, Codable {
     case `default`
-    case nonPersistent
+    case incognito
     case custom(UUID)
 }
 

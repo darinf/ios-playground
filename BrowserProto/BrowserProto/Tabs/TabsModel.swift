@@ -19,10 +19,6 @@ final class TabsModel {
 }
 
 extension TabsModel {
-    func containsTab(byID tabID: TabData.ID, inSection section: TabsSection) -> Bool {
-        data.sections[id: section]!.tabs[id: tabID] != nil
-    }
-
     func appendTab(_ tab: TabData, inSection section: TabsSection) {
         data.sections[id: section]!.tabs.append(tab)
         tabsChanges.send(.appended(tab, inSection: section))
@@ -61,6 +57,14 @@ extension TabsModel {
         let tabIndex = indexByID(tabID, inSection: section)
         data.sections[id: section]!.tabs[tabIndex].faviconURL = faviconURL
         tabsChanges.send(.updated(.faviconURL(faviconURL), atIndex: tabIndex, inSection: section))
+    }
+
+    func tabByID(_ tabID: TabData.ID, inSection section: TabsSection) -> TabData {
+        data.sections[id: section]!.tabs[id: tabID]!
+    }
+
+    func tabByIndex(_ index: Int, inSection section: TabsSection) -> TabData {
+        data.sections[id: section]!.tabs[index]
     }
 
     func indexByID(_ tabID: TabData.ID, inSection section: TabsSection) -> IdentifiedArrayOf<TabData>.Index {

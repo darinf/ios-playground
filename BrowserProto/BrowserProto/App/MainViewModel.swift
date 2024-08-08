@@ -8,3 +8,9 @@ final class MainViewModel {
     let cardGridViewModel = CardGridViewModel()
     let tabsModel = TabsModel()
 }
+
+extension MainViewModel {
+    var currentTabsSection: TabsSection {
+        webContentViewModel.incognito ? .incognito : .default
+    }
+}
