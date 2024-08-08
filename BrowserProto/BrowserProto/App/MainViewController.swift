@@ -35,7 +35,10 @@ class MainViewController: UIViewController {
             guard let self else { return }
             switch action {
             case let .removeCard(byID: cardID):
-                model.cardGridViewModel.removeCard(byID: cardID)
+                model.tabsModel.removeTab(byID: cardID, inSection: model.currentTabsSection)
+            case let .selectCard(byID: cardID):
+                model.tabsModel.selectTab(byID: cardID, inSection: model.currentTabsSection)
+                model.cardGridViewModel.showGrid = false
             }
         }
     }()
@@ -73,10 +76,7 @@ class MainViewController: UIViewController {
                 print(">>> mainMenu: \(mainMenuAction)")
                 switch mainMenuAction {
                 case .toggleIncognito(let incognitoEnabled):
-                    // TODO: Figure out how to provide memory for existing cards.
-                    model.cardGridViewModel.removeAllCards()
-                    model.webContentViewModel.incognito = incognitoEnabled
-                    model.urlInputViewModel.visibility = .showing(initialValue: "", forTarget: .newTab)
+                    model.setIncognito(incognito: incognitoEnabled)
                 }
             }
         }
@@ -175,30 +175,30 @@ class MainViewController: UIViewController {
             self?.updateBottomBarOffset(panningDeltaY: panningDeltaY)
         }.store(in: &subscriptions)
 
-        model.tabsModel.tabsChanges.sink { [weak self] change in
+        model.tabsModel.tabsChanges.sink { [weak self] (section, change) in
             guard let self else { return }
+            guard model.currentTabsSection == section else { return }
             switch change {
-            case let .appended(tab, inSection: section):
-                guard model.currentTabsSection == section else { return }
+            case let .selected(tabID):
+                model.cardGridViewModel.selectedID = tabID
+            case let .appended(tab):
                 model.cardGridViewModel.appendCard(.init(from: tab))
-            case let .inserted(tab, atIndex: index, inSection: section):
-                guard model.currentTabsSection == section else { return }
+            case let .inserted(tab, atIndex: index):
                 model.cardGridViewModel.insertCard(.init(from: tab), atIndex: index)
-            case let .removed(atIndex: index, inSection: section):
-                guard model.currentTabsSection == section else { return }
+            case let .removed(atIndex: index):
                 model.cardGridViewModel.removeCard(atIndex: index)
-            case let .removedAll(inSection: section):
-                guard model.currentTabsSection == section else { return }
+            case .removedAll:
                 model.cardGridViewModel.removeAllCards()
-            case let .updated(field, atIndex: index, inSection: section):
-                guard model.currentTabsSection == section else { return }
+            case let .updated(field, atIndex: index):
                 switch field {
                 case .url:
                     break
                 case let .title(title):
                     model.cardGridViewModel.updateTitle(title, forCardAtIndex: index)
-                case .faviconURL:
-                    break
+                case let .favicon(favicon):
+                    model.cardGridViewModel.updateFavicon(favicon?.image, forCardAtIndex: index)
+                case let .thumbnail(thumbnail):
+                    model.cardGridViewModel.updateThumbnail(thumbnail?.image, forCardAtIndex: index)
                 }
             }
         }.store(in: &subscriptions)
@@ -208,23 +208,23 @@ class MainViewController: UIViewController {
             let currentWebContent = model.webContentViewModel.webContent
             switch change {
             case .opened:
-                let newCard = Card(id: currentWebContent!.id)
-                if let opener = currentWebContent?.opener {
-                    model.cardGridViewModel.insertCard(newCard, after: opener.id)
+                let newTab = TabData(from: currentWebContent!)
+                if let opener = currentWebContent!.opener {
+                    model.tabsModel.insertTab(newTab, inSection: model.currentTabsSection, after: opener.id)
                 } else {
-                    model.cardGridViewModel.appendCard(newCard)
+                    model.tabsModel.appendTab(newTab, inSection: model.currentTabsSection)
                 }
             case .switched:
                 break
             case let .poppedBack(from: closedWebContent):
-                model.cardGridViewModel.removeCard(byID: closedWebContent.id)
+                model.tabsModel.removeTab(byID: closedWebContent.id, inSection: model.currentTabsSection)
                 // TODO: If currentWebContent is nil, then we need to select a different card.
             }
-            model.cardGridViewModel.selectedID = currentWebContent?.id
+            model.tabsModel.selectTab(byID: currentWebContent?.id, inSection: model.currentTabsSection)
             setupWebContentObservers(for: currentWebContent)
         }.store(in: &subscriptions)
 
-        model.cardGridViewModel.$selectedID.removeDuplicates().sink { [weak self] selectedID in
+        model.cardGridViewModel.$selectedID.dropFirst().removeDuplicates().sink { [weak self] selectedID in
             guard let self else { return }
             model.webContentViewModel.replaceWebContent(with: .from(id: selectedID))
             if selectedID == nil {
@@ -243,30 +243,33 @@ class MainViewController: UIViewController {
     }
 
     private func setupWebContentObservers(for webContent: WebContent?) {
-        guard let webContent else {
-            webContentSubscriptions.removeAll()
-            return
-        }
+        // TODO: Maybe we should be listening to all WebContent instead of just the selected one?
+        webContentSubscriptions.removeAll()
 
-        webContent.$url.dropFirst().sink { [weak self] url in
+        guard let webContent else { return }
+
+        webContent.$url.sink { [weak self] url in
             self?.model.bottomBarViewModel.centerButtonViewModel.text = url?.host() ?? ""
             self?.resetBottomBarOffset()
         }.store(in: &webContentSubscriptions)
 
-        webContent.$title.dropFirst().sink { [weak self] title in
-            self?.model.cardGridViewModel.updateTitle(title, forCardByID: webContent.id)
-        }.store(in: &webContentSubscriptions)
-
-        webContent.$favicon.dropFirst().sink { [weak self] favicon in
-            self?.model.cardGridViewModel.updateFavicon(favicon, forCardByID: webContent.id)
-        }.store(in: &webContentSubscriptions)
-
-        webContent.$progress.dropFirst().sink { [weak self] progress in
+        webContent.$progress.sink { [weak self] progress in
             self?.model.bottomBarViewModel.centerButtonViewModel.progress = progress
         }.store(in: &webContentSubscriptions)
 
+        webContent.$title.sink { [weak self] title in
+            guard let self else { return }
+            model.tabsModel.updateTitle(title, forTabByID: webContent.id, inSection: model.currentTabsSection)
+        }.store(in: &webContentSubscriptions)
+
+        webContent.$favicon.sink { [weak self] favicon in
+            guard let self else { return }
+            model.tabsModel.updateFavicon(favicon, forTabByID: webContent.id, inSection: model.currentTabsSection)
+        }.store(in: &webContentSubscriptions)
+
         webContent.$thumbnail.sink { [weak self] thumbnail in
-            self?.model.cardGridViewModel.updateThumbnail(thumbnail, forCardByID: webContent.id)
+            guard let self else { return }
+            model.tabsModel.updateThumbnail(thumbnail, forTabByID: webContent.id, inSection: model.currentTabsSection)
         }.store(in: &webContentSubscriptions)
     }
 
@@ -335,11 +338,5 @@ class MainViewController: UIViewController {
 
     private func resetBottomBarOffset() {
         animateBottomBarOffset(to: 0)
-    }
-}
-
-extension Card {
-    init(from tab: TabData) {
-        self.init(id: tab.id, title: tab.title, favicon: nil, thumbnail: nil)
     }
 }

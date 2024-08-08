@@ -10,8 +10,8 @@ final class WebContent: Identifiable {
 
     @Published var url: URL?
     @Published var title: String?
-    @Published var favicon: UIImage?
-    @Published var thumbnail: UIImage?
+    @Published var favicon: Favicon?
+    @Published var thumbnail: Thumbnail?
     @Published var canGoBack: Bool = false
     @Published var canGoForward: Bool = false
     @Published var canGoBackToOpener: Bool = false

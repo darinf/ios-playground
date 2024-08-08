@@ -5,58 +5,70 @@ import UIKit
 
 final class TabsModel {
     enum TabsChange {
-        case appended(TabData, inSection: TabsSection)
-        case inserted(TabData, atIndex: Int, inSection: TabsSection)
-        case removed(atIndex: Int, inSection: TabsSection)
-        case removedAll(inSection: TabsSection)
-        case updated(TabData.MutableField, atIndex: Int, inSection: TabsSection)
+        case selected(TabData.ID?)
+        case appended(TabData)
+        case inserted(TabData, atIndex: Int)
+        case removed(atIndex: Int)
+        case removedAll
+        case updated(TabData.MutableField, atIndex: Int)
     }
 
     private(set) var data: TabsData = .init()
-    let tabsChanges = PassthroughSubject<TabsChange, Never>()
+    let tabsChanges = PassthroughSubject<(TabsSection, TabsChange), Never>()
 
     private(set) var liveWebContent: [WebContent.ID: WebContent] = [:]
 }
 
 extension TabsModel {
+    func selectTab(byID tabID: TabData.ID?, inSection section: TabsSection) {
+        data.sections[id: section]!.selectedTab = tabID
+        tabsChanges.send((section, .selected(tabID)))
+    }
+
     func appendTab(_ tab: TabData, inSection section: TabsSection) {
         data.sections[id: section]!.tabs.append(tab)
-        tabsChanges.send(.appended(tab, inSection: section))
+        tabsChanges.send((section, .appended(tab)))
     }
 
     func insertTab(_ tab: TabData, inSection section: TabsSection, after previousID: TabData.ID) {
         let insertionIndex = indexByID(previousID, inSection: section) + 1
         data.sections[id: section]!.tabs.insert(tab, at: insertionIndex)
-        tabsChanges.send(.inserted(tab, atIndex: insertionIndex, inSection: section))
+        tabsChanges.send((section, .inserted(tab, atIndex: insertionIndex)))
     }
 
     func removeTab(byID tabID: TabData.ID, inSection section: TabsSection) {
         let removalIndex = indexByID(tabID, inSection: section)
         data.sections[id: section]!.tabs.remove(at: removalIndex)
-        tabsChanges.send(.removed(atIndex: removalIndex, inSection: section))
+        tabsChanges.send((section, .removed(atIndex: removalIndex)))
     }
 
     func removeAllTabs(inSection section: TabsSection) {
         data.sections[id: section]!.tabs = []
-        tabsChanges.send(.removedAll(inSection: section))
+        tabsChanges.send((section, .removedAll))
     }
 
     func updateURL(_ url: URL?, forTabByID tabID: TabData.ID, inSection section: TabsSection) {
         let tabIndex = indexByID(tabID, inSection: section)
         data.sections[id: section]!.tabs[tabIndex].url = url
-        tabsChanges.send(.updated(.url(url), atIndex: tabIndex, inSection: section))
+        tabsChanges.send((section, .updated(.url(url), atIndex: tabIndex)))
     }
 
     func updateTitle(_ title: String?, forTabByID tabID: TabData.ID, inSection section: TabsSection) {
         let tabIndex = indexByID(tabID, inSection: section)
         data.sections[id: section]!.tabs[tabIndex].title = title
-        tabsChanges.send(.updated(.title(title), atIndex: tabIndex, inSection: section))
+        tabsChanges.send((section, .updated(.title(title), atIndex: tabIndex)))
     }
 
-    func updateFaviconURL(_ faviconURL: URL?, forTabByID tabID: TabData.ID, inSection section: TabsSection) {
+    func updateFavicon(_ favicon: Favicon?, forTabByID tabID: TabData.ID, inSection section: TabsSection) {
         let tabIndex = indexByID(tabID, inSection: section)
-        data.sections[id: section]!.tabs[tabIndex].faviconURL = faviconURL
-        tabsChanges.send(.updated(.faviconURL(faviconURL), atIndex: tabIndex, inSection: section))
+        data.sections[id: section]!.tabs[tabIndex].favicon = favicon
+        tabsChanges.send((section, .updated(.favicon(favicon), atIndex: tabIndex)))
+    }
+
+    func updateThumbnail(_ thumbnail: Thumbnail?, forTabByID tabID: TabData.ID, inSection section: TabsSection) {
+        let tabIndex = indexByID(tabID, inSection: section)
+        data.sections[id: section]!.tabs[tabIndex].thumbnail = thumbnail
+        tabsChanges.send((section, .updated(.thumbnail(thumbnail), atIndex: tabIndex)))
     }
 
     func tabByID(_ tabID: TabData.ID, inSection section: TabsSection) -> TabData {

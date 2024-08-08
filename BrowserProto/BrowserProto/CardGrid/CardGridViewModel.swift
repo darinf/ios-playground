@@ -10,6 +10,7 @@ final class CardGridViewModel {
         case removed(atIndex: Int)
         case removedAll
         case updated(Card, atIndex: Int)
+        case updatedAll
     }
 
     @Published var showGrid = false
@@ -59,6 +60,12 @@ extension CardGridViewModel {
         cards = []
         cardsChanges.send(.removedAll)
         selectedID = nil
+    }
+
+    func replaceAllCards(_ cards: IdentifiedArrayOf<Card>, selectedID: Card.ID?) {
+        self.cards = cards
+        cardsChanges.send(.updatedAll)
+        self.selectedID = selectedID
     }
 
     func updateTitle(_ title: String?, forCardByID cardID: Card.ID) {

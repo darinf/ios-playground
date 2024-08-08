@@ -1,36 +1,42 @@
 import Foundation
 import IdentifiedCollections
 
-struct TabsData: Codable {
-    var sections: IdentifiedArrayOf<TabsSectionData> = []
+struct TabsData {
+    var sections: IdentifiedArrayOf<TabsSectionData> = [
+        .init(id: .default),
+        .init(id: .incognito)
+    ]
 }
 
-enum TabsSection: Hashable, Codable {
+enum TabsSection: Hashable {
     case `default`
     case incognito
     case custom(UUID)
 }
 
-struct TabsSectionData: Identifiable, Codable {
+struct TabsSectionData: Identifiable {
     typealias ID = TabsSection
     
     let id: TabsSection
+    var selectedTab: TabData.ID?
     var tabs: IdentifiedArrayOf<TabData> = []
 }
 
-struct TabData: Identifiable, Codable {
-    typealias ID = UUID
+struct TabData: Identifiable {
+    typealias ID = WebContent.ID
 
     enum MutableField {
         case url(URL?)
         case title(String?)
-        case faviconURL(URL?)
+        case favicon(Favicon?)
+        case thumbnail(Thumbnail?)
     }
 
     let id: ID
     var url: URL?
     var title: String?
-    var faviconURL: URL?
+    var favicon: Favicon?
+    var thumbnail: Thumbnail?
 
     // TODO: extend data model
 }

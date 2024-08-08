@@ -3,6 +3,7 @@ import UIKit
 
 final class CardGridView: UIView {
     enum Action {
+        case selectCard(byID: Card.ID)
         case removeCard(byID: Card.ID)
     }
 
@@ -114,9 +115,7 @@ extension CardGridView: UICollectionViewDelegate {
         _ collectionView: UICollectionView,
         didSelectItemAt indexPath: IndexPath
     ) {
-        print(">>> didSelectItemAt: \(indexPath)")
-        model.selectedID = model.cards[indexPath.item].id
-        model.showGrid = false
+        handler(.selectCard(byID: model.cards[indexPath.item].id))
     }
 }
 

@@ -26,6 +26,8 @@
 		938823052C612F9E00B4FE37 /* WebContentConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 938823042C612F9E00B4FE37 /* WebContentConfiguration.swift */; };
 		938823082C61348800B4FE37 /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = 938823072C61348800B4FE37 /* SDWebImage */; };
 		938823102C62FB0100B4FE37 /* TabsData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9388230F2C62FB0100B4FE37 /* TabsData.swift */; };
+		938823122C6534A500B4FE37 /* Favicon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 938823112C6534A500B4FE37 /* Favicon.swift */; };
+		938823142C65374500B4FE37 /* Thumbnail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 938823132C65374500B4FE37 /* Thumbnail.swift */; };
 		93C94CD92C4F2C2D00E3BB13 /* SearchEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93C94CD82C4F2C2D00E3BB13 /* SearchEngine.swift */; };
 		93C94CDB2C4F34BB00E3BB13 /* SuggestionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93C94CDA2C4F34BB00E3BB13 /* SuggestionsView.swift */; };
 		93C94CDD2C51900400E3BB13 /* SuggestionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93C94CDC2C51900400E3BB13 /* SuggestionsViewModel.swift */; };
@@ -67,6 +69,8 @@
 		938823022C612F1D00B4FE37 /* FaviconObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FaviconObserver.swift; sourceTree = "<group>"; };
 		938823042C612F9E00B4FE37 /* WebContentConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebContentConfiguration.swift; sourceTree = "<group>"; };
 		9388230F2C62FB0100B4FE37 /* TabsData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabsData.swift; sourceTree = "<group>"; };
+		938823112C6534A500B4FE37 /* Favicon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Favicon.swift; sourceTree = "<group>"; };
+		938823132C65374500B4FE37 /* Thumbnail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Thumbnail.swift; sourceTree = "<group>"; };
 		93C94CD82C4F2C2D00E3BB13 /* SearchEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchEngine.swift; sourceTree = "<group>"; };
 		93C94CDA2C4F34BB00E3BB13 /* SuggestionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsView.swift; sourceTree = "<group>"; };
 		93C94CDC2C51900400E3BB13 /* SuggestionsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsViewModel.swift; sourceTree = "<group>"; };
@@ -186,7 +190,9 @@
 		93D481002C2B08690019921F /* WebContent */ = {
 			isa = PBXGroup;
 			children = (
+				938823112C6534A500B4FE37 /* Favicon.swift */,
 				938823022C612F1D00B4FE37 /* FaviconObserver.swift */,
+				938823132C65374500B4FE37 /* Thumbnail.swift */,
 				93254B0A2C5332C000B66206 /* WebContent.swift */,
 				938823042C612F9E00B4FE37 /* WebContentConfiguration.swift */,
 				93D481032C2B08CB0019921F /* WebContentView.swift */,
@@ -333,6 +339,7 @@
 				938822DD2C54484B00B4FE37 /* MainMenuConfig.swift in Sources */,
 				93254B0B2C5332C000B66206 /* WebContent.swift in Sources */,
 				93D481042C2B08CB0019921F /* WebContentView.swift in Sources */,
+				938823142C65374500B4FE37 /* Thumbnail.swift in Sources */,
 				938822EE2C570A3A00B4FE37 /* CardGridCellView.swift in Sources */,
 				938822FB2C5D8E1A00B4FE37 /* CardViewModel.swift in Sources */,
 				93C94CDD2C51900400E3BB13 /* SuggestionsViewModel.swift in Sources */,
@@ -345,6 +352,7 @@
 				938822F02C5C3E2400B4FE37 /* CenterButtonViewModel.swift in Sources */,
 				93D480E22C25D9600019921F /* MainViewController.swift in Sources */,
 				938823102C62FB0100B4FE37 /* TabsData.swift in Sources */,
+				938823122C6534A500B4FE37 /* Favicon.swift in Sources */,
 				93D480FD2C2704DF0019921F /* CenterButtonView.swift in Sources */,
 				93D481192C31A24D0019921F /* UIColor+Extensions.swift in Sources */,
 				93D480FF2C271E090019921F /* BottomBarViewModel.swift in Sources */,
