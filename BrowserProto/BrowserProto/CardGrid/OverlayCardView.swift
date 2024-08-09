@@ -3,18 +3,14 @@ import UIKit
 
 final class OverlayCardView: UIView {
     private let model: OverlayCardViewModel
-    private let zoomedView: UIView
     private var cardView: CardView?
     private var cardViewModel: CardViewModel?
     private var cardViewRect: CGRect?
     private var subscriptions: Set<AnyCancellable> = []
 
-    init(model: OverlayCardViewModel, zoomedView: UIView) {
+    init(model: OverlayCardViewModel) {
         self.model = model
-        self.zoomedView = zoomedView
         super.init(frame: .zero)
-
-        addSubview(zoomedView)
 
         setupObservers()
     }
@@ -24,14 +20,11 @@ final class OverlayCardView: UIView {
     }
 
     override func layoutSubviews() {
-        zoomedView.frame = bounds
-
-        if let cardView {
-            if let cardViewRect {
-                cardView.frame = cardViewRect
-            } else {
-                cardView.frame = bounds
-            }
+        guard let cardView else { return }
+        if let cardViewRect {
+            cardView.frame = cardViewRect
+        } else {
+            cardView.frame = bounds
         }
     }
 
@@ -52,7 +45,6 @@ final class OverlayCardView: UIView {
     private func transitionToGrid(card: Card?, cardAt cardRect: CGRect?) {
         let cardViewModel = createCardViewIfNeeded(card: card)
 
-        zoomedView.isHidden = true
         cardViewModel.selected = false
         cardViewModel.hideDecorations = true
 
@@ -75,7 +67,6 @@ final class OverlayCardView: UIView {
     private func transitionToZoomed(card: Card?, cardAt cardRect: CGRect?) {
         let cardViewModel = createCardViewIfNeeded(card: card)
 
-        zoomedView.isHidden = true
         cardViewModel.selected = true
         cardViewModel.hideDecorations = false
 
@@ -95,8 +86,6 @@ final class OverlayCardView: UIView {
             guard case .transitionToZoomed = model.state else { return }
             isUserInteractionEnabled = true
             model.state = .hidden
-            zoomedView.isHidden = false
-            bringSubviewToFront(zoomedView)
         }
     }
 

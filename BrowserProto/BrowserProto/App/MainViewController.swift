@@ -76,7 +76,9 @@ class MainViewController: UIViewController {
                 print(">>> mainMenu: \(mainMenuAction)")
                 switch mainMenuAction {
                 case .toggleIncognito(let incognitoEnabled):
-                    webContentView.updateThumbnail()
+                    if !webContentView.isHidden {
+                        webContentView.updateThumbnail()
+                    }
                     model.setIncognito(incognito: incognitoEnabled)
                 }
             }

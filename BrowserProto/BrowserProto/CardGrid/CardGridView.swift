@@ -8,6 +8,7 @@ final class CardGridView: UIView {
     }
 
     private let model: CardGridViewModel
+    private let zoomedView: UIView
     private let handler: (Action) -> Void
     private let overlayCardView: OverlayCardView
     private var subscriptions: Set<AnyCancellable> = []
@@ -27,17 +28,20 @@ final class CardGridView: UIView {
 
     init(model: CardGridViewModel, zoomedView: UIView, handler: @escaping (Action) -> Void) {
         self.model = model
+        self.zoomedView = zoomedView
         self.handler = handler
-        self.overlayCardView = .init(model: model.overlayCardViewModel, zoomedView: zoomedView)
+        self.overlayCardView = .init(model: model.overlayCardViewModel)
         super.init(frame: .zero)
 
         addSubview(collectionView)
+        addSubview(zoomedView)
         addSubview(overlayCardView)
 
         collectionView.activateContainmentConstraints(inside: self)
+        zoomedView.activateContainmentConstraints(inside: self)
         overlayCardView.activateContainmentConstraints(inside: self)
 
-        self.bringSubviewToFront(overlayCardView)
+        self.bringSubviewToFront(zoomedView)
 
         setupObservers()
     }
@@ -50,6 +54,7 @@ final class CardGridView: UIView {
         model.$showGrid.dropFirst().sink { [weak self] showGrid in
             guard let self else { return }
             guard let selectedID = model.selectedID else {
+                model.overlayCardViewModel.state = .hidden
                 return
             }
 
@@ -63,6 +68,7 @@ final class CardGridView: UIView {
             let attributes = collectionView.layoutAttributesForItem(at: .init(item: index, section: 0))
             let rect = attributes?.frame
 
+            zoomedView.isHidden = true
             if showGrid {
                 model.overlayCardViewModel.state = .transitionToGrid(card: card, cardAt: rect)
             } else {
@@ -89,6 +95,16 @@ final class CardGridView: UIView {
                 (cell as! CardGridCellView).card = card
             default:
                 collectionView.reloadData()
+            }
+        }.store(in: &subscriptions)
+
+        model.overlayCardViewModel.$state.sink { [weak self] state in
+            guard let self else { return }
+            if case .hidden = state {
+                zoomedView.isHidden = model.showGrid
+                if !model.showGrid {
+                    bringSubviewToFront(zoomedView)
+                }
             }
         }.store(in: &subscriptions)
     }
