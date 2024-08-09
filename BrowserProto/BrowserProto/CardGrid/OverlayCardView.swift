@@ -12,6 +12,8 @@ final class OverlayCardView: UIView {
         self.model = model
         super.init(frame: .zero)
 
+        isUserInteractionEnabled = false
+
         setupObservers()
     }
 
@@ -59,7 +61,6 @@ final class OverlayCardView: UIView {
             layoutIfNeeded()
         } completion: { [self] _ in
             guard case .transitionToGrid = model.state else { return }
-            isUserInteractionEnabled = false
             model.state = .hidden
         }
     }
@@ -84,7 +85,6 @@ final class OverlayCardView: UIView {
             layoutIfNeeded()
         } completion: { [self] _ in
             guard case .transitionToZoomed = model.state else { return }
-            isUserInteractionEnabled = true
             model.state = .hidden
         }
     }

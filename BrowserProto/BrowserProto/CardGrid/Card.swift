@@ -8,3 +8,9 @@ struct Card: Identifiable {
     var favicon: UIImage?
     var thumbnail: UIImage?
 }
+
+extension Card: Equatable {
+    static func == (a: Card, b: Card) -> Bool {
+        a.id == b.id
+    }
+}

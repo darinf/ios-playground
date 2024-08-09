@@ -121,7 +121,6 @@ final class BottomBarView: UIVisualEffectView {
     }
 
     private func rebuildMainMenu(with config: MainMenuConfig) {
-        print(">>> rebuildMainMenu")
         menuButton.menu = MainMenu.build(with: config) { [weak self] action in
             guard let self else { return }
             switch action {

@@ -65,8 +65,7 @@ class MainViewController: UIViewController {
             case .goForward:
                 model.webContentViewModel.goForward()
             case .showTabs:
-                // Refresh thumbnail before showing grid.
-                if !model.cardGridViewModel.showGrid {
+                if !webContentView.isHidden {
                     webContentView.updateThumbnail()
                 }
                 model.cardGridViewModel.showGrid.toggle()

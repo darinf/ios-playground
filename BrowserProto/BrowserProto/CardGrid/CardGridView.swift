@@ -51,10 +51,11 @@ final class CardGridView: UIView {
     }
 
     private func setupObservers() {
-        model.$showGrid.dropFirst().sink { [weak self] showGrid in
+        model.$showGrid.dropFirst().removeDuplicates().sink { [weak self] showGrid in
             guard let self else { return }
             guard let selectedID = model.selectedID else {
                 model.overlayCardViewModel.state = .hidden
+                zoomedView.isHidden = true
                 return
             }
 
@@ -98,7 +99,7 @@ final class CardGridView: UIView {
             }
         }.store(in: &subscriptions)
 
-        model.overlayCardViewModel.$state.sink { [weak self] state in
+        model.overlayCardViewModel.$state.removeDuplicates().sink { [weak self] state in
             guard let self else { return }
             if case .hidden = state {
                 zoomedView.isHidden = model.showGrid
