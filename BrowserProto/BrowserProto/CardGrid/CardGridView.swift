@@ -48,7 +48,11 @@ final class CardGridView: UIView {
 
     private func setupObservers() {
         model.$showGrid.dropFirst().sink { [weak self] showGrid in
-            guard let self, let selectedID = model.selectedID else { return }
+            guard let self else { return }
+            guard let selectedID = model.selectedID else {
+                return
+            }
+
             let card = model.cards[id: selectedID]
 
             // TODO: handle case of a cell that is not visible

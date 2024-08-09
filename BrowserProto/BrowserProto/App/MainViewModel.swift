@@ -25,7 +25,9 @@ extension MainViewModel {
         let selectedID = tabsModel.data.sections[id: currentTabsSection]!.selectedTab
         cardGridViewModel.replaceAllCards(cards, selectedID: selectedID)
 
-        urlInputViewModel.visibility = .showing(initialValue: "", forTarget: .newTab)
+//        cardGridViewModel.showGrid = true
+
+//        urlInputViewModel.visibility = .showing(initialValue: "", forTarget: .newTab)
     }
 }
 
