@@ -67,7 +67,7 @@ final class CardGridView: UIView {
 //            collectionView.scrollToItem(at: .init(item: index, section: 0), at: .top, animated: <#T##Bool#>)
 
             let attributes = collectionView.layoutAttributesForItem(at: .init(item: index, section: 0))
-            let rect = attributes?.frame
+            let rect = attributes?.frame.offsetBy(dx: -collectionView.contentOffset.x, dy: -collectionView.contentOffset.y)
 
             zoomedView.isHidden = true
             if showGrid {
