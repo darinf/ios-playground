@@ -26,6 +26,10 @@ final class CardGridView: UIView {
         return collectionView
     }()
 
+    private var selectedItemIndex: Int? {
+        model.selectedID.map { model.indexByID($0) }
+    }
+
     init(model: CardGridViewModel, zoomedView: UIView, handler: @escaping (Action) -> Void) {
         self.model = model
         self.zoomedView = zoomedView
@@ -101,11 +105,19 @@ final class CardGridView: UIView {
 
         model.overlayCardViewModel.$state.removeDuplicates().sink { [weak self] state in
             guard let self else { return }
-            if case .hidden = state {
+            let hideSelectedCell: Bool
+            switch state {
+            case .hidden:
                 zoomedView.isHidden = model.showGrid
                 if !model.showGrid {
                     bringSubviewToFront(zoomedView)
                 }
+                hideSelectedCell = false
+            case .transitionToGrid, .transitionToZoomed:
+                hideSelectedCell = true
+            }
+            if let selectedItemIndex {
+                collectionView.cellForItem(at: .init(item: selectedItemIndex, section: 0))?.isHidden = hideSelectedCell
             }
         }.store(in: &subscriptions)
     }
