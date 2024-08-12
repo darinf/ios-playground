@@ -57,7 +57,19 @@ extension TabsModel {
     }
 
     func removeAllTabs(inSection section: TabsSection) {
+        var sectionData = data.sections[id: section]!
+
+        var notifyNilSelectedTab = false
+        if sectionData.selectedTab != nil {
+            sectionData.selectedTab = nil
+            notifyNilSelectedTab = true // Defer until model is actually updated.
+        }
+
         data.sections[id: section]!.tabs = []
+
+        if notifyNilSelectedTab {
+            tabsChanges.send((section, .selected(nil)))
+        }
         tabsChanges.send((section, .removedAll))
     }
 
