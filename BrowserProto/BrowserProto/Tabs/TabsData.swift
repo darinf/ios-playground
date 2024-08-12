@@ -16,7 +16,7 @@ enum TabsSection: Hashable {
 
 struct TabsSectionData: Identifiable {
     typealias ID = TabsSection
-    
+
     let id: TabsSection
     var selectedTab: TabData.ID?
     var tabs: IdentifiedArrayOf<TabData> = []
