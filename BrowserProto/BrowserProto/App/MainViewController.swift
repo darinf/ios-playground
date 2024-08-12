@@ -219,6 +219,7 @@ class MainViewController: UIViewController {
             case .switched:
                 break
             case let .poppedBack(from: closedWebContent):
+                model.tabsModel.selectTab(byID: currentWebContent?.id, inSection: model.currentTabsSection)
                 model.tabsModel.removeTab(byID: closedWebContent.id, inSection: model.currentTabsSection)
                 // TODO: If currentWebContent is nil, then we need to select a different card.
             }
