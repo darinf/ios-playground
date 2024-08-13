@@ -1,20 +1,20 @@
 import Foundation
 import IdentifiedCollections
 
-struct TabsData {
+struct TabsData: Codable {
     var sections: IdentifiedArrayOf<TabsSectionData> = [
         .init(id: .default),
         .init(id: .incognito)
     ]
 }
 
-enum TabsSection: Hashable {
+enum TabsSection: Hashable, Codable {
     case `default`
     case incognito
     case custom(UUID)
 }
 
-struct TabsSectionData: Identifiable {
+struct TabsSectionData: Identifiable, Codable {
     typealias ID = TabsSection
 
     let id: TabsSection
@@ -22,7 +22,7 @@ struct TabsSectionData: Identifiable {
     var tabs: IdentifiedArrayOf<TabData> = []
 }
 
-struct TabData: Identifiable {
+struct TabData: Identifiable, Codable {
     typealias ID = WebContent.ID
 
     enum MutableField {

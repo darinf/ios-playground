@@ -109,6 +109,10 @@ class MainViewController: UIViewController {
 
         view.bringSubviewToFront(topBarView)
         view.bringSubviewToFront(bottomBarView)
+
+        model.tabsStorage.loadTabsData { tabsData in
+            print(">>> finished loading tabs data")
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
