@@ -179,52 +179,14 @@ class MainViewController: UIViewController {
 
         model.tabsModel.tabsChanges.sink { [weak self] (section, change) in
             guard let self else { return }
-            guard model.currentTabsSection == section else { return }
-            switch change {
-            case let .selected(tabID):
-                model.cardGridViewModel.selectedID = tabID
-            case let .appended(tab):
-                model.cardGridViewModel.appendCard(.init(from: tab))
-            case let .inserted(tab, atIndex: index):
-                model.cardGridViewModel.insertCard(.init(from: tab), atIndex: index)
-            case let .removed(atIndex: index):
-                model.cardGridViewModel.removeCard(atIndex: index)
-            case .removedAll:
-                model.cardGridViewModel.removeAllCards()
-            case let .updated(field, atIndex: index):
-                switch field {
-                case .url:
-                    break
-                case let .title(title):
-                    model.cardGridViewModel.updateTitle(title, forCardAtIndex: index)
-                case let .favicon(favicon):
-                    model.cardGridViewModel.updateFavicon(favicon?.image, forCardAtIndex: index)
-                case let .thumbnail(thumbnail):
-                    model.cardGridViewModel.updateThumbnail(thumbnail?.image, forCardAtIndex: index)
-                }
-            }
+            model.tabsStorage.persistTabsChange(change, in: section, for: model.tabsModel.data)
+            model.updateCardGrid(for: change, in: section)
         }.store(in: &subscriptions)
 
         model.webContentViewModel.webContentChanges.sink { [weak self] change in
             guard let self else { return }
-            let currentWebContent = model.webContentViewModel.webContent
-            switch change {
-            case .opened:
-                let newTab = TabData(from: currentWebContent!)
-                if let opener = currentWebContent!.opener {
-                    model.tabsModel.insertTab(newTab, inSection: model.currentTabsSection, after: opener.id)
-                } else {
-                    model.tabsModel.appendTab(newTab, inSection: model.currentTabsSection)
-                }
-            case .switched:
-                break
-            case let .poppedBack(from: closedWebContent):
-                model.tabsModel.selectTab(byID: currentWebContent?.id, inSection: model.currentTabsSection)
-                model.tabsModel.removeTab(byID: closedWebContent.id, inSection: model.currentTabsSection)
-                // TODO: If currentWebContent is nil, then we need to select a different card.
-            }
-            model.tabsModel.selectTab(byID: currentWebContent?.id, inSection: model.currentTabsSection)
-            setupWebContentObservers(for: currentWebContent)
+            model.updateTabs(for: change)
+            setupWebContentObservers(for: model.webContentViewModel.webContent)
         }.store(in: &subscriptions)
 
         model.cardGridViewModel.$selectedID.dropFirst().removeDuplicates().sink { [weak self] selectedID in

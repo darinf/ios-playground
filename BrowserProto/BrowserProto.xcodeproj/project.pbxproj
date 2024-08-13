@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		93254B0B2C5332C000B66206 /* WebContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93254B0A2C5332C000B66206 /* WebContent.swift */; };
 		93254B0D2C53438B00B66206 /* MainMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93254B0C2C53438B00B66206 /* MainMenu.swift */; };
+		937C688C2C6BAFC00061C28C /* TabsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 937C688B2C6BAFC00061C28C /* TabsStorage.swift */; };
 		938822DD2C54484B00B4FE37 /* MainMenuConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 938822DC2C54484B00B4FE37 /* MainMenuConfig.swift */; };
 		938822E02C55633A00B4FE37 /* CardGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 938822DF2C55633A00B4FE37 /* CardGridView.swift */; };
 		938822E22C55634200B4FE37 /* CardGridViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 938822E12C55634200B4FE37 /* CardGridViewModel.swift */; };
@@ -54,6 +55,7 @@
 /* Begin PBXFileReference section */
 		93254B0A2C5332C000B66206 /* WebContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebContent.swift; sourceTree = "<group>"; };
 		93254B0C2C53438B00B66206 /* MainMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenu.swift; sourceTree = "<group>"; };
+		937C688B2C6BAFC00061C28C /* TabsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabsStorage.swift; sourceTree = "<group>"; };
 		938822DC2C54484B00B4FE37 /* MainMenuConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuConfig.swift; sourceTree = "<group>"; };
 		938822DF2C55633A00B4FE37 /* CardGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardGridView.swift; sourceTree = "<group>"; };
 		938822E12C55634200B4FE37 /* CardGridViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardGridViewModel.swift; sourceTree = "<group>"; };
@@ -129,6 +131,7 @@
 			children = (
 				9388230F2C62FB0100B4FE37 /* TabsData.swift */,
 				938822F22C5C78E500B4FE37 /* TabsModel.swift */,
+				937C688B2C6BAFC00061C28C /* TabsStorage.swift */,
 			);
 			path = Tabs;
 			sourceTree = "<group>";
@@ -350,6 +353,7 @@
 				938822E02C55633A00B4FE37 /* CardGridView.swift in Sources */,
 				938822E22C55634200B4FE37 /* CardGridViewModel.swift in Sources */,
 				938822F02C5C3E2400B4FE37 /* CenterButtonViewModel.swift in Sources */,
+				937C688C2C6BAFC00061C28C /* TabsStorage.swift in Sources */,
 				93D480E22C25D9600019921F /* MainViewController.swift in Sources */,
 				938823102C62FB0100B4FE37 /* TabsData.swift in Sources */,
 				938823122C6534A500B4FE37 /* Favicon.swift in Sources */,

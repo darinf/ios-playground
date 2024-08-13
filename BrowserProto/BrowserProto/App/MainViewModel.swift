@@ -8,6 +8,7 @@ final class MainViewModel {
     let webContentViewModel = WebContentViewModel()
     let cardGridViewModel = CardGridViewModel()
     let tabsModel = TabsModel()
+    let tabsStorage = TabsStorage()
 }
 
 extension MainViewModel {
@@ -24,6 +25,53 @@ extension MainViewModel {
         }
         let selectedID = tabsModel.data.sections[id: currentTabsSection]!.selectedTab
         cardGridViewModel.replaceAllCards(cards, selectedID: selectedID)
+    }
+
+    func updateCardGrid(for change: TabsModel.TabsChange, in section: TabsSection) {
+        guard currentTabsSection == section else { return }
+        switch change {
+        case let .selected(tabID):
+            cardGridViewModel.selectedID = tabID
+        case let .appended(tab):
+            cardGridViewModel.appendCard(.init(from: tab))
+        case let .inserted(tab, atIndex: index):
+            cardGridViewModel.insertCard(.init(from: tab), atIndex: index)
+        case let .removed(atIndex: index):
+            cardGridViewModel.removeCard(atIndex: index)
+        case .removedAll:
+            cardGridViewModel.removeAllCards()
+        case let .updated(field, atIndex: index):
+            switch field {
+            case .url:
+                break
+            case let .title(title):
+                cardGridViewModel.updateTitle(title, forCardAtIndex: index)
+            case let .favicon(favicon):
+                cardGridViewModel.updateFavicon(favicon?.image, forCardAtIndex: index)
+            case let .thumbnail(thumbnail):
+                cardGridViewModel.updateThumbnail(thumbnail?.image, forCardAtIndex: index)
+            }
+        }
+    }
+
+    func updateTabs(for change: WebContentViewModel.WebContentChange) {
+        let currentWebContent = webContentViewModel.webContent
+        switch change {
+        case .opened:
+            let newTab = TabData(from: currentWebContent!)
+            if let opener = currentWebContent!.opener {
+                tabsModel.insertTab(newTab, inSection: currentTabsSection, after: opener.id)
+            } else {
+                tabsModel.appendTab(newTab, inSection: currentTabsSection)
+            }
+        case .switched:
+            break
+        case let .poppedBack(from: closedWebContent):
+            tabsModel.selectTab(byID: currentWebContent?.id, inSection: currentTabsSection)
+            tabsModel.removeTab(byID: closedWebContent.id, inSection: currentTabsSection)
+            // TODO: If currentWebContent is nil, then we need to select a different card.
+        }
+        tabsModel.selectTab(byID: currentWebContent?.id, inSection: currentTabsSection)
     }
 }
 
