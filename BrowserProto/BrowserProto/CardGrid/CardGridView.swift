@@ -93,7 +93,6 @@ final class CardGridView: UIView {
 
         model.cardsChanges.sink { [weak self] change in
             guard let self else { return }
-            print(">>> cards change: \(change)")
             switch change {
             case let .updated(card, atIndex: index):
                 guard let cell = collectionView.cellForItem(at: .init(item: index, section: 0)) else { return }

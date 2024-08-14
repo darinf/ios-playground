@@ -75,10 +75,8 @@ final class TabsStorage {
     }
 
     private func processPendingUpdates(updates: [Update]) {
-        print(">>> processPendingUpdates")
-
+        // TODO: Optimize thumbnail and favicon updates.
         guard let mostRecentUpdate = updates.last else { return }
-
         guard let data = encode(data: mostRecentUpdate.data) else { return }
         do {
             try data.write(to: tabsFileURL, options: [.atomic])
@@ -145,8 +143,6 @@ extension Favicon: Codable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         url = try container.decode(URL.self, forKey: .url)
-        print(">>> decoding favicon w/ url: \(url)")
-
         image = faviconStore.imageFromCache(forKey: url.absoluteString)
     }
 }
@@ -171,8 +167,6 @@ extension Thumbnail: Codable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         id = try container.decode(UUID.self, forKey: .id)
-        print(">>> decoding thumbnail w/ id: \(id)")
-
         image = thumbnailStore.imageFromCache(forKey: id.uuidString)
     }
 }
