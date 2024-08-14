@@ -1,6 +1,10 @@
 import Foundation
+import SDWebImage
 
 final class TabsStorage {
+    static let faviconStoreUserInfoKey = CodingUserInfoKey(rawValue: "FaviconStoreUserInfoKey")!
+    static let thumbnailStoreUserInfoKey = CodingUserInfoKey(rawValue: "ThumbnailStoreUserInfoKey")!
+
     private enum Metrics {
         static let delay: TimeInterval = 0.5
     }
@@ -16,11 +20,16 @@ final class TabsStorage {
     private var pendingUpdates: [Update] = []
     private let pendingUpdatesLock = NSRecursiveLock()
 
+    private let faviconStore: SDImageCache
+    private let thumbnailStore: SDImageCache
+
     private var tabsFileURL: URL {
-        .documentsDirectory.appending(path: "tabs.json")
+        .documentsDirectory.appending(path: "Tabs.json")
     }
 
     init() {
+        faviconStore = .init(namespace: "FaviconStore", diskCacheDirectory: URL.documentsDirectory.path(), config: .default)
+        thumbnailStore = .init(namespace: "ThumbnailStore", diskCacheDirectory: URL.documentsDirectory.path(), config: .default)
     }
 
     func loadTabsData(completion: @escaping (TabsData?) -> Void) {
@@ -89,6 +98,10 @@ final class TabsStorage {
 
     private func encode(data: TabsData) -> Data? {
         let jsonEncoder = JSONEncoder()
+        jsonEncoder.userInfo = [
+            Self.faviconStoreUserInfoKey: faviconStore,
+            Self.thumbnailStoreUserInfoKey: thumbnailStore
+        ]
         do {
             return try jsonEncoder.encode(data)
         } catch {
@@ -99,6 +112,10 @@ final class TabsStorage {
 
     private func decode(data: Data) -> TabsData? {
         let jsonDecoder = JSONDecoder()
+        jsonDecoder.userInfo = [
+            Self.faviconStoreUserInfoKey: faviconStore,
+            Self.thumbnailStoreUserInfoKey: thumbnailStore
+        ]
         do {
             return try jsonDecoder.decode(TabsData.self, from: data)
         } catch {
@@ -111,21 +128,55 @@ final class TabsStorage {
 extension Favicon: Codable {
     struct DecodingError: Error {}
 
-    func encode(to encoder: any Encoder) throws {
+    enum CodingKeys: String, CodingKey {
+        case url
     }
-    
+
+    func encode(to encoder: any Encoder) throws {
+        let faviconStore = encoder.userInfo[TabsStorage.faviconStoreUserInfoKey] as! SDImageCache
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(url, forKey: .url)
+        faviconStore.store(image, forKey: url.absoluteString, toDisk: true)
+    }
+
     init(from decoder: any Decoder) throws {
-        throw DecodingError()
+        let faviconStore = decoder.userInfo[TabsStorage.faviconStoreUserInfoKey] as! SDImageCache
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        url = try container.decode(URL.self, forKey: .url)
+        print(">>> decoding favicon w/ url: \(url)")
+
+        image = faviconStore.imageFromCache(forKey: url.absoluteString) ?? .create1x1(with: .systemBlue)
+
+        // TODO: handle missing image in a better way
     }
 }
 
 extension Thumbnail: Codable {
     struct DecodingError: Error {}
 
+    enum CodingKeys: String, CodingKey {
+        case id
+    }
+
     func encode(to encoder: any Encoder) throws {
+        let thumbnailStore = encoder.userInfo[TabsStorage.thumbnailStoreUserInfoKey] as! SDImageCache
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(id, forKey: .id)
+        thumbnailStore.store(image, forKey: id.uuidString, toDisk: true)
     }
     
     init(from decoder: any Decoder) throws {
-        throw DecodingError()
+        let thumbnailStore = decoder.userInfo[TabsStorage.thumbnailStoreUserInfoKey] as! SDImageCache
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        id = try container.decode(UUID.self, forKey: .id)
+        print(">>> decoding thumbnail w/ id: \(id)")
+
+        image = thumbnailStore.imageFromCache(forKey: id.uuidString) ?? .create1x1(with: .systemPink)
+
+        // TODO: handle missing image in a better way
     }
 }

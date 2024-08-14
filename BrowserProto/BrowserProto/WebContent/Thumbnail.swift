@@ -2,6 +2,13 @@ import Foundation
 import UIKit
 
 struct Thumbnail {
-    let id: UUID = .init()
+    typealias ID = UUID
+
+    let id: ID
     let image: UIImage
+
+    init(id: ID, image: UIImage) {
+        self.id = id
+        self.image = image
+    }
 }

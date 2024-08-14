@@ -56,4 +56,19 @@ extension UIImage {
 
         return newImage
     }
+
+    static func create1x1(with color: UIColor) -> UIImage {
+        let size = CGSize(width: 1, height: 1)
+
+        UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
+        let context = UIGraphicsGetCurrentContext()
+
+        context?.setFillColor(color.cgColor)
+        context?.fill(CGRect(origin: .zero, size: size))
+
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+
+        return image!
+    }
 }

@@ -117,7 +117,8 @@ final class WebContentView: UIView {
     }
 
     func updateThumbnail() {
-        model.webContent?.thumbnail = captureAsImage().map { .init(image: $0) }
+        guard let webContent = model.webContent else { return }
+        webContent.thumbnail = captureAsImage().map { .init(id: webContent.id, image: $0) }
     }
 
     private func setupObservers() {

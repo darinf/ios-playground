@@ -11,17 +11,18 @@ final class TabsModel {
         case removed(atIndex: Int)
         case removedAll
         case updated(TabData.MutableField, atIndex: Int)
+        case updatedAll(TabsSectionData)
     }
 
     private(set) var data: TabsData = .init()
     let tabsChanges = PassthroughSubject<(TabsSection, TabsChange), Never>()
 
-    private(set) var liveWebContent: [WebContent.ID: WebContent] = [:]
+//    private(set) var liveWebContent: [TabData.ID: WebContent] = [:]
 }
 
 extension TabsModel {
     func selectTab(byID tabID: TabData.ID?, inSection section: TabsSection) {
-        data.sections[id: section]!.selectedTab = tabID
+        data.sections[id: section]!.selectedTabID = tabID
         tabsChanges.send((section, .selected(tabID)))
     }
 
@@ -40,8 +41,8 @@ extension TabsModel {
         var sectionData = data.sections[id: section]!
 
         var notifyNilSelectedTab = false
-        if sectionData.selectedTab == tabID {
-            sectionData.selectedTab = nil
+        if sectionData.selectedTabID == tabID {
+            sectionData.selectedTabID = nil
             notifyNilSelectedTab = true // Defer until model is actually updated.
         }
 
@@ -60,8 +61,8 @@ extension TabsModel {
         var sectionData = data.sections[id: section]!
 
         var notifyNilSelectedTab = false
-        if sectionData.selectedTab != nil {
-            sectionData.selectedTab = nil
+        if sectionData.selectedTabID != nil {
+            sectionData.selectedTabID = nil
             notifyNilSelectedTab = true // Defer until model is actually updated.
         }
 
@@ -71,6 +72,13 @@ extension TabsModel {
             tabsChanges.send((section, .selected(nil)))
         }
         tabsChanges.send((section, .removedAll))
+    }
+
+    func replaceAllTabsData(_ data: TabsData) {
+        self.data = data
+        data.sections.forEach {
+            tabsChanges.send(($0.id, .updatedAll($0)))
+        }
     }
 
     func updateURL(_ url: URL?, forTabByID tabID: TabData.ID, inSection section: TabsSection) {
@@ -108,5 +116,19 @@ extension TabsModel {
     func indexByID(_ tabID: TabData.ID, inSection section: TabsSection) -> IdentifiedArrayOf<TabData>.Index {
         let section = data.sections[id: section]!
         return section.tabs.index(id: tabID)!
+    }
+
+    func webContent(for tabID: TabData.ID, inSection section: TabsSection) -> WebContent? {
+        if let webContent = WebContent.from(id: tabID) {
+            return webContent
+        }
+
+        // Restore the WebContent
+        let webContent = WebContent(forIncognito: section == .incognito, withID: tabID)
+        if let url = data.sections[id: section]!.tabs[id: tabID]?.url {
+            // TODO: should use `interactionState` here.
+            webContent.webView.load(.init(url: url))
+        }
+        return webContent
     }
 }

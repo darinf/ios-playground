@@ -109,10 +109,6 @@ class MainViewController: UIViewController {
 
         view.bringSubviewToFront(topBarView)
         view.bringSubviewToFront(bottomBarView)
-
-        model.tabsStorage.loadTabsData { tabsData in
-            print(">>> finished loading tabs data")
-        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -123,8 +119,14 @@ class MainViewController: UIViewController {
         super.viewDidAppear(animated)
         view.setNeedsUpdateConstraints()
 
-        model.webContentViewModel.openWebContent()
-        model.webContentViewModel.navigate(to: URL(string: "https://news.ycombinator.com/"))
+        model.tabsStorage.loadTabsData { [self] tabsData in
+            guard let tabsData else {
+                model.webContentViewModel.openWebContent()
+                model.webContentViewModel.navigate(to: URL(string: "https://news.ycombinator.com/"))
+                return
+            }
+            model.tabsModel.replaceAllTabsData(tabsData)
+        }
     }
 
     override func viewSafeAreaInsetsDidChange() {
@@ -195,7 +197,9 @@ class MainViewController: UIViewController {
 
         model.cardGridViewModel.$selectedID.dropFirst().removeDuplicates().sink { [weak self] selectedID in
             guard let self else { return }
-            model.webContentViewModel.replaceWebContent(with: .from(id: selectedID))
+            model.webContentViewModel.replaceWebContent(with: selectedID.flatMap { [model] in
+                model.tabsModel.webContent(for: $0, inSection: model.currentTabsSection)
+            })
             if selectedID == nil {
                 model.cardGridViewModel.showGrid = true
             }
@@ -218,8 +222,10 @@ class MainViewController: UIViewController {
         guard let webContent else { return }
 
         webContent.$url.sink { [weak self] url in
-            self?.model.bottomBarViewModel.centerButtonViewModel.text = url?.host() ?? ""
-            self?.resetBottomBarOffset()
+            guard let self else { return }
+            model.tabsModel.updateURL(url, forTabByID: webContent.id, inSection: model.currentTabsSection)
+            model.bottomBarViewModel.centerButtonViewModel.text = url?.host() ?? ""
+            resetBottomBarOffset()
         }.store(in: &webContentSubscriptions)
 
         webContent.$progress.sink { [weak self] progress in

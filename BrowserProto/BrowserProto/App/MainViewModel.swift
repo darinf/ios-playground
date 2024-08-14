@@ -23,7 +23,7 @@ extension MainViewModel {
         tabsModel.data.sections[id: currentTabsSection]!.tabs.forEach { tab in
             cards.append(.init(from: tab))
         }
-        let selectedID = tabsModel.data.sections[id: currentTabsSection]!.selectedTab
+        let selectedID = tabsModel.data.sections[id: currentTabsSection]!.selectedTabID
         cardGridViewModel.replaceAllCards(cards, selectedID: selectedID)
     }
 
@@ -51,6 +51,12 @@ extension MainViewModel {
             case let .thumbnail(thumbnail):
                 cardGridViewModel.updateThumbnail(thumbnail?.image, forCardAtIndex: index)
             }
+        case let .updatedAll(tabsSectionData):
+            cardGridViewModel.replaceAllCards(
+                .init(uniqueElements: tabsSectionData.tabs.map { Card(from: $0) }),
+                selectedID: tabsSectionData.selectedTabID
+            )
+            break
         }
     }
 

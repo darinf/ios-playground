@@ -18,7 +18,7 @@ struct TabsSectionData: Identifiable, Codable {
     typealias ID = TabsSection
 
     let id: TabsSection
-    var selectedTab: TabData.ID?
+    var selectedTabID: TabData.ID?
     var tabs: IdentifiedArrayOf<TabData> = []
 }
 
