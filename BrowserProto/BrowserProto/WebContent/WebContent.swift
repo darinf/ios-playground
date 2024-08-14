@@ -21,18 +21,36 @@ final class WebContent: Identifiable {
 
     private static var allWebContent = [ID: WebContent]()
 
-    init(webView: WKWebView, opener: WebContent? = nil, withID id: ID = .init()) {
+    init(
+        webView: WKWebView,
+        opener: WebContent? = nil,
+        withID id: ID = .init(),
+        withFavicon favicon: Favicon? = nil,
+        withThumbnail thumbnail: Thumbnail? = nil
+    ) {
         self.id = id
         self.webView = webView
         self.opener = opener
+        self.favicon = favicon
+        self.thumbnail = thumbnail
 
         Self.allWebContent[id] = self // TODO: Replace with TabsModel
 
         setupObservers()
     }
 
-    convenience init(forIncognito incognito: Bool, withID id: ID = .init()) {
-        self.init(webView: Self.createWebView(configuration: WebContentConfiguration.for(incognito: incognito)), withID: id)
+    convenience init(
+        forIncognito incognito: Bool,
+        withID id: ID = .init(),
+        withFavicon favicon: Favicon? = nil,
+        withThumbnail thumbnail: Thumbnail? = nil
+    ) {
+        self.init(
+            webView: Self.createWebView(configuration: WebContentConfiguration.for(incognito: incognito)),
+            withID: id,
+            withFavicon: favicon,
+            withThumbnail: thumbnail
+        )
     }
 
     // TODO: Replace with TabsModel

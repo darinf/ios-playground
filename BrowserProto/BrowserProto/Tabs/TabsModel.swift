@@ -22,6 +22,7 @@ final class TabsModel {
 
 extension TabsModel {
     func selectTab(byID tabID: TabData.ID?, inSection section: TabsSection) {
+        guard data.sections[id: section]!.selectedTabID != tabID else { return }
         data.sections[id: section]!.selectedTabID = tabID
         tabsChanges.send((section, .selected(tabID)))
     }
@@ -123,9 +124,16 @@ extension TabsModel {
             return webContent
         }
 
+        let tabData = data.sections[id: section]!.tabs[id: tabID]!
+
         // Restore the WebContent
-        let webContent = WebContent(forIncognito: section == .incognito, withID: tabID)
-        if let url = data.sections[id: section]!.tabs[id: tabID]?.url {
+        let webContent = WebContent(
+            forIncognito: section == .incognito,
+            withID: tabID,
+            withFavicon: tabData.favicon,
+            withThumbnail: tabData.thumbnail
+        )
+        if let url = tabData.url {
             // TODO: should use `interactionState` here.
             webContent.webView.load(.init(url: url))
         }

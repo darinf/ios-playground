@@ -159,6 +159,9 @@ extension Thumbnail: Codable {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
         try container.encode(id, forKey: .id)
+        if image == nil {
+            print(">>> storing nil image!")
+        }
         thumbnailStore.store(image, forKey: id.uuidString, toDisk: true)
     }
     
@@ -166,7 +169,11 @@ extension Thumbnail: Codable {
         let thumbnailStore = decoder.userInfo[TabsStorage.thumbnailStoreUserInfoKey] as! SDImageCache
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        id = try container.decode(UUID.self, forKey: .id)
+        id = try container.decode(ID.self, forKey: .id)
         image = thumbnailStore.imageFromCache(forKey: id.uuidString)
+
+        if image == nil {
+            print(">>> failed to load thumbnail for \(id)")
+        }
     }
 }
