@@ -147,9 +147,7 @@ extension Favicon: Codable {
         url = try container.decode(URL.self, forKey: .url)
         print(">>> decoding favicon w/ url: \(url)")
 
-        image = faviconStore.imageFromCache(forKey: url.absoluteString) ?? .create1x1(with: .systemBlue)
-
-        // TODO: handle missing image in a better way
+        image = faviconStore.imageFromCache(forKey: url.absoluteString)
     }
 }
 
@@ -175,8 +173,6 @@ extension Thumbnail: Codable {
         id = try container.decode(UUID.self, forKey: .id)
         print(">>> decoding thumbnail w/ id: \(id)")
 
-        image = thumbnailStore.imageFromCache(forKey: id.uuidString) ?? .create1x1(with: .systemPink)
-
-        // TODO: handle missing image in a better way
+        image = thumbnailStore.imageFromCache(forKey: id.uuidString)
     }
 }
