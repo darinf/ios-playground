@@ -22,6 +22,7 @@ final class CardGridView: UIView {
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.register(CardGridCellView.self, forCellWithReuseIdentifier: "cell")
+        collectionView.alwaysBounceVertical = true
 
         return collectionView
     }()
