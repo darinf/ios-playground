@@ -7,6 +7,7 @@ struct Card: Identifiable {
     var title: String?
     var favicon: UIImage?
     var thumbnail: UIImage?
+    var hidden: Bool = false
 }
 
 extension Card: Equatable {

@@ -13,7 +13,7 @@ final class CardGridCellView: UICollectionViewCell {
             cardView = nil
             cardViewModel = nil
 
-            guard let card else { return }
+            guard let card, !card.hidden else { return }
 
             let model = CardViewModel(selected: isSelected, thumbnail: card.thumbnail, title: card.title, favicon: card.favicon)
             let view = CardView(model: model) { [weak self] action in

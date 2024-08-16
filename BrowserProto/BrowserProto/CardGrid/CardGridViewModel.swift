@@ -98,6 +98,16 @@ extension CardGridViewModel {
         cardsChanges.send(.updated(cards[index], atIndex: index))
     }
 
+    func updateHidden(_ hidden: Bool, forCardByID cardID: Card.ID) {
+        let cardIndex = indexByID(cardID)
+        updateHidden(hidden, forCardAtIndex: cardIndex)
+    }
+
+    func updateHidden(_ hidden: Bool, forCardAtIndex index: Int) {
+        cards[index].hidden = hidden
+        cardsChanges.send(.updated(cards[index], atIndex: index))
+    }
+
     func indexByID(_ cardID: Card.ID) -> IdentifiedArrayOf<Card>.Index {
         guard let index = cards.index(id: cardID) else {
             fatalError("Unexpected Card ID")
