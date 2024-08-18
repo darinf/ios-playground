@@ -85,11 +85,11 @@ final class CardGridView: UIView {
         model.$selectedID.sink { [weak self] selectedID in
             guard let self else { return }
             guard let selectedID else {
-                collectionView.selectItem(at: nil, animated: false, scrollPosition: .top)
+                collectionView.selectItem(at: nil, animated: false, scrollPosition: [])
                 return
             }
             let index = model.indexByID(selectedID)
-            collectionView.selectItem(at: .init(item: index, section: 0), animated: false, scrollPosition: .top)
+            collectionView.selectItem(at: .init(item: index, section: 0), animated: false, scrollPosition: [])
         }.store(in: &subscriptions)
 
         model.cardsChanges.sink { [weak self] change in
