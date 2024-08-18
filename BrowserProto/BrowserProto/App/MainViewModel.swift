@@ -25,6 +25,9 @@ extension MainViewModel {
         }
         let selectedID = tabsModel.data.sections[id: currentTabsSection]!.selectedTabID
         cardGridViewModel.replaceAllCards(cards, selectedID: selectedID)
+        if cards.isEmpty {
+            cardGridViewModel.showGrid = true
+        }
     }
 
     func updateCardGrid(for change: TabsModel.TabsChange, in section: TabsSection) {

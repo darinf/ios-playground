@@ -200,9 +200,6 @@ class MainViewController: UIViewController {
             model.webContentViewModel.replaceWebContent(with: selectedID.flatMap { [model] in
                 model.tabsModel.webContent(for: $0, inSection: model.currentTabsSection)
             })
-            if selectedID == nil {
-                model.cardGridViewModel.showGrid = true
-            }
         }.store(in: &subscriptions)
 
         model.cardGridViewModel.$showGrid.dropFirst().removeDuplicates().sink { [weak self] showGrid in
