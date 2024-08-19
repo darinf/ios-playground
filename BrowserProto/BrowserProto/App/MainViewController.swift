@@ -200,15 +200,11 @@ class MainViewController: UIViewController {
             model.webContentViewModel.replaceWebContent(with: selectedID.flatMap { [model] in
                 model.tabsModel.webContent(for: $0, inSection: model.currentTabsSection)
             })
+            model.bottomBarViewModel.tabsButtonEnabled = selectedID != nil
         }.store(in: &subscriptions)
 
         model.cardGridViewModel.$showGrid.dropFirst().removeDuplicates().sink { [weak self] showGrid in
             self?.model.bottomBarViewModel.centerButtonViewModel.mode = showGrid ? .showAsPlus : .showAsText
-        }.store(in: &subscriptions)
-
-        model.cardGridViewModel.cardsChanges.sink { [weak self] _ in
-            guard let self else { return }
-            model.bottomBarViewModel.tabsButtonEnabled = !model.cardGridViewModel.cards.isEmpty
         }.store(in: &subscriptions)
     }
 
