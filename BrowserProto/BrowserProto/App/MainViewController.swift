@@ -158,7 +158,7 @@ class MainViewController: UIViewController {
 
         cardGridView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            cardGridView.topAnchor.constraint(equalTo: topBarView.bottomAnchor),
+            cardGridView.topAnchor.constraint(equalTo: view.topAnchor),
             cardGridView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             cardGridView.widthAnchor.constraint(equalTo: view.widthAnchor)
         ])
@@ -243,10 +243,9 @@ class MainViewController: UIViewController {
 
     private func updateLayout(animated: Bool) {
         let safeAreaInsets = view.safeAreaInsets
+        let newHeight = safeAreaInsets.bottom + bottomBarMaxOffset
 
-        let contentBoxHeight: CGFloat = BottomBarView.Metrics.contentBoxHeight
-
-        let newHeight = safeAreaInsets.bottom + contentBoxHeight + BottomBarView.Metrics.margin
+        model.cardGridViewModel.additionalContentInsets = .init(top: 0, left: 0, bottom: bottomBarMaxOffset, right: 0)
 
         let applyNewHeight = { [self] in
             topBarViewHeightConstraint.constant = safeAreaInsets.top

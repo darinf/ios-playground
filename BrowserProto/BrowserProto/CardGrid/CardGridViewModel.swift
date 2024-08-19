@@ -15,6 +15,7 @@ final class CardGridViewModel {
 
     @Published var showGrid = false
     @Published var selectedID: Card.ID?
+    @Published var additionalContentInsets: UIEdgeInsets = .zero
 
     private(set) var cards: IdentifiedArrayOf<Card> = []
     let cardsChanges = PassthroughSubject<CardsChange, Never>()

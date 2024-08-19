@@ -26,7 +26,12 @@ final class OverlayCardView: UIView {
         if let cardViewRect {
             cardView.frame = cardViewRect
         } else {
-            cardView.frame = bounds
+            cardView.frame = bounds.inset(by: .init(
+                top: safeAreaInsets.top,
+                left: safeAreaInsets.left,
+                bottom: 0,
+                right: safeAreaInsets.right
+            ))
         }
     }
 

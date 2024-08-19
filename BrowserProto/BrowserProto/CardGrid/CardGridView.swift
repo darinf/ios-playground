@@ -2,6 +2,13 @@ import Combine
 import UIKit
 
 final class CardGridView: UIView {
+    enum Metrics {
+        static let bottomInset: CGFloat = 80
+        static let minimumLineSpacing: CGFloat = 16 + CardView.Metrics.bottomMargin
+        static let minimumInteritemSpacing: CGFloat = 10
+        static let itemHeight: CGFloat = 200
+    }
+
     enum Action {
         case selectCard(byID: Card.ID)
         case removeCard(byID: Card.ID)
@@ -15,8 +22,8 @@ final class CardGridView: UIView {
 
     private lazy var collectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.minimumLineSpacing = 16 + CardView.Metrics.bottomMargin
-        layout.minimumInteritemSpacing = 10
+        layout.minimumLineSpacing = Metrics.minimumLineSpacing
+        layout.minimumInteritemSpacing = Metrics.minimumInteritemSpacing
 
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.dataSource = self
@@ -119,6 +126,14 @@ final class CardGridView: UIView {
                 model.updateHidden(hideSelectedCell, forCardAtIndex: selectedItemIndex)
             }
         }.store(in: &subscriptions)
+
+        model.$additionalContentInsets.sink { [weak self] insets in
+            guard let self else { return }
+            var adjustedInsets = insets
+            adjustedInsets.bottom += (Metrics.minimumLineSpacing - Metrics.minimumInteritemSpacing)
+            collectionView.contentInset = adjustedInsets
+            collectionView.verticalScrollIndicatorInsets = insets
+        }.store(in: &subscriptions)
     }
 
     private func scrollToRevealItem(at index: Int) {
@@ -175,9 +190,9 @@ extension CardGridView: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         sizeForItemAt indexPath: IndexPath
     ) -> CGSize {
-        let totalSpacing = (collectionViewLayout as! UICollectionViewFlowLayout).minimumInteritemSpacing
-        let itemWidth = (collectionView.bounds.width - totalSpacing) / 2 - 10
-        let itemHeight: CGFloat = 200 // Set a fixed height for the cells
+        let totalSpacing = Metrics.minimumInteritemSpacing
+        let itemWidth = (collectionView.bounds.width - totalSpacing) / 2 - Metrics.minimumInteritemSpacing
+        let itemHeight: CGFloat = Metrics.itemHeight // Set a fixed height for the cells
         return CGSize(width: itemWidth, height: itemHeight)
     }
 
@@ -186,6 +201,11 @@ extension CardGridView: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         insetForSectionAt section: Int
     ) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        return UIEdgeInsets(
+            top: Metrics.minimumInteritemSpacing,
+            left: Metrics.minimumInteritemSpacing,
+            bottom: Metrics.minimumInteritemSpacing,
+            right: Metrics.minimumInteritemSpacing
+        )
     }
 }
