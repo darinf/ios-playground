@@ -19,7 +19,7 @@ final class WebContent: Identifiable {
 
     private var subscriptions: Set<AnyCancellable> = []
 
-    private static var allWebContent = [ID: WebContent]()
+    private static var allWebContent = [ID: WeakBox<WebContent>]()
 
     init(
         webView: WKWebView,
@@ -34,7 +34,7 @@ final class WebContent: Identifiable {
         self.favicon = favicon
         self.thumbnail = thumbnail
 
-        Self.allWebContent[id] = self // TODO: Replace with TabsModel
+        Self.allWebContent[id] = .init(self)
 
         setupObservers()
     }
@@ -53,14 +53,17 @@ final class WebContent: Identifiable {
         )
     }
 
-    // TODO: Replace with TabsModel
+    deinit {
+        Self.allWebContent[id] = nil
+    }
+
     static func from(id: ID?) -> WebContent? {
         guard let id else { return nil }
-        return allWebContent[id]
+        return allWebContent[id]?.object
     }
 
     static func from(webView: WKWebView) -> WebContent? {
-        allWebContent.first(where: { $0.value.webView == webView })?.value
+        allWebContent.first(where: { $0.value.object?.webView == webView })?.value.object
     }
 
     static func createWebView(configuration: WebContentConfiguration) -> WKWebView {
