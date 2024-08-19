@@ -81,10 +81,6 @@ final class CenterButtonView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func resetProgressWithoutAnimation() {
-        progressContainerView.progress = nil
-    }
-
     func setProgress(_ progress: Double?) {
         if let progress {
             UIView.animate(withDuration: 0.2) { [self] in
@@ -159,6 +155,7 @@ final class CenterButtonView: UIView {
             backgroundViewFullWidthConstraint.isActive = false
             backgroundViewMinWidthConstraint.isActive = true
             UIView.animate(withDuration: 0.3) {
+                self.progressContainerView.layer.opacity = 0
                 self.layoutIfNeeded()
             }
             UIView.animate(withDuration: 0.15) {
@@ -181,6 +178,7 @@ final class CenterButtonView: UIView {
                 guard case .showAsText = self.model.mode else { return }
                 UIView.animate(withDuration: 0.15) {
                     self.labelView.layer.opacity = 1
+                    self.progressContainerView.layer.opacity = 1
                 }
             }
         }
