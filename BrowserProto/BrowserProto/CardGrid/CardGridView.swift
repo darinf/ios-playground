@@ -68,8 +68,7 @@ final class CardGridView: UIView {
 
             // TODO: handle case of a cell that is not visible
             let index = model.indexByID(selectedID)
-//            collectionView.indexPathsForVisibleItems
-//            collectionView.scrollToItem(at: .init(item: index, section: 0), at: .top, animated: <#T##Bool#>)
+            scrollToRevealItem(at: index)
 
             let attributes = collectionView.layoutAttributesForItem(at: .init(item: index, section: 0))
             let rect = attributes?.frame.offsetBy(dx: -collectionView.contentOffset.x, dy: -collectionView.contentOffset.y)
@@ -120,6 +119,24 @@ final class CardGridView: UIView {
                 model.updateHidden(hideSelectedCell, forCardAtIndex: selectedItemIndex)
             }
         }.store(in: &subscriptions)
+    }
+
+    private func scrollToRevealItem(at index: Int) {
+        guard let attributes = collectionView.layoutAttributesForItem(at: .init(item: index, section: 0)) else { return }
+        let contentOffset = collectionView.contentOffset
+        let viewportFrame = attributes.frame.offsetBy(dx: -contentOffset.x, dy: -contentOffset.y)
+
+        if collectionView.bounds.contains(viewportFrame) {
+            return
+        }
+
+        let contentHeight = collectionView.contentSize.height
+        let viewportHeight = collectionView.bounds.height
+
+        let maxOffset = contentHeight - viewportHeight
+        let offset = min(attributes.frame.minY, maxOffset)
+
+        collectionView.contentOffset = .init(x: 0, y: offset)
     }
 }
 
