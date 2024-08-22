@@ -12,6 +12,7 @@ final class TabsModel {
         case removedAll
         case updated(TabData.MutableField, atIndex: Int)
         case updatedAll(TabsSectionData)
+        case swapped(atIndex1: Int, atIndex2: Int)
     }
 
     private(set) var data: TabsData = .init()
@@ -80,6 +81,11 @@ extension TabsModel {
         data.sections.forEach {
             tabsChanges.send(($0.id, .updatedAll($0)))
         }
+    }
+
+    func swapTabs(inSection section: TabsSection, atIndex1 index1: Int, atIndex2 index2: Int) {
+        data.sections[id: section]!.tabs.swapAt(index1, index2)
+        tabsChanges.send((section, .swapped(atIndex1: index1, atIndex2: index2)))
     }
 
     func updateURL(_ url: URL?, forTabByID tabID: TabData.ID, inSection section: TabsSection) {

@@ -59,7 +59,8 @@ extension MainViewModel {
                 .init(uniqueElements: tabsSectionData.tabs.map { Card(from: $0) }),
                 selectedID: tabsSectionData.selectedTabID
             )
-            break
+        case let .swapped(atIndex1: index1, atIndex2: index2):
+            cardGridViewModel.swapCards(atIndex1: index1, atIndex2: index2)
         }
     }
 

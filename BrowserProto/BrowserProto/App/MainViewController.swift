@@ -39,6 +39,8 @@ class MainViewController: UIViewController {
             case let .selectCard(byID: cardID):
                 model.tabsModel.selectTab(byID: cardID, inSection: model.currentTabsSection)
                 model.cardGridViewModel.showGrid = false
+            case let .swappedCards(index1, index2):
+                model.tabsModel.swapTabs(inSection: model.currentTabsSection, atIndex1: index1, atIndex2: index2)
             }
         }
     }()

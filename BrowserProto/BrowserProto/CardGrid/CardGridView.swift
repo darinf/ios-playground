@@ -12,6 +12,7 @@ final class CardGridView: UIView {
     enum Action {
         case selectCard(byID: Card.ID)
         case removeCard(byID: Card.ID)
+        case swappedCards(atIndex1: Int, atIndex2: Int)
     }
 
     private let model: CardGridViewModel
@@ -54,6 +55,10 @@ final class CardGridView: UIView {
         overlayCardView.activateContainmentConstraints(inside: self)
 
         self.bringSubviewToFront(zoomedView)
+
+        collectionView.addGestureRecognizer(
+            UILongPressGestureRecognizer(target: self, action: #selector(onLongPress))
+        )
 
         setupObservers()
     }
@@ -104,6 +109,8 @@ final class CardGridView: UIView {
             case let .updated(card, atIndex: index):
                 guard let cell = collectionView.cellForItem(at: .init(item: index, section: 0)) else { return }
                 (cell as! CardGridCellView).card = card
+            case .swapped:
+                break // Ignored as this is driven by collectionView(_:moveItemAt:to:)
             default:
                 collectionView.reloadData()
             }
@@ -153,6 +160,20 @@ final class CardGridView: UIView {
 
         collectionView.contentOffset = .init(x: 0, y: offset)
     }
+
+    @objc private func onLongPress(_ gesture: UILongPressGestureRecognizer) {
+        switch gesture.state {
+        case .began:
+            guard let targetIndexPath = collectionView.indexPathForItem(at: gesture.location(in: collectionView)) else { return }
+            collectionView.beginInteractiveMovementForItem(at: targetIndexPath)
+        case .changed:
+            collectionView.updateInteractiveMovementTargetPosition(gesture.location(in: collectionView))
+        case .ended:
+            collectionView.endInteractiveMovement()
+        default:
+            collectionView.cancelInteractiveMovement()
+        }
+    }
 }
 
 extension CardGridView: UICollectionViewDataSource {
@@ -172,6 +193,14 @@ extension CardGridView: UICollectionViewDataSource {
         }
         cell.card = card
         return cell
+    }
+
+    func collectionView(_ collectionView: UICollectionView, canMoveItemAt indexPath: IndexPath) -> Bool {
+        true
+    }
+
+    func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        handler(.swappedCards(atIndex1: sourceIndexPath.item, atIndex2: destinationIndexPath.item))
     }
 }
 
