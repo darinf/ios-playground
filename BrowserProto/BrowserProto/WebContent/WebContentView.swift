@@ -268,7 +268,6 @@ extension WebContentView: WKUIDelegate {
     }
 
     func webViewDidClose(_ webView: WKWebView) {
-        print(">>> webViewDidClose")
         model.popBack()
     }
 }

@@ -51,6 +51,7 @@
 		93D4811D2C38BE880019921F /* MainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D4811C2C38BE880019921F /* MainViewModel.swift */; };
 		93D4811F2C38C4680019921F /* URLInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D4811E2C38C4680019921F /* URLInput.swift */; };
 		93D481252C4AEBE80019921F /* UIView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D481242C4AEBE80019921F /* UIView+Extensions.swift */; };
+		93E1634C2C77B893002A2186 /* WebContentCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E1634B2C77B893002A2186 /* WebContentCache.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -98,6 +99,7 @@
 		93D4811C2C38BE880019921F /* MainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewModel.swift; sourceTree = "<group>"; };
 		93D4811E2C38C4680019921F /* URLInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLInput.swift; sourceTree = "<group>"; };
 		93D481242C4AEBE80019921F /* UIView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extensions.swift"; sourceTree = "<group>"; };
+		93E1634B2C77B893002A2186 /* WebContentCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebContentCache.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -199,6 +201,7 @@
 				938823022C612F1D00B4FE37 /* FaviconObserver.swift */,
 				938823132C65374500B4FE37 /* Thumbnail.swift */,
 				93254B0A2C5332C000B66206 /* WebContent.swift */,
+				93E1634B2C77B893002A2186 /* WebContentCache.swift */,
 				938823042C612F9E00B4FE37 /* WebContentConfiguration.swift */,
 				93D481032C2B08CB0019921F /* WebContentView.swift */,
 				93D481052C2B08D80019921F /* WebContentViewModel.swift */,
@@ -350,6 +353,7 @@
 				938822FB2C5D8E1A00B4FE37 /* CardViewModel.swift in Sources */,
 				93C94CDD2C51900400E3BB13 /* SuggestionsViewModel.swift in Sources */,
 				938822F92C5D8DEE00B4FE37 /* CardView.swift in Sources */,
+				93E1634C2C77B893002A2186 /* WebContentCache.swift in Sources */,
 				93254B0D2C53438B00B66206 /* MainMenu.swift in Sources */,
 				938823052C612F9E00B4FE37 /* WebContentConfiguration.swift in Sources */,
 				93D4810F2C2CC4DE0019921F /* URLInputView.swift in Sources */,

@@ -9,6 +9,7 @@ final class MainViewModel {
     let cardGridViewModel = CardGridViewModel()
     let tabsModel = TabsModel()
     let tabsStorage = TabsStorage()
+    let webContentCache = WebContentCache()
 }
 
 extension MainViewModel {
@@ -74,11 +75,13 @@ extension MainViewModel {
             } else {
                 tabsModel.appendTab(newTab, inSection: currentTabsSection)
             }
+            currentWebContent.map { webContentCache.insert($0) }
         case .switched:
-            break
+            currentWebContent.map { webContentCache.insert($0) }
         case let .poppedBack(from: closedWebContent):
             tabsModel.selectTab(byID: currentWebContent?.id, inSection: currentTabsSection)
             tabsModel.removeTab(byID: closedWebContent.id, inSection: currentTabsSection)
+            webContentCache.remove(closedWebContent)
             // TODO: If currentWebContent is nil, then we need to select a different card.
         }
         tabsModel.selectTab(byID: currentWebContent?.id, inSection: currentTabsSection)

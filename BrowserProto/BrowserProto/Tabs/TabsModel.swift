@@ -17,8 +17,6 @@ final class TabsModel {
 
     private(set) var data: TabsData = .init()
     let tabsChanges = PassthroughSubject<(TabsSection, TabsChange), Never>()
-
-//    private(set) var liveWebContent: [TabData.ID: WebContent] = [:]
 }
 
 extension TabsModel {
