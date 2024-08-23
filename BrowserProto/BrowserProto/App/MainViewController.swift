@@ -69,20 +69,18 @@ class MainViewController: UIViewController {
             case .goForward:
                 model.webContentViewModel.goForward()
             case .showTabs:
-                if !webContentView.isHidden {
-                    webContentView.updateThumbnail()
+                webContentView.updateThumbnailIfVisible() { [model] in
+                    model.cardGridViewModel.showGrid.toggle()
                 }
-                model.cardGridViewModel.showGrid.toggle()
             case .addTab:
                 model.urlInputViewModel.visibility = .showing(initialValue: "", forTarget: .newTab)
             case .mainMenu(let mainMenuAction):
                 print(">>> mainMenu: \(mainMenuAction)")
                 switch mainMenuAction {
                 case .toggleIncognito(let incognitoEnabled):
-                    if !webContentView.isHidden {
-                        webContentView.updateThumbnail()
+                    webContentView.updateThumbnailIfVisible() { [model] in
+                        model.setIncognito(incognito: incognitoEnabled)
                     }
-                    model.setIncognito(incognito: incognitoEnabled)
                 }
             }
         }

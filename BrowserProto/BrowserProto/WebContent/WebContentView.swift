@@ -116,9 +116,26 @@ final class WebContentView: UIView {
         )
     }
 
-    func updateThumbnail() {
+    func updateThumbnail(completion: @escaping () -> Void = {}) {
         guard let webContent = model.webContent else { return }
-        webContent.thumbnail = captureAsImage().map { .init(id: webContent.id, image: $0) }
+        let config = WKSnapshotConfiguration()
+        config.rect = bounds
+        config.snapshotWidth = NSNumber(value: bounds.width)
+        config.afterScreenUpdates = true
+        webContent.webView.takeSnapshot(with: config) { image, error in
+            webContent.thumbnail = .init(id: webContent.id, image: image)
+            completion()
+        }
+    }
+
+    func updateThumbnailIfVisible(completion: @escaping () -> Void) {
+        if !isHidden {
+            updateThumbnail(completion: completion)
+        } else {
+            Task { @MainActor in
+                completion()
+            }
+        }
     }
 
     private func setupObservers() {
