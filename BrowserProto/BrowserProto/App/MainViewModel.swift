@@ -46,14 +46,14 @@ extension MainViewModel {
             cardGridViewModel.removeAllCards()
         case let .updated(field, atIndex: index):
             switch field {
-            case .url:
-                break
             case let .title(title):
                 cardGridViewModel.updateTitle(title, forCardAtIndex: index)
             case let .favicon(favicon):
                 cardGridViewModel.updateFavicon(favicon?.image, forCardAtIndex: index)
             case let .thumbnail(thumbnail):
                 cardGridViewModel.updateThumbnail(thumbnail?.image, forCardAtIndex: index)
+            case .url, .interactionState:
+                break
             }
         case let .updatedAll(tabsSectionData):
             cardGridViewModel.replaceAllCards(

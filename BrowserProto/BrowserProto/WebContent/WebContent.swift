@@ -12,6 +12,7 @@ final class WebContent: Identifiable {
     @Published var title: String?
     @Published var favicon: Favicon?
     @Published var thumbnail: Thumbnail?
+    @Published var interactionState: Data?
     @Published var canGoBack: Bool = false
     @Published var canGoForward: Bool = false
     @Published var canGoBackToOpener: Bool = false
@@ -26,13 +27,18 @@ final class WebContent: Identifiable {
         opener: WebContent? = nil,
         withID id: ID = .init(),
         withFavicon favicon: Favicon? = nil,
-        withThumbnail thumbnail: Thumbnail? = nil
+        withThumbnail thumbnail: Thumbnail? = nil,
+        withInteractionState interactionState: Data? = nil
     ) {
         self.id = id
         self.webView = webView
         self.opener = opener
         self.favicon = favicon
         self.thumbnail = thumbnail
+        self.interactionState = interactionState
+
+        print(">>> setting interactionState: \(interactionState)")
+        webView.interactionState = interactionState
 
         Self.allWebContent[id] = .init(self)
 
@@ -43,13 +49,15 @@ final class WebContent: Identifiable {
         forIncognito incognito: Bool,
         withID id: ID = .init(),
         withFavicon favicon: Favicon? = nil,
-        withThumbnail thumbnail: Thumbnail? = nil
+        withThumbnail thumbnail: Thumbnail? = nil,
+        withInteractionState interactionState: Data? = nil
     ) {
         self.init(
             webView: Self.createWebView(configuration: WebContentConfiguration.for(incognito: incognito)),
             withID: id,
             withFavicon: favicon,
-            withThumbnail: thumbnail
+            withThumbnail: thumbnail,
+            withInteractionState: interactionState
         )
     }
 
@@ -77,7 +85,9 @@ final class WebContent: Identifiable {
 
     private func setupObservers() {
         webView.publisher(for: \.url, options: [.initial]).sink { [weak self] url in
-            self?.url = url
+            guard let self else { return }
+            self.url = url
+            interactionState = webView.interactionState as? Data
         }.store(in: &subscriptions)
 
         webView.publisher(for: \.title, options: [.new]).sink { [weak self] title in

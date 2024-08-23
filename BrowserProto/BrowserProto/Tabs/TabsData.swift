@@ -30,6 +30,7 @@ struct TabData: Identifiable, Codable {
         case title(String?)
         case favicon(Favicon?)
         case thumbnail(Thumbnail?)
+        case interactionState(Data?)
     }
 
     let id: ID
@@ -37,6 +38,7 @@ struct TabData: Identifiable, Codable {
     var title: String?
     var favicon: Favicon?
     var thumbnail: Thumbnail?
+    var interactionState: Data?
 
     // TODO: extend data model
 }

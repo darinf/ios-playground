@@ -241,6 +241,11 @@ class MainViewController: UIViewController {
             guard let self else { return }
             model.tabsModel.updateThumbnail(thumbnail, forTabByID: webContent.id, inSection: model.currentTabsSection)
         }.store(in: &webContentSubscriptions)
+
+        webContent.$interactionState.sink { [weak self] state in
+            guard let self else { return }
+            model.tabsModel.updateInteractionState(state, forTabByID: webContent.id, inSection: model.currentTabsSection)
+        }.store(in: &webContentSubscriptions)
     }
 
     private func updateLayout(animated: Bool) {

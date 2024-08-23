@@ -110,6 +110,12 @@ extension TabsModel {
         tabsChanges.send((section, .updated(.thumbnail(thumbnail), atIndex: tabIndex)))
     }
 
+    func updateInteractionState(_ state: Data?, forTabByID tabID: TabData.ID, inSection section: TabsSection) {
+        let tabIndex = indexByID(tabID, inSection: section)
+        data.sections[id: section]!.tabs[tabIndex].interactionState = state
+        tabsChanges.send((section, .updated(.interactionState(state), atIndex: tabIndex)))
+    }
+
     func tabByID(_ tabID: TabData.ID, inSection section: TabsSection) -> TabData {
         data.sections[id: section]!.tabs[id: tabID]!
     }
@@ -135,7 +141,8 @@ extension TabsModel {
             forIncognito: section == .incognito,
             withID: tabID,
             withFavicon: tabData.favicon,
-            withThumbnail: tabData.thumbnail
+            withThumbnail: tabData.thumbnail,
+            withInteractionState: tabData.interactionState
         )
         if let url = tabData.url {
             // TODO: should use `interactionState` here.
