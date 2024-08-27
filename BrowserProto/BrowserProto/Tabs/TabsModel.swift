@@ -20,6 +20,10 @@ final class TabsModel {
 }
 
 extension TabsModel {
+    func selectedTabID(inSection section: TabsSection) -> TabData.ID? {
+        data.sections[id: section]!.selectedTabID
+    }
+
     func selectTab(byID tabID: TabData.ID?, inSection section: TabsSection) {
         guard data.sections[id: section]!.selectedTabID != tabID else { return }
         data.sections[id: section]!.selectedTabID = tabID

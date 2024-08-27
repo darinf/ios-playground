@@ -24,7 +24,9 @@ class MainViewController: UIViewController {
                 }
                 model.webContentViewModel.navigate(to: URLInput.url(from: text))
                 if model.cardGridViewModel.showGrid {
-                    model.cardGridViewModel.showGrid = false
+                    UIView.performWithoutAnimation { [model] in
+                        model.cardGridViewModel.showGrid = false
+                    }
                 }
             }
         }
@@ -128,6 +130,10 @@ class MainViewController: UIViewController {
                 return
             }
             model.tabsModel.replaceAllTabsData(tabsData)
+
+            if model.tabsModel.selectedTabID(inSection: model.currentTabsSection) == nil {
+                model.cardGridViewModel.showGrid = true
+            }
         }
     }
 
