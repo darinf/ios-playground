@@ -159,6 +159,7 @@
 		93D480DC2C25D9600019921F /* BrowserProto */ = {
 			isa = PBXGroup;
 			children = (
+				93D480EB2C25D9610019921F /* Info.plist */,
 				93D481012C2B08770019921F /* App */,
 				93D480F62C2609A40019921F /* BottomBar */,
 				938822DE2C55632100B4FE37 /* CardGrid */,
@@ -224,7 +225,6 @@
 			isa = PBXGroup;
 			children = (
 				93D480E62C25D9610019921F /* Assets.xcassets */,
-				93D480EB2C25D9610019921F /* Info.plist */,
 				93D480E82C25D9610019921F /* LaunchScreen.storyboard */,
 			);
 			path = Resources;
@@ -519,6 +519,8 @@
 				DEVELOPMENT_TEAM = C7ZSH475YN;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = BrowserProto/App/Resources/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Sparrow Browser";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -528,7 +530,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = darinf.BrowserProto;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -547,6 +549,8 @@
 				DEVELOPMENT_TEAM = C7ZSH475YN;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = BrowserProto/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Sparrow Browser";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -556,7 +560,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = darinf.BrowserProto;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
