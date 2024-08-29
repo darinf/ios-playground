@@ -69,7 +69,7 @@ class MainViewController: UIViewController {
             case .goForward:
                 model.webContentViewModel.goForward()
             case .showTabs:
-                webContentView.updateThumbnailIfVisible() { [model] in
+                updateThumbnailIfVisible() { [model] in
                     model.cardGridViewModel.showGrid.toggle()
                 }
             case .addTab:
@@ -78,7 +78,7 @@ class MainViewController: UIViewController {
                 print(">>> mainMenu: \(mainMenuAction)")
                 switch mainMenuAction {
                 case .toggleIncognito(let incognitoEnabled):
-                    webContentView.updateThumbnailIfVisible() { [model] in
+                    updateThumbnailIfVisible() { [model] in
                         model.setIncognito(incognito: incognitoEnabled)
                     }
                 }
@@ -316,5 +316,19 @@ class MainViewController: UIViewController {
 
     private func resetBottomBarOffset() {
         animateBottomBarOffset(to: 0)
+    }
+
+    private func updateThumbnailIfVisible(completion: @escaping () -> Void) {
+        if !webContentView.isHidden, let webContent = model.webContentViewModel.webContent {
+            view.isUserInteractionEnabled = false
+            webContent.updateThumbnail { [self] in
+                view.isUserInteractionEnabled = true
+                completion()
+            }
+        } else {
+            Task { @MainActor in
+                completion()
+            }
+        }
     }
 }

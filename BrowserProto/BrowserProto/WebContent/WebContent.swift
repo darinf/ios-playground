@@ -37,7 +37,6 @@ final class WebContent: Identifiable {
         self.thumbnail = thumbnail
         self.interactionState = interactionState
 
-        print(">>> setting interactionState: \(interactionState)")
         webView.interactionState = interactionState
 
         Self.allWebContent[id] = .init(self)
@@ -81,6 +80,16 @@ final class WebContent: Identifiable {
         webView.scrollView.clipsToBounds = false
         webView.scrollView.contentInsetAdjustmentBehavior = .always
         return webView
+    }
+
+    func updateThumbnail(completion: @escaping () -> Void = {}) {
+        webView.takeSnapshot(with: nil) { [self] image, error in
+            if let error {
+                print(">>> takeSnapshot failed: \(error)")
+            }
+            thumbnail = .init(id: id, image: image)
+            completion()
+        }
     }
 
     private func setupObservers() {
