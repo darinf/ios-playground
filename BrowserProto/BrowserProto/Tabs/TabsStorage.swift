@@ -35,8 +35,9 @@ final class TabsStorage {
     func loadTabsData(completion: @escaping (TabsData?) -> Void) {
         queue.async { [self] in
             let result: TabsData?
-            if let data = readTabsFile() {
-                result = decode(data: data)
+            let data = logInterval("readTabsFile") { readTabsFile() }
+            if let data {
+                result = logInterval("decode") { decode(data: data) }
             } else {
                 result = nil
             }

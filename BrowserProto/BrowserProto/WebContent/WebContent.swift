@@ -86,6 +86,8 @@ final class WebContent: Identifiable {
         webView.takeSnapshot(with: nil) { [self] image, error in
             if let error {
                 print(">>> takeSnapshot failed: \(error)")
+            } else if let image {
+                print(">>> takeSnapshot succeeded: \(image.size)")
             }
             thumbnail = .init(id: id, image: image)
             completion()

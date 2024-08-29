@@ -124,7 +124,7 @@ class MainViewController: UIViewController {
         model.tabsStorage.loadTabsData { [self] tabsData in
             guard let tabsData else {
                 model.webContentViewModel.openWebContent()
-                model.webContentViewModel.navigate(to: URL(string: "https://news.ycombinator.com/"))
+                model.webContentViewModel.navigate(to: .init(string: "https://news.ycombinator.com/"))
                 return
             }
             model.tabsModel.replaceAllTabsData(tabsData)
