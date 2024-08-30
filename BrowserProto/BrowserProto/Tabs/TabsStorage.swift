@@ -147,8 +147,9 @@ extension Favicon: Codable {
 
         let url = try container.decode(URL.self, forKey: .url)
         self.init(url: url, image: .init(provider: {
-            print(">>> fetching favicon from cache")
-            return faviconStore.imageFromCache(forKey: url.absoluteString)
+            logInterval("fetch favicon") {
+                faviconStore.imageFromCache(forKey: url.absoluteString)
+            }
         }))
     }
 }
@@ -179,8 +180,9 @@ extension Thumbnail: Codable {
 
         let id = try container.decode(ID.self, forKey: .id)
         self.init(id: id, image: .init(provider: {
-            print(">>> fetching thumbnail from cache")
-            return thumbnailStore.imageFromCache(forKey: id.uuidString)
+            logInterval("fetch thumbnail") {
+                thumbnailStore.imageFromCache(forKey: id.uuidString)
+            }
         }))
     }
 }
