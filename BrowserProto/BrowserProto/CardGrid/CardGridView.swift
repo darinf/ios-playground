@@ -31,6 +31,7 @@ final class CardGridView: UIView {
         collectionView.delegate = self
         collectionView.register(CardGridCellView.self, forCellWithReuseIdentifier: "cell")
         collectionView.alwaysBounceVertical = true
+        collectionView.isPrefetchingEnabled = true
 
         return collectionView
     }()
