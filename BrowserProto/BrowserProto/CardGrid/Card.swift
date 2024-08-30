@@ -5,8 +5,8 @@ struct Card: Identifiable {
 
     let id: ID
     var title: String?
-    var favicon: UIImage?
-    var thumbnail: UIImage?
+    var favicon: ImageRef?
+    var thumbnail: ImageRef?
     var hidden: Bool = false
 }
 

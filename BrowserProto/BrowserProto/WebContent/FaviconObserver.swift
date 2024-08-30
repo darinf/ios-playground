@@ -81,7 +81,7 @@ class FaviconObserver: NSObject, WKScriptMessageHandler {
     private func fetchFavicon(at url: URL) async -> Favicon? {
         await withCheckedContinuation { continuation in
             SDWebImageManager.shared.loadImage(with: url, progress: nil) { image, _, _, _, _, _ in
-                continuation.resume(returning: image.map { .init(url: url, image: $0) })
+                continuation.resume(returning: image.map { .init(url: url, image: .init(image: $0)) })
             }
         }
     }

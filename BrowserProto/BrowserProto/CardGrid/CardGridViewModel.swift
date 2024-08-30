@@ -85,22 +85,22 @@ extension CardGridViewModel {
         cardsChanges.send(.updated(cards[index], atIndex: index))
     }
 
-    func updateFavicon(_ favicon: UIImage?, forCardByID cardID: Card.ID) {
+    func updateFavicon(_ favicon: ImageRef?, forCardByID cardID: Card.ID) {
         let cardIndex = indexByID(cardID)
         updateFavicon(favicon, forCardAtIndex: cardIndex)
     }
 
-    func updateFavicon(_ favicon: UIImage?, forCardAtIndex index: Int) {
+    func updateFavicon(_ favicon: ImageRef?, forCardAtIndex index: Int) {
         cards[index].favicon = favicon
         cardsChanges.send(.updated(cards[index], atIndex: index))
     }
 
-    func updateThumbnail(_ thumbnail: UIImage?, forCardByID cardID: Card.ID) {
+    func updateThumbnail(_ thumbnail: ImageRef?, forCardByID cardID: Card.ID) {
         let cardIndex = indexByID(cardID)
         updateThumbnail(thumbnail, forCardAtIndex: cardIndex)
     }
 
-    func updateThumbnail(_ thumbnail: UIImage?, forCardAtIndex index: Int) {
+    func updateThumbnail(_ thumbnail: ImageRef?, forCardAtIndex index: Int) {
         cards[index].thumbnail = thumbnail
         cardsChanges.send(.updated(cards[index], atIndex: index))
     }

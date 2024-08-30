@@ -138,7 +138,7 @@ final class CardView: UIView {
 
         model.$thumbnail.sink { [weak self] thumbnail in
             guard let self else { return }
-            guard let thumbnail else {
+            guard let thumbnail = thumbnail?.value else {
                 thumbnailView.image = nil
                 thumbnailViewHeightConstraint = nil
                 return
@@ -166,7 +166,7 @@ final class CardView: UIView {
         }.store(in: &subscriptions)
 
         model.$favicon.sink { [weak self] favicon in
-            self?.iconView.image = favicon
+            self?.iconView.image = favicon?.value
         }.store(in: &subscriptions)
     }
 }

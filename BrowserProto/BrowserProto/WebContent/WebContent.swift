@@ -89,7 +89,7 @@ final class WebContent: Identifiable {
             } else if let image {
                 print(">>> takeSnapshot succeeded: \(image.size)")
             }
-            thumbnail = .init(id: id, image: image)
+            thumbnail = .init(id: id, image: .init(image: image))
             completion()
         }
     }

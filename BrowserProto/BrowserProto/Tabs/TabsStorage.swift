@@ -136,15 +136,20 @@ extension Favicon: Codable {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
         try container.encode(url, forKey: .url)
-        faviconStore.store(image, forKey: url.absoluteString, toDisk: true)
+        if let image = image?.valueIfLoaded {
+            faviconStore.store(image, forKey: url.absoluteString, toDisk: true)
+        }
     }
 
-    init(from decoder: any Decoder) throws {
+    convenience init(from decoder: any Decoder) throws {
         let faviconStore = decoder.userInfo[TabsStorage.faviconStoreUserInfoKey] as! SDImageCache
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        url = try container.decode(URL.self, forKey: .url)
-        image = faviconStore.imageFromCache(forKey: url.absoluteString)
+        let url = try container.decode(URL.self, forKey: .url)
+        self.init(url: url, image: .init(provider: {
+            print(">>> fetching favicon from cache")
+            return faviconStore.imageFromCache(forKey: url.absoluteString)
+        }))
     }
 }
 
@@ -163,7 +168,9 @@ extension Thumbnail: Codable {
         if image == nil {
             print(">>> storing nil image!")
         }
-        thumbnailStore.store(image, forKey: id.uuidString, toDisk: true)
+        if let image = image?.valueIfLoaded {
+            thumbnailStore.store(image, forKey: id.uuidString, toDisk: true)
+        }
     }
     
     convenience init(from decoder: any Decoder) throws {
@@ -171,8 +178,9 @@ extension Thumbnail: Codable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let id = try container.decode(ID.self, forKey: .id)
-        self.init(id: id, provider: {
-            thumbnailStore.imageFromCache(forKey: id.uuidString)
-        })
+        self.init(id: id, image: .init(provider: {
+            print(">>> fetching thumbnail from cache")
+            return thumbnailStore.imageFromCache(forKey: id.uuidString)
+        }))
     }
 }

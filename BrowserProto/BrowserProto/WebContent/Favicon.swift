@@ -1,7 +1,12 @@
 import Foundation
 import UIKit
 
-struct Favicon {
+final class Favicon {
     let url: URL
-    let image: UIImage?
+    let image: ImageRef?
+
+    init(url: URL, image: ImageRef?) {
+        self.url = url
+        self.image = image
+    }
 }
