@@ -1,7 +1,7 @@
 import Combine
 import WebKit
 
-final class WebContent: Identifiable {
+final class WebContent: NSObject, Identifiable {
     typealias ID = UUID
 
     let id: ID
@@ -37,7 +37,10 @@ final class WebContent: Identifiable {
         self.thumbnail = thumbnail
         self.interactionState = interactionState
 
+        super.init()
+
         webView.interactionState = interactionState
+        webView.navigationDelegate = self
 
         Self.allWebContent[id] = .init(self)
 
@@ -141,3 +144,5 @@ final class WebContent: Identifiable {
         }
     }
 }
+
+extension WebContent: WKNavigationDelegate {}

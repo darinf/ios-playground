@@ -321,7 +321,19 @@ class MainViewController: UIViewController {
     private func updateThumbnailIfVisible(completion: @escaping () -> Void) {
         if !webContentView.isHidden, let webContent = model.webContentViewModel.webContent {
             view.isUserInteractionEnabled = false
+            // updateThumbnail could be blocked on a network load of the initial page. In that
+            // case, we need to timeout.
+            var timedOut = false
+            var completed = false
             webContent.updateThumbnail { [self] in
+                guard !timedOut else { return }
+                view.isUserInteractionEnabled = true
+                completed = true
+                completion()
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(200)) { [self] in
+                guard !completed else { return }
+                timedOut = true
                 view.isUserInteractionEnabled = true
                 completion()
             }
