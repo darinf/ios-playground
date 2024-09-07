@@ -90,34 +90,10 @@ extension TabsModel {
         tabsChanges.send((section, .swapped(atIndex1: index1, atIndex2: index2)))
     }
 
-    func updateURL(_ url: URL?, forTabByID tabID: TabData.ID, inSection section: TabsSection) {
+    func update(_ field: TabData.MutableField, forTabByID tabID: TabData.ID, inSection section: TabsSection) {
         let tabIndex = indexByID(tabID, inSection: section)
-        data.sections[id: section]!.tabs[tabIndex].url = url
-        tabsChanges.send((section, .updated(.url(url), atIndex: tabIndex)))
-    }
-
-    func updateTitle(_ title: String?, forTabByID tabID: TabData.ID, inSection section: TabsSection) {
-        let tabIndex = indexByID(tabID, inSection: section)
-        data.sections[id: section]!.tabs[tabIndex].title = title
-        tabsChanges.send((section, .updated(.title(title), atIndex: tabIndex)))
-    }
-
-    func updateFavicon(_ favicon: Favicon?, forTabByID tabID: TabData.ID, inSection section: TabsSection) {
-        let tabIndex = indexByID(tabID, inSection: section)
-        data.sections[id: section]!.tabs[tabIndex].favicon = favicon
-        tabsChanges.send((section, .updated(.favicon(favicon), atIndex: tabIndex)))
-    }
-
-    func updateThumbnail(_ thumbnail: Thumbnail?, forTabByID tabID: TabData.ID, inSection section: TabsSection) {
-        let tabIndex = indexByID(tabID, inSection: section)
-        data.sections[id: section]!.tabs[tabIndex].thumbnail = thumbnail
-        tabsChanges.send((section, .updated(.thumbnail(thumbnail), atIndex: tabIndex)))
-    }
-
-    func updateInteractionState(_ state: Data?, forTabByID tabID: TabData.ID, inSection section: TabsSection) {
-        let tabIndex = indexByID(tabID, inSection: section)
-        data.sections[id: section]!.tabs[tabIndex].interactionState = state
-        tabsChanges.send((section, .updated(.interactionState(state), atIndex: tabIndex)))
+        data.sections[id: section]!.tabs[tabIndex].update(field)
+        tabsChanges.send((section, .updated(field, atIndex: tabIndex)))
     }
 
     func tabByID(_ tabID: TabData.ID, inSection section: TabsSection) -> TabData {
@@ -153,5 +129,24 @@ extension TabsModel {
             webContent.webView.load(.init(url: url))
         }
         return webContent
+    }
+}
+
+extension TabData {
+    mutating func update(_ field: MutableField) {
+        switch field {
+        case let .url(url):
+            self.url = url
+        case let .title(title):
+            self.title = title
+        case let .favicon(favicon):
+            self.favicon = favicon
+        case let .thumbnail(thumbnail):
+            self.thumbnail = thumbnail
+        case let .interactionState(interactionState):
+            self.interactionState = interactionState
+        case let .lastAccessedTime(lastAccessedTime):
+            self.lastAccessedTime = lastAccessedTime
+        }
     }
 }

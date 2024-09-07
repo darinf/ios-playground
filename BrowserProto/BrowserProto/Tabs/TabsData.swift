@@ -31,6 +31,7 @@ struct TabData: Identifiable, Codable {
         case favicon(Favicon?)
         case thumbnail(Thumbnail?)
         case interactionState(Data?)
+        case lastAccessedTime(Date?)
     }
 
     let id: ID
@@ -39,6 +40,7 @@ struct TabData: Identifiable, Codable {
     var favicon: Favicon?
     var thumbnail: Thumbnail?
     var interactionState: Data?
+    var lastAccessedTime: Date?
 
     // TODO: extend data model
 }

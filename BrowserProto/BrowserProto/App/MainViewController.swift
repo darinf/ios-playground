@@ -41,6 +41,7 @@ class MainViewController: UIViewController {
             case let .selectCard(byID: cardID):
                 model.tabsModel.selectTab(byID: cardID, inSection: model.currentTabsSection)
                 model.cardGridViewModel.showGrid = false
+                model.updateSelectedTabLastAccessedTime()
             case let .swappedCards(index1, index2):
                 model.tabsModel.swapTabs(inSection: model.currentTabsSection, atIndex1: index1, atIndex2: index2)
             }
@@ -69,7 +70,8 @@ class MainViewController: UIViewController {
             case .goForward:
                 model.webContentViewModel.goForward()
             case .showTabs:
-                updateThumbnailIfVisible() { [model] in
+                model.updateSelectedTabLastAccessedTime()
+                model.updateSelectedTabThumbnailIfShowing() { [model] in
                     model.cardGridViewModel.showGrid.toggle()
                 }
             case .addTab:
@@ -78,8 +80,10 @@ class MainViewController: UIViewController {
                 print(">>> mainMenu: \(mainMenuAction)")
                 switch mainMenuAction {
                 case .toggleIncognito(let incognitoEnabled):
-                    updateThumbnailIfVisible() { [model] in
+                    model.updateSelectedTabLastAccessedTime()
+                    model.updateSelectedTabThumbnailIfShowing() { [model] in
                         model.setIncognito(incognito: incognitoEnabled)
+                        model.updateSelectedTabLastAccessedTime()
                     }
                 }
             }
@@ -212,6 +216,10 @@ class MainViewController: UIViewController {
         model.cardGridViewModel.$showGrid.dropFirst().removeDuplicates().sink { [weak self] showGrid in
             self?.model.bottomBarViewModel.centerButtonViewModel.mode = showGrid ? .showAsPlus : .showAsText
         }.store(in: &subscriptions)
+
+        model.$suppressInteraction.sink { [weak self] suppressInteraction in
+            self?.view.isUserInteractionEnabled = !suppressInteraction
+        }.store(in: &subscriptions)
     }
 
     private func setupWebContentObservers(for webContent: WebContent?) {
@@ -222,7 +230,7 @@ class MainViewController: UIViewController {
 
         webContent.$url.sink { [weak self] url in
             guard let self else { return }
-            model.tabsModel.updateURL(url, forTabByID: webContent.id, inSection: model.currentTabsSection)
+            model.tabsModel.update(.url(url), forTabByID: webContent.id, inSection: model.currentTabsSection)
             model.bottomBarViewModel.centerButtonViewModel.text = url?.host() ?? ""
             resetBottomBarOffset()
         }.store(in: &webContentSubscriptions)
@@ -233,22 +241,22 @@ class MainViewController: UIViewController {
 
         webContent.$title.sink { [weak self] title in
             guard let self else { return }
-            model.tabsModel.updateTitle(title, forTabByID: webContent.id, inSection: model.currentTabsSection)
+            model.tabsModel.update(.title(title), forTabByID: webContent.id, inSection: model.currentTabsSection)
         }.store(in: &webContentSubscriptions)
 
         webContent.$favicon.sink { [weak self] favicon in
             guard let self else { return }
-            model.tabsModel.updateFavicon(favicon, forTabByID: webContent.id, inSection: model.currentTabsSection)
+            model.tabsModel.update(.favicon(favicon), forTabByID: webContent.id, inSection: model.currentTabsSection)
         }.store(in: &webContentSubscriptions)
 
         webContent.$thumbnail.sink { [weak self] thumbnail in
             guard let self else { return }
-            model.tabsModel.updateThumbnail(thumbnail, forTabByID: webContent.id, inSection: model.currentTabsSection)
+            model.tabsModel.update(.thumbnail(thumbnail), forTabByID: webContent.id, inSection: model.currentTabsSection)
         }.store(in: &webContentSubscriptions)
 
         webContent.$interactionState.sink { [weak self] state in
             guard let self else { return }
-            model.tabsModel.updateInteractionState(state, forTabByID: webContent.id, inSection: model.currentTabsSection)
+            model.tabsModel.update(.interactionState(state), forTabByID: webContent.id, inSection: model.currentTabsSection)
         }.store(in: &webContentSubscriptions)
     }
 
@@ -316,31 +324,5 @@ class MainViewController: UIViewController {
 
     private func resetBottomBarOffset() {
         animateBottomBarOffset(to: 0)
-    }
-
-    private func updateThumbnailIfVisible(completion: @escaping () -> Void) {
-        if !webContentView.isHidden, let webContent = model.webContentViewModel.webContent {
-            view.isUserInteractionEnabled = false
-            // updateThumbnail could be blocked on a network load of the initial page. In that
-            // case, we need to timeout.
-            var timedOut = false
-            var completed = false
-            webContent.updateThumbnail { [self] in
-                guard !timedOut else { return }
-                view.isUserInteractionEnabled = true
-                completed = true
-                completion()
-            }
-            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(200)) { [self] in
-                guard !completed else { return }
-                timedOut = true
-                view.isUserInteractionEnabled = true
-                completion()
-            }
-        } else {
-            Task { @MainActor in
-                completion()
-            }
-        }
     }
 }

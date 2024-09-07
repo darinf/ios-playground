@@ -10,6 +10,8 @@ final class MainViewModel {
     let tabsModel = TabsModel()
     let tabsStorage = TabsStorage()
     let webContentCache = WebContentCache()
+
+    @Published var suppressInteraction: Bool = false
 }
 
 extension MainViewModel {
@@ -52,7 +54,7 @@ extension MainViewModel {
                 cardGridViewModel.updateFavicon(favicon?.image, forCardAtIndex: index)
             case let .thumbnail(thumbnail):
                 cardGridViewModel.updateThumbnail(thumbnail?.image, forCardAtIndex: index)
-            case .url, .interactionState:
+            case .url, .interactionState, .lastAccessedTime:
                 break
             }
         case let .updatedAll(tabsSectionData):
@@ -85,6 +87,37 @@ extension MainViewModel {
             // TODO: If currentWebContent is nil, then we need to select a different card.
         }
         tabsModel.selectTab(byID: currentWebContent?.id, inSection: currentTabsSection)
+    }
+
+    func updateSelectedTabLastAccessedTime() {
+        guard let tabID = tabsModel.selectedTabID(inSection: currentTabsSection) else { return }
+        tabsModel.update(.lastAccessedTime(.now), forTabByID: tabID, inSection: currentTabsSection)
+    }
+
+    func updateSelectedTabThumbnailIfShowing(completion: @escaping () -> Void) {
+        if !cardGridViewModel.showGrid, let webContent = webContentViewModel.webContent {
+            suppressInteraction = true
+            // updateThumbnail could be blocked on a network load of the initial page. In that
+            // case, we need to timeout.
+            var timedOut = false
+            var completed = false
+            webContent.updateThumbnail { [self] in
+                guard !timedOut else { return }
+                suppressInteraction = false
+                completed = true
+                completion()
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(200)) { [self] in
+                guard !completed else { return }
+                timedOut = true
+                suppressInteraction = false
+                completion()
+            }
+        } else {
+            Task { @MainActor in
+                completion()
+            }
+        }
     }
 }
 
