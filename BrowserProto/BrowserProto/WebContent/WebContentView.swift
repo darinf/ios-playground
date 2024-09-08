@@ -254,8 +254,7 @@ extension WebContentView: WKUIDelegate {
             opener: model.webContent
         )
 
-        DispatchQueue.main.async { [self] in
-            model.webContent?.updateThumbnail()
+        model.webContent?.updateThumbnail() { [model] in
             model.openWebContent(with: newWebContent)
         }
 

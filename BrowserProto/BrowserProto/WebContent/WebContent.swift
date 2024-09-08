@@ -147,7 +147,6 @@ final class WebContent: NSObject, Identifiable {
 
 extension WebContent: WKNavigationDelegate {
     func webView(_ webView: WKWebView, respondTo challenge: URLAuthenticationChallenge) async -> (URLSession.AuthChallengeDisposition, URLCredential?) {
-        print(">>> \(#function), challenge: \(challenge.protectionSpace)")
         return (.performDefaultHandling, challenge.proposedCredential)
     }
 }
