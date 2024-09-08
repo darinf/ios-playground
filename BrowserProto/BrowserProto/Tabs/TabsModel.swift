@@ -96,17 +96,13 @@ extension TabsModel {
         tabsChanges.send((section, .updated(field, atIndex: tabIndex)))
     }
 
-    func tabByID(_ tabID: TabData.ID, inSection section: TabsSection) -> TabData {
-        data.sections[id: section]!.tabs[id: tabID]!
-    }
-
-    func tabByIndex(_ index: Int, inSection section: TabsSection) -> TabData {
-        data.sections[id: section]!.tabs[index]
-    }
-
     func indexByID(_ tabID: TabData.ID, inSection section: TabsSection) -> IdentifiedArrayOf<TabData>.Index {
         let section = data.sections[id: section]!
         return section.tabs.index(id: tabID)!
+    }
+
+    func tabExists(byID tabID: TabData.ID, inSection section: TabsSection) -> Bool {
+        data.sections[id: section]!.tabs[id: tabID] != nil
     }
 
     func webContent(for tabID: TabData.ID, inSection section: TabsSection) -> WebContent? {

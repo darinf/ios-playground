@@ -197,6 +197,7 @@ class MainViewController: UIViewController {
             guard let self else { return }
             model.tabsStorage.persistTabsChange(change, in: section, for: model.tabsModel.data)
             model.updateCardGrid(for: change, in: section)
+            model.validateOpener()
         }.store(in: &subscriptions)
 
         model.webContentViewModel.webContentChanges.sink { [weak self] change in

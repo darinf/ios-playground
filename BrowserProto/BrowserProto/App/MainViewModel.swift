@@ -119,6 +119,14 @@ extension MainViewModel {
             }
         }
     }
+
+    func validateOpener() {
+        if let opener = webContentViewModel.webContent?.opener {
+            if tabsModel.tabExists(byID: opener.id, inSection: currentTabsSection) {
+                webContentViewModel.webContent?.dropOpener()
+            }
+        }
+    }
 }
 
 extension Card {

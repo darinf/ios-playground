@@ -6,7 +6,7 @@ final class WebContent: NSObject, Identifiable {
 
     let id: ID
     let webView: WKWebView
-    let opener: WebContent?
+    private(set) var opener: WebContent?
 
     @Published var url: URL?
     @Published var title: String?
@@ -95,6 +95,11 @@ final class WebContent: NSObject, Identifiable {
             thumbnail = .init(id: id, image: .init(image: image))
             completion()
         }
+    }
+
+    func dropOpener() {
+        opener = nil
+        canGoBackToOpener = false
     }
 
     private func setupObservers() {
