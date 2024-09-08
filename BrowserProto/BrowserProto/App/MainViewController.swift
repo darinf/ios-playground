@@ -20,7 +20,8 @@ class MainViewController: UIViewController {
             switch action {
             case let .navigate(text, target):
                 if case .newTab = target {
-                    model.webContentViewModel.openWebContent()
+                    let currentWebContent = model.webContentViewModel.webContent
+                    model.webContentViewModel.openWebContent(withOpener: currentWebContent)
                 }
                 model.webContentViewModel.navigate(to: URLInput.url(from: text))
                 if model.cardGridViewModel.showGrid {

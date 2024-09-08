@@ -24,7 +24,7 @@ final class WebContent: NSObject, Identifiable {
 
     init(
         webView: WKWebView,
-        opener: WebContent? = nil,
+        withOpener opener: WebContent? = nil,
         withID id: ID = .init(),
         withFavicon favicon: Favicon? = nil,
         withThumbnail thumbnail: Thumbnail? = nil,
@@ -49,6 +49,7 @@ final class WebContent: NSObject, Identifiable {
 
     convenience init(
         forIncognito incognito: Bool,
+        withOpener opener: WebContent? = nil,
         withID id: ID = .init(),
         withFavicon favicon: Favicon? = nil,
         withThumbnail thumbnail: Thumbnail? = nil,
@@ -56,6 +57,7 @@ final class WebContent: NSObject, Identifiable {
     ) {
         self.init(
             webView: Self.createWebView(configuration: WebContentConfiguration.for(incognito: incognito)),
+            withOpener: opener,
             withID: id,
             withFavicon: favicon,
             withThumbnail: thumbnail,

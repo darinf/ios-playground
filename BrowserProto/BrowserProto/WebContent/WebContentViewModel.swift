@@ -41,8 +41,8 @@ final class WebContentViewModel {
         webView?.goForward()
     }
 
-    func openWebContent() {
-        openWebContent(with: WebContent(forIncognito: incognito))
+    func openWebContent(withOpener opener: WebContent? = nil) {
+        openWebContent(with: WebContent(forIncognito: incognito, withOpener: opener))
     }
 
     func openWebContent(with newWebContent: WebContent) {

@@ -251,7 +251,7 @@ extension WebContentView: WKUIDelegate {
 
         let newWebContent = WebContent(
             webView: WebContent.createWebView(configuration: configuration),
-            opener: model.webContent
+            withOpener: model.webContent
         )
 
         model.webContent?.updateThumbnail() { [model] in

@@ -121,10 +121,9 @@ extension MainViewModel {
     }
 
     func validateOpener() {
-        if let opener = webContentViewModel.webContent?.opener {
-            if tabsModel.tabExists(byID: opener.id, inSection: currentTabsSection) {
-                webContentViewModel.webContent?.dropOpener()
-            }
+        if let opener = webContentViewModel.webContent?.opener,
+           !tabsModel.tabExists(byID: opener.id, inSection: currentTabsSection) {
+            webContentViewModel.webContent?.dropOpener()
         }
     }
 }
