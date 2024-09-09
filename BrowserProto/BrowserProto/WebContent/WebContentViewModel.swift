@@ -5,7 +5,7 @@ import WebKit
 
 final class WebContentViewModel {
     enum WebContentChange {
-        case opened
+        case opened(relativeToOpener: Bool)
         case switched
         case poppedBack(from: WebContent)
     }
@@ -41,13 +41,13 @@ final class WebContentViewModel {
         webView?.goForward()
     }
 
-    func openWebContent(withOpener opener: WebContent? = nil) {
-        openWebContent(with: WebContent(forIncognito: incognito, withOpener: opener))
+    func openWebContent(withOpener opener: WebContent? = nil, relativeToOpener: Bool = false) {
+        openWebContent(with: WebContent(forIncognito: incognito, withOpener: opener), relativeToOpener: relativeToOpener)
     }
 
-    func openWebContent(with newWebContent: WebContent) {
+    func openWebContent(with newWebContent: WebContent, relativeToOpener: Bool = false) {
         webContent = newWebContent
-        webContentChanges.send(.opened)
+        webContentChanges.send(.opened(relativeToOpener: relativeToOpener))
     }
 
     func popBack() {

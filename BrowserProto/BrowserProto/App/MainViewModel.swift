@@ -1,6 +1,7 @@
 import Combine
 import Foundation
 import IdentifiedCollections
+import UIKit
 
 final class MainViewModel {
     let urlInputViewModel = URLInputViewModel()
@@ -19,17 +20,18 @@ extension MainViewModel {
         webContentViewModel.incognito ? .incognito : .default
     }
 
-    func setIncognito(incognito: Bool) {
-        webContentViewModel.incognito = incognito
+    func loadData() {
+        tabsStorage.loadTabsData { [self] tabsData in
+            guard let tabsData else {
+                webContentViewModel.openWebContent()
+                webContentViewModel.navigate(to: .init(string: "https://news.ycombinator.com/"))
+                return
+            }
+            tabsModel.replaceAllTabsData(tabsData)
 
-        var cards = IdentifiedArrayOf<Card>()
-        tabsModel.data.sections[id: currentTabsSection]!.tabs.forEach { tab in
-            cards.append(.init(from: tab))
-        }
-        let selectedID = tabsModel.data.sections[id: currentTabsSection]!.selectedTabID
-        cardGridViewModel.replaceAllCards(cards, selectedID: selectedID)
-        if cards.isEmpty {
-            cardGridViewModel.showGrid = true
+            if tabsModel.selectedTabID(inSection: currentTabsSection) == nil {
+                cardGridViewModel.showGrid = true
+            }
         }
     }
 
@@ -70,9 +72,9 @@ extension MainViewModel {
     func updateTabs(for change: WebContentViewModel.WebContentChange) {
         let currentWebContent = webContentViewModel.webContent
         switch change {
-        case .opened:
+        case let .opened(relativeToOpener):
             let newTab = TabData(from: currentWebContent!)
-            if let opener = currentWebContent!.opener {
+            if relativeToOpener, let opener = currentWebContent!.opener {
                 tabsModel.insertTab(newTab, inSection: currentTabsSection, after: opener.id)
             } else {
                 tabsModel.appendTab(newTab, inSection: currentTabsSection)
@@ -124,6 +126,82 @@ extension MainViewModel {
         if let opener = webContentViewModel.webContent?.opener,
            !tabsModel.tabExists(byID: opener.id, inSection: currentTabsSection) {
             webContentViewModel.webContent?.dropOpener()
+        }
+    }
+
+    private func setIncognito(incognito: Bool) {
+        webContentViewModel.incognito = incognito
+
+        var cards = IdentifiedArrayOf<Card>()
+        tabsModel.data.sections[id: currentTabsSection]!.tabs.forEach { tab in
+            cards.append(.init(from: tab))
+        }
+        let selectedID = tabsModel.data.sections[id: currentTabsSection]!.selectedTabID
+        cardGridViewModel.replaceAllCards(cards, selectedID: selectedID)
+        if cards.isEmpty {
+            cardGridViewModel.showGrid = true
+        }
+    }
+}
+
+extension MainViewModel {
+    func handle(_ action: URLInputView.Action) {
+        switch action {
+        case let .navigate(text, target):
+            if case .newTab = target {
+                let currentWebContent = webContentViewModel.webContent
+                webContentViewModel.openWebContent(withOpener: currentWebContent, relativeToOpener: false)
+            }
+            webContentViewModel.navigate(to: URLInput.url(from: text))
+            if cardGridViewModel.showGrid {
+                UIView.performWithoutAnimation { [self] in
+                    cardGridViewModel.showGrid = false
+                }
+            }
+        }
+    }
+
+    func handle(_ action: CardGridView.Action) {
+        switch action {
+        case let .removeCard(byID: cardID):
+            tabsModel.removeTab(byID: cardID, inSection: currentTabsSection)
+        case let .selectCard(byID: cardID):
+            tabsModel.selectTab(byID: cardID, inSection: currentTabsSection)
+            cardGridViewModel.showGrid = false
+            updateSelectedTabLastAccessedTime()
+        case let .swappedCards(index1, index2):
+            tabsModel.swapTabs(inSection: currentTabsSection, atIndex1: index1, atIndex2: index2)
+        }
+    }
+
+    func handle(_ action: BottomBarView.Action) {
+        switch action {
+        case .editURL:
+            urlInputViewModel.visibility = .showing(
+                initialValue: webContentViewModel.url?.absoluteString ?? "",
+                forTarget: .currentTab
+            )
+        case .goBack:
+            webContentViewModel.goBack()
+        case .goForward:
+            webContentViewModel.goForward()
+        case .showTabs:
+            updateSelectedTabLastAccessedTime()
+            updateSelectedTabThumbnailIfShowing() { [self] in
+                cardGridViewModel.showGrid.toggle()
+            }
+        case .addTab:
+            urlInputViewModel.visibility = .showing(initialValue: "", forTarget: .newTab)
+        case .mainMenu(let mainMenuAction):
+            print(">>> mainMenu: \(mainMenuAction)")
+            switch mainMenuAction {
+            case .toggleIncognito(let incognitoEnabled):
+                updateSelectedTabLastAccessedTime()
+                updateSelectedTabThumbnailIfShowing() { [self] in
+                    setIncognito(incognito: incognitoEnabled)
+                    updateSelectedTabLastAccessedTime()
+                }
+            }
         }
     }
 }

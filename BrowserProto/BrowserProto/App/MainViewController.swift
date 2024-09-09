@@ -16,36 +16,13 @@ class MainViewController: UIViewController {
 
     private lazy var urlInputView = {
         URLInputView(model: model.urlInputViewModel) { [weak self] action in
-            guard let self else { return }
-            switch action {
-            case let .navigate(text, target):
-                if case .newTab = target {
-                    let currentWebContent = model.webContentViewModel.webContent
-                    model.webContentViewModel.openWebContent(withOpener: currentWebContent)
-                }
-                model.webContentViewModel.navigate(to: URLInput.url(from: text))
-                if model.cardGridViewModel.showGrid {
-                    UIView.performWithoutAnimation { [model] in
-                        model.cardGridViewModel.showGrid = false
-                    }
-                }
-            }
+            self?.model.handle(action)
         }
     }()
 
     private lazy var cardGridView = {
         CardGridView(model: model.cardGridViewModel, zoomedView: webContentView) { [weak self] action in
-            guard let self else { return }
-            switch action {
-            case let .removeCard(byID: cardID):
-                model.tabsModel.removeTab(byID: cardID, inSection: model.currentTabsSection)
-            case let .selectCard(byID: cardID):
-                model.tabsModel.selectTab(byID: cardID, inSection: model.currentTabsSection)
-                model.cardGridViewModel.showGrid = false
-                model.updateSelectedTabLastAccessedTime()
-            case let .swappedCards(index1, index2):
-                model.tabsModel.swapTabs(inSection: model.currentTabsSection, atIndex1: index1, atIndex2: index2)
-            }
+            self?.model.handle(action)
         }
     }()
 
@@ -59,35 +36,7 @@ class MainViewController: UIViewController {
 
     private lazy var bottomBarView = {
         BottomBarView(model: model.bottomBarViewModel) { [weak self] action in
-            guard let self else { return }
-            switch action {
-            case .editURL:
-                model.urlInputViewModel.visibility = .showing(
-                    initialValue: model.webContentViewModel.url?.absoluteString ?? "",
-                    forTarget: .currentTab
-                )
-            case .goBack:
-                model.webContentViewModel.goBack()
-            case .goForward:
-                model.webContentViewModel.goForward()
-            case .showTabs:
-                model.updateSelectedTabLastAccessedTime()
-                model.updateSelectedTabThumbnailIfShowing() { [model] in
-                    model.cardGridViewModel.showGrid.toggle()
-                }
-            case .addTab:
-                model.urlInputViewModel.visibility = .showing(initialValue: "", forTarget: .newTab)
-            case .mainMenu(let mainMenuAction):
-                print(">>> mainMenu: \(mainMenuAction)")
-                switch mainMenuAction {
-                case .toggleIncognito(let incognitoEnabled):
-                    model.updateSelectedTabLastAccessedTime()
-                    model.updateSelectedTabThumbnailIfShowing() { [model] in
-                        model.setIncognito(incognito: incognitoEnabled)
-                        model.updateSelectedTabLastAccessedTime()
-                    }
-                }
-            }
+            self?.model.handle(action)
         }
     }()
 
@@ -126,18 +75,7 @@ class MainViewController: UIViewController {
         super.viewDidAppear(animated)
         view.setNeedsUpdateConstraints()
 
-        model.tabsStorage.loadTabsData { [self] tabsData in
-            guard let tabsData else {
-                model.webContentViewModel.openWebContent()
-                model.webContentViewModel.navigate(to: .init(string: "https://news.ycombinator.com/"))
-                return
-            }
-            model.tabsModel.replaceAllTabsData(tabsData)
-
-            if model.tabsModel.selectedTabID(inSection: model.currentTabsSection) == nil {
-                model.cardGridViewModel.showGrid = true
-            }
-        }
+        model.loadData()
     }
 
     override func viewSafeAreaInsetsDidChange() {
