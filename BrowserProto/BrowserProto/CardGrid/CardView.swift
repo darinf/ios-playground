@@ -22,7 +22,11 @@ final class CardView: UIView {
     private var subscriptions: Set<AnyCancellable> = []
 
     private lazy var closeButton = {
-        CapsuleButton(cornerRadius: Metrics.closeButtonRadius, systemImage: "multiply") { [weak self] in
+        CapsuleButton(
+            cornerRadius: Metrics.closeButtonRadius,
+            hitAreaInset: Metrics.margin,
+            systemImage: "multiply"
+        ) { [weak self] in
             self?.handler(.closed)
         }
     }()

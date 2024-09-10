@@ -3,9 +3,11 @@ import UIKit
 class CapsuleButton: UIButton {
     private let clicked: (() -> Void)?
     private let feedbackGenerator = UIImpactFeedbackGenerator(style: .soft)
+    private let hitAreaInset: CGFloat
 
-    init(cornerRadius: CGFloat, systemImage: String? = nil, clicked: (() -> Void)? = nil) {
+    init(cornerRadius: CGFloat, hitAreaInset: CGFloat = .zero, systemImage: String? = nil, clicked: (() -> Void)? = nil) {
         self.clicked = clicked
+        self.hitAreaInset = hitAreaInset
         super.init(frame: .zero)
 
         backgroundColor = .systemBackground
@@ -36,5 +38,10 @@ class CapsuleButton: UIButton {
         didSet {
             backgroundColor = isHighlighted ? .systemFill : .systemBackground
         }
+    }
+
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        let extendedBounds = bounds.insetBy(dx: -hitAreaInset, dy: -hitAreaInset)
+        return extendedBounds.contains(point) ? self : nil
     }
 }
