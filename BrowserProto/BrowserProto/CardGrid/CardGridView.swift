@@ -79,9 +79,8 @@ final class CardGridView: UIView {
 
             let card = model.cards[id: selectedID]
 
-            // TODO: handle case of a cell that is not visible
             let index = model.indexByID(selectedID)
-            scrollToRevealItem(at: index)
+            scrollToRevealItem(at: index, animated: !showGrid)
 
             let attributes = collectionView.layoutAttributesForItem(at: .init(item: index, section: 0))
             let rect = attributes?.frame.offsetBy(dx: -collectionView.contentOffset.x, dy: -collectionView.contentOffset.y)
@@ -144,22 +143,25 @@ final class CardGridView: UIView {
         }.store(in: &subscriptions)
     }
 
-    private func scrollToRevealItem(at index: Int) {
+    private func scrollToRevealItem(at index: Int, animated: Bool) {
         guard let attributes = collectionView.layoutAttributesForItem(at: .init(item: index, section: 0)) else { return }
         let contentOffset = collectionView.contentOffset
         let viewportFrame = attributes.frame.offsetBy(dx: -contentOffset.x, dy: -contentOffset.y)
+        let visibleContentBounds = bounds.inset(by: collectionView.adjustedContentInset).insetBy(dx: 0, dy: Metrics.minimumInteritemSpacing)
 
-        if collectionView.bounds.contains(viewportFrame) {
-            return
+        let deltaY: CGFloat
+        if viewportFrame.minY < visibleContentBounds.minY {
+            deltaY = viewportFrame.minY - visibleContentBounds.minY
+        } else if viewportFrame.maxY > visibleContentBounds.maxY {
+            deltaY = viewportFrame.maxY - visibleContentBounds.maxY
+        } else {
+            deltaY = 0
         }
 
-        let contentHeight = collectionView.contentSize.height
-        let viewportHeight = collectionView.bounds.height
-
-        let maxOffset = contentHeight - viewportHeight
-        let offset = min(attributes.frame.minY, maxOffset)
-
-        collectionView.contentOffset = .init(x: 0, y: offset)
+        let newY = collectionView.contentOffset.y + deltaY
+        UIView.animate(withDuration: animated ? 0.2 : 0) { [collectionView] in
+            collectionView.contentOffset.y = newY
+        }
     }
 
     @objc private func onLongPress(_ gesture: UILongPressGestureRecognizer) {
