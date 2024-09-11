@@ -51,11 +51,11 @@ extension MainViewModel {
         case let .updated(field, atIndex: index):
             switch field {
             case let .title(title):
-                cardGridViewModel.updateTitle(title, forCardAtIndex: index)
+                cardGridViewModel.update(.title(title), forCardAtIndex: index)
             case let .favicon(favicon):
-                cardGridViewModel.updateFavicon(favicon?.image, forCardAtIndex: index)
+                cardGridViewModel.update(.favicon(favicon?.image), forCardAtIndex: index)
             case let .thumbnail(thumbnail):
-                cardGridViewModel.updateThumbnail(thumbnail?.image, forCardAtIndex: index)
+                cardGridViewModel.update(.content(.image(thumbnail?.image)), forCardAtIndex: index)
             case .url, .interactionState, .lastAccessedTime:
                 break
             }
@@ -212,7 +212,7 @@ extension Card {
             id: tab.id,
             title: tab.title,
             favicon: tab.favicon?.image,
-            thumbnail: tab.thumbnail?.image
+            content: .image(tab.thumbnail?.image)
         )
     }
 }

@@ -15,7 +15,7 @@ final class CardGridCellView: UICollectionViewCell {
 
             guard let card, !card.hidden else { return }
 
-            let model = CardViewModel(selected: isSelected, thumbnail: card.thumbnail, title: card.title, favicon: card.favicon)
+            let model = CardViewModel(card: card, selected: isSelected)
             let view = CardView(model: model) { [weak self] action in
                 guard let self else { return }
                 switch action {

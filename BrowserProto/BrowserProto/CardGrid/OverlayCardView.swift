@@ -99,7 +99,7 @@ final class OverlayCardView: UIView {
             return cardViewModel
         }
 
-        let cardViewModel = CardViewModel(selected: false, thumbnail: card?.thumbnail, title: card?.title, favicon: card?.favicon)
+        let cardViewModel = CardViewModel(card: card, selected: false)
         let cardView = CardView(model: cardViewModel)
 
         self.cardViewModel = cardViewModel

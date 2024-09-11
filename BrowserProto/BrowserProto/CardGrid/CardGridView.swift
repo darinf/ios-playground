@@ -130,7 +130,7 @@ final class CardGridView: UIView {
                 hideSelectedCell = true
             }
             if let selectedItemIndex {
-                model.updateHidden(hideSelectedCell, forCardAtIndex: selectedItemIndex)
+                model.update(.hidden(hideSelectedCell), forCardAtIndex: selectedItemIndex)
             }
         }.store(in: &subscriptions)
 

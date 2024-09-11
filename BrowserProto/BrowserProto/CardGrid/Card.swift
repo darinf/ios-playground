@@ -3,10 +3,22 @@ import UIKit
 struct Card: Identifiable {
     typealias ID = UUID
 
+    enum MutableField {
+        case title(String?)
+        case favicon(ImageRef?)
+        case content(Content)
+        case hidden(Bool)
+    }
+
+    enum Content {
+        case image(ImageRef?)
+        case tiled([ImageRef], total: Int)
+    }
+
     let id: ID
     var title: String?
     var favicon: ImageRef?
-    var thumbnail: ImageRef?
+    var content: Content = .image(nil)
     var hidden: Bool = false
 }
 

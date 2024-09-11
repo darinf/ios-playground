@@ -90,6 +90,20 @@ final class CardView: UIView {
 
         setupConstraints()
         setupObservers()
+
+        titleView.text = model.card?.title ?? ""
+        iconView.image = model.card?.favicon?.value
+
+        guard let card = model.card else { return }
+        guard case .image(let image) = card.content, let thumbnail = image?.value else { return }
+
+        thumbnailView.image = thumbnail
+
+        let aspectRatio = thumbnail.size.height / thumbnail.size.width
+        thumbnailViewHeightConstraint = thumbnailView.heightAnchor.constraint(
+            equalTo: thumbnailView.widthAnchor, multiplier: aspectRatio
+        )
+        thumbnailViewHeightConstraint?.isActive = true
     }
     
     required init?(coder: NSCoder) {
@@ -140,37 +154,12 @@ final class CardView: UIView {
             }
         }.store(in: &subscriptions)
 
-        model.$thumbnail.sink { [weak self] thumbnail in
-            guard let self else { return }
-            guard let thumbnail = thumbnail?.value else {
-                thumbnailView.image = nil
-                thumbnailViewHeightConstraint = nil
-                return
-            }
-
-            thumbnailView.image = thumbnail
-
-            let aspectRatio = thumbnail.size.height / thumbnail.size.width
-            thumbnailViewHeightConstraint = thumbnailView.heightAnchor.constraint(
-                equalTo: thumbnailView.widthAnchor, multiplier: aspectRatio
-            )
-            thumbnailViewHeightConstraint?.isActive = true
-        }.store(in: &subscriptions)
-
         model.$hideDecorations.dropFirst().sink { [weak self] hide in
             guard let self else { return }
             closeButton.layer.opacity = hide ? 0 : 1
             footerView.layer.opacity = hide ? 0 : 1
             thumbnailShadowView.layer.cornerRadius = hide ? 0 : Metrics.cornerRadius
             thumbnailClipView.layer.cornerRadius = hide ? 0 : Metrics.cornerRadius
-        }.store(in: &subscriptions)
-
-        model.$title.sink { [weak self] title in
-            self?.titleView.text = title ?? ""
-        }.store(in: &subscriptions)
-
-        model.$favicon.sink { [weak self] favicon in
-            self?.iconView.image = favicon?.value
         }.store(in: &subscriptions)
     }
 }

@@ -75,43 +75,22 @@ extension CardGridViewModel {
         cardsChanges.send(.swapped(atIndex1: index1, atIndex2: index2))
     }
 
-    func updateTitle(_ title: String?, forCardByID cardID: Card.ID) {
+    func update(_ field: Card.MutableField, forCardByID cardID: Card.ID) {
         let cardIndex = indexByID(cardID)
-        updateTitle(title, forCardAtIndex: cardIndex)
+        update(field, forCardAtIndex: cardIndex)
     }
 
-    func updateTitle(_ title: String?, forCardAtIndex index: Int) {
-        cards[index].title = title
-        cardsChanges.send(.updated(cards[index], atIndex: index))
-    }
-
-    func updateFavicon(_ favicon: ImageRef?, forCardByID cardID: Card.ID) {
-        let cardIndex = indexByID(cardID)
-        updateFavicon(favicon, forCardAtIndex: cardIndex)
-    }
-
-    func updateFavicon(_ favicon: ImageRef?, forCardAtIndex index: Int) {
-        cards[index].favicon = favicon
-        cardsChanges.send(.updated(cards[index], atIndex: index))
-    }
-
-    func updateThumbnail(_ thumbnail: ImageRef?, forCardByID cardID: Card.ID) {
-        let cardIndex = indexByID(cardID)
-        updateThumbnail(thumbnail, forCardAtIndex: cardIndex)
-    }
-
-    func updateThumbnail(_ thumbnail: ImageRef?, forCardAtIndex index: Int) {
-        cards[index].thumbnail = thumbnail
-        cardsChanges.send(.updated(cards[index], atIndex: index))
-    }
-
-    func updateHidden(_ hidden: Bool, forCardByID cardID: Card.ID) {
-        let cardIndex = indexByID(cardID)
-        updateHidden(hidden, forCardAtIndex: cardIndex)
-    }
-
-    func updateHidden(_ hidden: Bool, forCardAtIndex index: Int) {
-        cards[index].hidden = hidden
+    func update(_ field: Card.MutableField, forCardAtIndex index: Int) {
+        switch field {
+        case let .title(title):
+            cards[index].title = title
+        case let .favicon(favicon):
+            cards[index].favicon = favicon
+        case let .content(content):
+            cards[index].content = content
+        case let .hidden(hidden):
+            cards[index].hidden = hidden
+        }
         cardsChanges.send(.updated(cards[index], atIndex: index))
     }
 
