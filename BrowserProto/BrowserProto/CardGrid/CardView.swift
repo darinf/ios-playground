@@ -51,61 +51,38 @@ final class CardView: UIView {
         return view
     }()
 
-    private lazy var thumbnailShadowView = {
-        let view = UIView()
-        view.layer.cornerRadius = Metrics.cornerRadius
-        DropShadow.apply(toLayer: view.layer)
-        return view
-    }()
-
-    private lazy var thumbnailClipView = {
-        let view = UIView()
-        view.layer.cornerRadius = Metrics.cornerRadius
-        view.clipsToBounds = true
-        return view
-    }()
-
-    private lazy var thumbnailView = {
-        let imageView = UIImageView(image: nil)
-        imageView.contentMode = .scaleAspectFill
-        return imageView
-    }()
-
-    private var thumbnailViewHeightConstraint: NSLayoutConstraint?
+    private var imageContentView: ImageContentView?
+    private var tiledContentView: TiledContentView?
 
     init(model: CardViewModel, handler: @escaping (Action) -> Void = { _ in }) {
         self.model = model
         self.handler = handler
         super.init(frame: .zero)
 
-        addSubview(thumbnailShadowView)
         addSubview(closeButton)
         addSubview(footerView)
 
         footerView.addArrangedSubview(iconView)
         footerView.addArrangedSubview(titleView)
 
-        thumbnailShadowView.addSubview(thumbnailClipView)
-        thumbnailClipView.addSubview(thumbnailView)
+        if let card = model.card {
+            titleView.text = card.title
+            iconView.image = card.favicon?.value
+
+            switch card.content {
+            case let .image(image):
+                setupAsImage(image)
+            case let .tiled(images, overage: overage):
+                setupAsTiled(images, overage: overage)
+            }
+        }
+
+        bringSubviewToFront(closeButton)
 
         setupConstraints()
         setupObservers()
-
-        titleView.text = model.card?.title ?? ""
-        iconView.image = model.card?.favicon?.value
-
-        guard let card = model.card else { return }
-        guard case .image(let image) = card.content, let thumbnail = image?.value else { return }
-
-        thumbnailView.image = thumbnail
-
-        let aspectRatio = thumbnail.size.height / thumbnail.size.width
-        thumbnailViewHeightConstraint = thumbnailView.heightAnchor.constraint(
-            equalTo: thumbnailView.widthAnchor, multiplier: aspectRatio
-        )
-        thumbnailViewHeightConstraint?.isActive = true
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -117,15 +94,6 @@ final class CardView: UIView {
             closeButton.heightAnchor.constraint(equalToConstant: Metrics.closeButtonRadius * 2),
             closeButton.topAnchor.constraint(equalTo: topAnchor, constant: Metrics.margin),
             closeButton.rightAnchor.constraint(equalTo: rightAnchor, constant: -Metrics.margin)
-        ])
-
-        thumbnailShadowView.activateContainmentConstraints(inside: self)
-        thumbnailClipView.activateContainmentConstraints(inside: thumbnailShadowView)
-
-        thumbnailView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            thumbnailView.topAnchor.constraint(equalTo: thumbnailClipView.topAnchor),
-            thumbnailView.widthAnchor.constraint(equalTo: thumbnailClipView.widthAnchor),
         ])
 
         footerView.translatesAutoresizingMaskIntoConstraints = false
@@ -147,10 +115,10 @@ final class CardView: UIView {
         model.$selected.sink { [weak self] selected in
             guard let self else { return }
             if selected {
-                thumbnailShadowView.layer.borderWidth = 2
-                thumbnailShadowView.layer.borderColor = UIColor.systemTeal.withAlphaComponent(0.5).cgColor
+                imageContentView?.layer.borderWidth = 2
+                imageContentView?.layer.borderColor = UIColor.systemTeal.withAlphaComponent(0.5).cgColor
             } else {
-                thumbnailShadowView.layer.borderWidth = 0
+                imageContentView?.layer.borderWidth = 0
             }
         }.store(in: &subscriptions)
 
@@ -158,8 +126,93 @@ final class CardView: UIView {
             guard let self else { return }
             closeButton.layer.opacity = hide ? 0 : 1
             footerView.layer.opacity = hide ? 0 : 1
-            thumbnailShadowView.layer.cornerRadius = hide ? 0 : Metrics.cornerRadius
-            thumbnailClipView.layer.cornerRadius = hide ? 0 : Metrics.cornerRadius
+            imageContentView?.layer.cornerRadius = hide ? 0 : Metrics.cornerRadius
+            imageContentView?.clipView.layer.cornerRadius = hide ? 0 : Metrics.cornerRadius
         }.store(in: &subscriptions)
+    }
+
+    private func setupAsImage(_ image: ImageRef?) {
+        let imageContentView = ImageContentView(image: image)
+        self.imageContentView = imageContentView
+
+        addSubview(imageContentView)
+        imageContentView.activateContainmentConstraints(inside: self)
+    }
+
+    private func setupAsTiled(_ images: [ImageRef], overage: Int) {
+        let tiledContentView = TiledContentView(images: images, overage: overage)
+        self.tiledContentView = tiledContentView
+
+        addSubview(tiledContentView)
+        tiledContentView.activateContainmentConstraints(inside: self)
+    }
+}
+
+final class ImageContentView: UIView {
+    private let image: ImageRef?
+
+    lazy var clipView = {
+        let view = UIView()
+        view.layer.cornerRadius = CardView.Metrics.cornerRadius
+        view.clipsToBounds = true
+        return view
+    }()
+
+    private lazy var imageView = {
+        let imageView = UIImageView(image: image?.value)
+        imageView.contentMode = .scaleAspectFill
+        return imageView
+    }()
+
+    private var imageViewHeightConstraint: NSLayoutConstraint?
+
+    init(image: ImageRef?) {
+        self.image = image
+        super.init(frame: .zero)
+
+        clipView.addSubview(imageView)
+        addSubview(clipView)
+
+        layer.cornerRadius = CardView.Metrics.cornerRadius
+        DropShadow.apply(toLayer: layer)
+
+        setupConstraints()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    private func setupConstraints() {
+        clipView.activateContainmentConstraints(inside: self)
+
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            imageView.topAnchor.constraint(equalTo: clipView.topAnchor),
+            imageView.widthAnchor.constraint(equalTo: clipView.widthAnchor),
+        ])
+
+        guard let image = image?.value else { return }
+
+        let aspectRatio = image.size.height / image.size.width
+        imageViewHeightConstraint = imageView.heightAnchor.constraint(
+            equalTo: imageView.widthAnchor, multiplier: aspectRatio
+        )
+        imageViewHeightConstraint?.isActive = true
+    }
+}
+
+final class TiledContentView: UIView {
+    private let images: [ImageRef]
+    private let overage: Int
+
+    init(images: [ImageRef], overage: Int) {
+        self.images = images
+        self.overage = overage
+        super.init(frame: .zero)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
