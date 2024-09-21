@@ -12,7 +12,7 @@ struct Card: Identifiable {
 
     enum Content {
         case image(ImageRef?)
-        case tiled([ImageRef], overage: Int) // Up to 3 images
+        case tiled([ImageRef?], overage: Int) // Up to 3 images
     }
 
     let id: ID

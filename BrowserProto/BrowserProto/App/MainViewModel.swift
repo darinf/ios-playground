@@ -35,40 +35,6 @@ extension MainViewModel {
         }
     }
 
-    func updateCardGrid(for change: TabsModel.TabsChange, in section: TabsSection) {
-        guard currentTabsSection == section else { return }
-        switch change {
-        case let .selected(tabID):
-            cardGridViewModel.selectedID = tabID
-        case let .appended(tab):
-            cardGridViewModel.appendCard(.init(from: tab))
-        case let .inserted(tab, atIndex: index):
-            cardGridViewModel.insertCard(.init(from: tab), atIndex: index)
-        case let .removed(atIndex: index):
-            cardGridViewModel.removeCard(atIndex: index)
-        case .removedAll:
-            cardGridViewModel.removeAllCards()
-        case let .updated(field, atIndex: index):
-            switch field {
-            case let .title(title):
-                cardGridViewModel.update(.title(title), forCardAtIndex: index)
-            case let .favicon(favicon):
-                cardGridViewModel.update(.favicon(favicon?.image), forCardAtIndex: index)
-            case let .thumbnail(thumbnail):
-                cardGridViewModel.update(.content(.image(thumbnail?.image)), forCardAtIndex: index)
-            case .url, .interactionState, .lastAccessedTime:
-                break
-            }
-        case let .updatedAll(tabsSectionData):
-            cardGridViewModel.replaceAllCards(
-                .init(uniqueElements: tabsSectionData.tabs.map { Card(from: $0) }),
-                selectedID: tabsSectionData.selectedTabID
-            )
-        case let .swapped(atIndex1: index1, atIndex2: index2):
-            cardGridViewModel.swapCards(atIndex1: index1, atIndex2: index2)
-        }
-    }
-
     func updateTabs(for change: WebContentViewModel.WebContentChange) {
         let currentWebContent = webContentViewModel.webContent
         switch change {
