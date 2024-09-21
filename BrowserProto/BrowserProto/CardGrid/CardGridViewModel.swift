@@ -100,4 +100,8 @@ extension CardGridViewModel {
         }
         return index
     }
+
+    func indexByIDOrNil(_ cardID: Card.ID) -> IdentifiedArrayOf<Card>.Index? {
+        cards.index(id: cardID)
+    }
 }

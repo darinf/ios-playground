@@ -192,6 +192,16 @@ private final class TiledContentView: UIView {
         (0..<3).map { .init(image: imageAt($0)) }
     }()
 
+    private lazy var overageView = {
+        let view = UILabel()
+        view.backgroundColor = .systemGray4
+        view.text = "+\(overage)"
+        view.textAlignment = .center
+        view.adjustsFontSizeToFitWidth = true
+        view.font = .systemFont(ofSize: 20, weight: .regular)
+        return view
+    }()
+
     init(images: [ImageRef?], overage: Int) {
         self.images = images
         self.overage = overage
@@ -200,6 +210,7 @@ private final class TiledContentView: UIView {
         clipView.addSubview(thumbnailViews[0])
         clipView.addSubview(thumbnailViews[1])
         clipView.addSubview(thumbnailViews[2])
+        clipView.addSubview(overageView)
         addSubview(clipView)
 
         layer.cornerRadius = CardView.Metrics.cornerRadius
@@ -215,7 +226,7 @@ private final class TiledContentView: UIView {
     private func setupConstraints() {
         clipView.activateContainmentConstraints(inside: self)
         
-        thumbnailViews.forEach {
+        clipView.subviews.forEach {
             NSLayoutConstraint.activate([
                 $0.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.48),
                 $0.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.48)
@@ -238,6 +249,12 @@ private final class TiledContentView: UIView {
         NSLayoutConstraint.activate([
             thumbnailViews[2].bottomAnchor.constraint(equalTo: bottomAnchor),
             thumbnailViews[2].leftAnchor.constraint(equalTo: leftAnchor)
+        ])
+
+        overageView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            overageView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            overageView.rightAnchor.constraint(equalTo: rightAnchor)
         ])
     }
 

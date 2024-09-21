@@ -6,16 +6,20 @@ extension MainViewModel {
         guard currentTabsSection == section else { return }
         switch change {
         case let .selected(tabID):
+            // XXX make sure this tabID exists
             cardGridViewModel.selectedID = tabID
         case let .appended(tab):
             cardGridViewModel.appendCard(.init(from: tab))
         case let .inserted(tab, atIndex: index):
+            // XXX need to map index
             cardGridViewModel.insertCard(.init(from: tab), atIndex: index)
-        case let .removed(atIndex: index):
+        case let .removed(tabID, atIndex: _):
+            guard let index = cardIndex(forTabByID: tabID) else { return }
             cardGridViewModel.removeCard(atIndex: index)
         case .removedAll:
             cardGridViewModel.removeAllCards()
-        case let .updated(field, atIndex: index):
+        case let .updated(field, ofTab: tabID, atIndex: _):
+            guard let index = cardIndex(forTabByID: tabID) else { return }
             switch field {
             case let .title(title):
                 cardGridViewModel.update(.title(title), forCardAtIndex: index)
@@ -34,6 +38,15 @@ extension MainViewModel {
         case let .swapped(atIndex1: index1, atIndex2: index2):
             cardGridViewModel.swapCards(atIndex1: index1, atIndex2: index2)
         }
+    }
+
+    func cardIndex(forTabByID tabID: TabData.ID) -> Int? {
+        cardGridViewModel.indexByIDOrNil(tabID)
+    }
+
+    func cardIndex(forTabAtIndex tabIndex: Int) -> Int? {
+
+        tabIndex // XXX
     }
 
     // TODO refactor into a helper class

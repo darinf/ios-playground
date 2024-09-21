@@ -8,9 +8,9 @@ final class TabsModel {
         case selected(TabData.ID?)
         case appended(TabData)
         case inserted(TabData, atIndex: Int)
-        case removed(atIndex: Int)
+        case removed(TabData.ID, atIndex: Int)
         case removedAll
-        case updated(TabData.MutableField, atIndex: Int)
+        case updated(TabData.MutableField, ofTab: TabData.ID, atIndex: Int)
         case updatedAll(TabsSectionData)
         case swapped(atIndex1: Int, atIndex2: Int)
     }
@@ -58,7 +58,7 @@ extension TabsModel {
         if notifyNilSelectedTab {
             tabsChanges.send((section, .selected(nil)))
         }
-        tabsChanges.send((section, .removed(atIndex: removalIndex)))
+        tabsChanges.send((section, .removed(tabID, atIndex: removalIndex)))
     }
 
     func removeAllTabs(inSection section: TabsSection) {
@@ -93,7 +93,7 @@ extension TabsModel {
     func update(_ field: TabData.MutableField, forTabByID tabID: TabData.ID, inSection section: TabsSection) {
         let tabIndex = indexByID(tabID, inSection: section)
         data.sections[id: section]!.tabs[tabIndex].update(field)
-        tabsChanges.send((section, .updated(field, atIndex: tabIndex)))
+        tabsChanges.send((section, .updated(field, ofTab: tabID, atIndex: tabIndex)))
     }
 
     func indexByID(_ tabID: TabData.ID, inSection section: TabsSection) -> IdentifiedArrayOf<TabData>.Index {
