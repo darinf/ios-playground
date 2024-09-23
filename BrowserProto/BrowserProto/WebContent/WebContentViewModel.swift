@@ -4,14 +4,14 @@ import UIKit
 import WebKit
 
 final class WebContentViewModel {
-    enum WebContentChange {
+    enum Change {
         case opened(relativeToOpener: Bool)
         case switched
         case poppedBack(from: WebContent)
     }
 
     private(set) var webContent: WebContent?
-    let webContentChanges = PassthroughSubject<WebContentChange, Never>()
+    let changes = PassthroughSubject<Change, Never>()
 
     @Published var panningDeltaY: CGFloat?
     @Published var incognito: Bool = false
@@ -47,18 +47,18 @@ final class WebContentViewModel {
 
     func openWebContent(with newWebContent: WebContent, relativeToOpener: Bool = false) {
         webContent = newWebContent
-        webContentChanges.send(.opened(relativeToOpener: relativeToOpener))
+        changes.send(.opened(relativeToOpener: relativeToOpener))
     }
 
     func popBack() {
         guard let fromWebContent = webContent else { return }
         webContent = fromWebContent.opener // Can be nil, corresponding to window.close().
-        webContentChanges.send(.poppedBack(from: fromWebContent))
+        changes.send(.poppedBack(from: fromWebContent))
     }
 
     func replaceWebContent(with newWebContent: WebContent?) {
         webContent = newWebContent
-        webContentChanges.send(.switched)
+        changes.send(.switched)
     }
 }
 

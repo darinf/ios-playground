@@ -3,6 +3,10 @@ import UIKit
 struct Card: Identifiable {
     typealias ID = UUID
 
+    enum Metrics {
+        static let maxTiledImages = 3
+    }
+
     enum MutableField {
         case title(String?)
         case favicon(ImageRef?)
@@ -12,7 +16,7 @@ struct Card: Identifiable {
 
     enum Content {
         case image(ImageRef?)
-        case tiled([ImageRef?], overage: Int) // Up to 3 images
+        case tiled([ImageRef?], overage: Int) // Up to Metrics.maxTiledImages images
     }
 
     let id: ID

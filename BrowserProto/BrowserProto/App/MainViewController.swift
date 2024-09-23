@@ -135,11 +135,18 @@ class MainViewController: UIViewController {
         model.tabsModel.changes.sink { [weak self] (section, change) in
             guard let self else { return }
             model.tabsStorage.persistTabsChange(change, in: section, for: model.tabsModel.data)
-            model.updateCardGrid(for: change, in: section)
+            if section == model.currentTabsSection {
+                model.tabsGroupingModel.apply(change)
+            }
             model.validateOpener()
         }.store(in: &subscriptions)
 
-        model.webContentViewModel.webContentChanges.sink { [weak self] change in
+        model.tabsGroupingModel.changes.sink { [weak self] change in
+            guard let self else { return }
+            model.updateCardGrid(for: change)
+        }.store(in: &subscriptions)
+
+        model.webContentViewModel.changes.sink { [weak self] change in
             guard let self else { return }
             model.updateTabs(for: change)
             setupWebContentObservers(for: model.webContentViewModel.webContent)

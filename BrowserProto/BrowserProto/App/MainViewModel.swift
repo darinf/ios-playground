@@ -10,6 +10,7 @@ final class MainViewModel {
     let cardGridViewModel = CardGridViewModel()
     let tabsModel = TabsModel()
     let tabsStorage = TabsStorage()
+    let tabsGroupingModel = TabsGroupingModel()
     let webContentCache = WebContentCache()
 
     @Published var suppressInteraction: Bool = false
@@ -35,7 +36,7 @@ extension MainViewModel {
         }
     }
 
-    func updateTabs(for change: WebContentViewModel.WebContentChange) {
+    func updateTabs(for change: WebContentViewModel.Change) {
         let currentWebContent = webContentViewModel.webContent
         switch change {
         case let .opened(relativeToOpener):
@@ -98,6 +99,7 @@ extension MainViewModel {
     private func setIncognito(incognito: Bool) {
         webContentViewModel.incognito = incognito
 
+        // XXX update tabsGroupingModel instead
         var cards = IdentifiedArrayOf<Card>()
         tabsModel.data.sections[id: currentTabsSection]!.tabs.forEach { tab in
             cards.append(.init(from: tab))
@@ -181,6 +183,25 @@ extension Card {
             content: .image(tab.thumbnail?.image)
         )
     }
+
+    init(from group: TabsGroup) {
+        self.init(
+            id: group.id,
+            title: "Archived",
+            favicon: .init(image: .init(systemName: "square.grid.2x2.fill")),
+            content: .tiled(group.images, overage: group.overage),
+            hidden: false
+        )
+    }
+
+    init(from item: TabsGroupingModel.Item) {
+        switch item {
+        case let .tab(tab):
+            self.init(from: tab)
+        case let .group(group):
+            self.init(from: group)
+        }
+    }
 }
 
 extension TabData {
@@ -192,5 +213,21 @@ extension TabData {
             favicon: webContent.favicon,
             thumbnail: webContent.thumbnail
         )
+    }
+}
+
+extension TabsGroup {
+    var images: [ImageRef?] {
+        (0..<Card.Metrics.maxTiledImages).map { index in
+            guard index < tabs.endIndex else { return nil }
+            return tabs[index].thumbnail?.image
+        }
+    }
+
+    var overage: Int {
+        if tabs.count < Card.Metrics.maxTiledImages {
+            return 0
+        }
+        return tabs.count - Card.Metrics.maxTiledImages
     }
 }

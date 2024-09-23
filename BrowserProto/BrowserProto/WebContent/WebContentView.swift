@@ -117,7 +117,7 @@ final class WebContentView: UIView {
     }
 
     private func setupObservers() {
-        model.webContentChanges.sink { [weak self] _ in
+        model.changes.sink { [weak self] _ in
             guard let self else { return }
             if let webContent = model.webContent {
                 setWebView(webContent.webView)

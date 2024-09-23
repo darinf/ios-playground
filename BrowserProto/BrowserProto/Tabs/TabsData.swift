@@ -44,3 +44,28 @@ struct TabData: Identifiable, Codable {
 
     // TODO: extend data model
 }
+
+extension TabData {
+    mutating func apply(_ field: MutableField) {
+        switch field {
+        case let .url(url):
+            self.url = url
+        case let .title(title):
+            self.title = title
+        case let .favicon(favicon):
+            self.favicon = favicon
+        case let .thumbnail(thumbnail):
+            self.thumbnail = thumbnail
+        case let .interactionState(interactionState):
+            self.interactionState = interactionState
+        case let .lastAccessedTime(lastAccessedTime):
+            self.lastAccessedTime = lastAccessedTime
+        }
+    }
+
+    func applying(_ field: MutableField) -> TabData {
+        var copy = self
+        copy.apply(field)
+        return copy
+    }
+}
