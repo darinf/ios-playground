@@ -55,6 +55,7 @@
 		93D481252C4AEBE80019921F /* UIView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D481242C4AEBE80019921F /* UIView+Extensions.swift */; };
 		93E1634C2C77B893002A2186 /* WebContentCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E1634B2C77B893002A2186 /* WebContentCache.swift */; };
 		93E1C9C72C9E322100CC7ACB /* MainViewModel+CardGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E1C9C62C9E322100CC7ACB /* MainViewModel+CardGrid.swift */; };
+		93E1C9C92CA090BB00CC7ACB /* TabsGroupingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E1C9C82CA090BB00CC7ACB /* TabsGroupingModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -106,6 +107,7 @@
 		93D481242C4AEBE80019921F /* UIView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extensions.swift"; sourceTree = "<group>"; };
 		93E1634B2C77B893002A2186 /* WebContentCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebContentCache.swift; sourceTree = "<group>"; };
 		93E1C9C62C9E322100CC7ACB /* MainViewModel+CardGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MainViewModel+CardGrid.swift"; sourceTree = "<group>"; };
+		93E1C9C82CA090BB00CC7ACB /* TabsGroupingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabsGroupingModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -140,6 +142,7 @@
 			isa = PBXGroup;
 			children = (
 				9388230F2C62FB0100B4FE37 /* TabsData.swift */,
+				93E1C9C82CA090BB00CC7ACB /* TabsGroupingModel.swift */,
 				938822F22C5C78E500B4FE37 /* TabsModel.swift */,
 				937C688B2C6BAFC00061C28C /* TabsStorage.swift */,
 			);
@@ -375,6 +378,7 @@
 				937C688C2C6BAFC00061C28C /* TabsStorage.swift in Sources */,
 				93D480E22C25D9600019921F /* MainViewController.swift in Sources */,
 				938675C22C8136C4001CC07F /* Logging.swift in Sources */,
+				93E1C9C92CA090BB00CC7ACB /* TabsGroupingModel.swift in Sources */,
 				938823102C62FB0100B4FE37 /* TabsData.swift in Sources */,
 				938823122C6534A500B4FE37 /* Favicon.swift in Sources */,
 				93D480FD2C2704DF0019921F /* CenterButtonView.swift in Sources */,

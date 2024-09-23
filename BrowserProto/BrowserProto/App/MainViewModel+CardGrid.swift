@@ -6,7 +6,7 @@ extension MainViewModel {
         guard currentTabsSection == section else { return }
         switch change {
         case let .selected(tabID):
-            // XXX make sure this tabID exists
+            // XXX make sure this tabID exists, split up tiled cards
             cardGridViewModel.selectedID = tabID
         case let .appended(tab):
             cardGridViewModel.appendCard(.init(from: tab))
@@ -14,12 +14,18 @@ extension MainViewModel {
             // XXX need to map index
             cardGridViewModel.insertCard(.init(from: tab), atIndex: index)
         case let .removed(tabID, atIndex: _):
-            guard let index = cardIndex(forTabByID: tabID) else { return }
+            guard let index = cardIndex(forTabByID: tabID) else {
+                // XXX need to update tiled card
+                return
+            }
             cardGridViewModel.removeCard(atIndex: index)
         case .removedAll:
             cardGridViewModel.removeAllCards()
         case let .updated(field, ofTab: tabID, atIndex: _):
-            guard let index = cardIndex(forTabByID: tabID) else { return }
+            guard let index = cardIndex(forTabByID: tabID) else {
+                // XXX need to update tiled card
+                return
+            }
             switch field {
             case let .title(title):
                 cardGridViewModel.update(.title(title), forCardAtIndex: index)
@@ -36,6 +42,7 @@ extension MainViewModel {
                 selectedID: tabsSectionData.selectedTabID
             )
         case let .swapped(atIndex1: index1, atIndex2: index2):
+            // XXX
             cardGridViewModel.swapCards(atIndex1: index1, atIndex2: index2)
         }
     }
