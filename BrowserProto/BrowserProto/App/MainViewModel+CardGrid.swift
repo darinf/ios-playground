@@ -10,7 +10,7 @@ extension MainViewModel {
             cardGridViewModel.selectedID = tabID
         case let .appended(tab):
             cardGridViewModel.appendCard(.init(from: tab))
-        case let .inserted(tab, atIndex: index):
+        case let .inserted(tab, atIndex: index, after: _):
             // XXX need to map index
             cardGridViewModel.insertCard(.init(from: tab), atIndex: index)
         case let .removed(tabID, atIndex: _):
@@ -41,7 +41,7 @@ extension MainViewModel {
                 cards(for: tabsSectionData),
                 selectedID: tabsSectionData.selectedTabID
             )
-        case let .swapped(atIndex1: index1, atIndex2: index2):
+        case let .swapped(tabsSectionData, atIndex1: index1, atIndex2: index2):
             // XXX
             cardGridViewModel.swapCards(atIndex1: index1, atIndex2: index2)
         }

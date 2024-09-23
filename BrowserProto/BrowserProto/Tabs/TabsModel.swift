@@ -7,12 +7,12 @@ final class TabsModel {
     enum TabsChange {
         case selected(TabData.ID?)
         case appended(TabData)
-        case inserted(TabData, atIndex: Int)
+        case inserted(TabData, atIndex: Int, after: TabData.ID)
         case removed(TabData.ID, atIndex: Int)
         case removedAll
         case updated(TabData.MutableField, ofTab: TabData.ID, atIndex: Int)
         case updatedAll(TabsSectionData)
-        case swapped(atIndex1: Int, atIndex2: Int)
+        case swapped(TabsSectionData, atIndex1: Int, atIndex2: Int)
     }
 
     private(set) var data: TabsData = .init()
@@ -38,7 +38,7 @@ extension TabsModel {
     func insertTab(_ tab: TabData, inSection section: TabsSection, after previousID: TabData.ID) {
         let insertionIndex = indexByID(previousID, inSection: section) + 1
         data.sections[id: section]!.tabs.insert(tab, at: insertionIndex)
-        tabsChanges.send((section, .inserted(tab, atIndex: insertionIndex)))
+        tabsChanges.send((section, .inserted(tab, atIndex: insertionIndex, after: previousID)))
     }
 
     func removeTab(byID tabID: TabData.ID, inSection section: TabsSection) {
@@ -87,7 +87,7 @@ extension TabsModel {
 
     func swapTabs(inSection section: TabsSection, atIndex1 index1: Int, atIndex2 index2: Int) {
         data.sections[id: section]!.tabs.swapAt(index1, index2)
-        tabsChanges.send((section, .swapped(atIndex1: index1, atIndex2: index2)))
+        tabsChanges.send((section, .swapped(data.sections[id: section]!, atIndex1: index1, atIndex2: index2)))
     }
 
     func update(_ field: TabData.MutableField, forTabByID tabID: TabData.ID, inSection section: TabsSection) {
