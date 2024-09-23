@@ -2,7 +2,7 @@ import Foundation
 import IdentifiedCollections
 
 extension MainViewModel {
-    func updateCardGrid(for change: TabsModel.TabsChange, in section: TabsSection) {
+    func updateCardGrid(for change: TabsModel.Change, in section: TabsSection) {
         guard currentTabsSection == section else { return }
         switch change {
         case let .selected(tabID):
@@ -41,7 +41,7 @@ extension MainViewModel {
                 cards(for: tabsSectionData),
                 selectedID: tabsSectionData.selectedTabID
             )
-        case let .swapped(tabsSectionData, atIndex1: index1, atIndex2: index2):
+        case let .swapped(_, atIndex1: index1, atIndex2: index2):
             // XXX
             cardGridViewModel.swapCards(atIndex1: index1, atIndex2: index2)
         }

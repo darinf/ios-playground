@@ -4,7 +4,7 @@ import IdentifiedCollections
 import UIKit
 
 final class TabsModel {
-    enum TabsChange {
+    enum Change {
         case selected(TabData.ID?)
         case appended(TabData)
         case inserted(TabData, atIndex: Int, after: TabData.ID)
@@ -16,7 +16,7 @@ final class TabsModel {
     }
 
     private(set) var data: TabsData = .init()
-    let tabsChanges = PassthroughSubject<(TabsSection, TabsChange), Never>()
+    let changes = PassthroughSubject<(TabsSection, Change), Never>()
 }
 
 extension TabsModel {
@@ -27,18 +27,18 @@ extension TabsModel {
     func selectTab(byID tabID: TabData.ID?, inSection section: TabsSection) {
         guard data.sections[id: section]!.selectedTabID != tabID else { return }
         data.sections[id: section]!.selectedTabID = tabID
-        tabsChanges.send((section, .selected(tabID)))
+        changes.send((section, .selected(tabID)))
     }
 
     func appendTab(_ tab: TabData, inSection section: TabsSection) {
         data.sections[id: section]!.tabs.append(tab)
-        tabsChanges.send((section, .appended(tab)))
+        changes.send((section, .appended(tab)))
     }
 
     func insertTab(_ tab: TabData, inSection section: TabsSection, after previousID: TabData.ID) {
         let insertionIndex = indexByID(previousID, inSection: section) + 1
         data.sections[id: section]!.tabs.insert(tab, at: insertionIndex)
-        tabsChanges.send((section, .inserted(tab, atIndex: insertionIndex, after: previousID)))
+        changes.send((section, .inserted(tab, atIndex: insertionIndex, after: previousID)))
     }
 
     func removeTab(byID tabID: TabData.ID, inSection section: TabsSection) {
@@ -56,9 +56,9 @@ extension TabsModel {
         data.sections[id: section] = sectionData
 
         if notifyNilSelectedTab {
-            tabsChanges.send((section, .selected(nil)))
+            changes.send((section, .selected(nil)))
         }
-        tabsChanges.send((section, .removed(tabID, atIndex: removalIndex)))
+        changes.send((section, .removed(tabID, atIndex: removalIndex)))
     }
 
     func removeAllTabs(inSection section: TabsSection) {
@@ -73,27 +73,27 @@ extension TabsModel {
         data.sections[id: section]!.tabs = []
 
         if notifyNilSelectedTab {
-            tabsChanges.send((section, .selected(nil)))
+            changes.send((section, .selected(nil)))
         }
-        tabsChanges.send((section, .removedAll))
+        changes.send((section, .removedAll))
     }
 
     func replaceAllTabsData(_ data: TabsData) {
         self.data = data
         data.sections.forEach {
-            tabsChanges.send(($0.id, .updatedAll($0)))
+            changes.send(($0.id, .updatedAll($0)))
         }
     }
 
     func swapTabs(inSection section: TabsSection, atIndex1 index1: Int, atIndex2 index2: Int) {
         data.sections[id: section]!.tabs.swapAt(index1, index2)
-        tabsChanges.send((section, .swapped(data.sections[id: section]!, atIndex1: index1, atIndex2: index2)))
+        changes.send((section, .swapped(data.sections[id: section]!, atIndex1: index1, atIndex2: index2)))
     }
 
     func update(_ field: TabData.MutableField, forTabByID tabID: TabData.ID, inSection section: TabsSection) {
         let tabIndex = indexByID(tabID, inSection: section)
         data.sections[id: section]!.tabs[tabIndex].update(field)
-        tabsChanges.send((section, .updated(field, ofTab: tabID, atIndex: tabIndex)))
+        changes.send((section, .updated(field, ofTab: tabID, atIndex: tabIndex)))
     }
 
     func indexByID(_ tabID: TabData.ID, inSection section: TabsSection) -> IdentifiedArrayOf<TabData>.Index {
