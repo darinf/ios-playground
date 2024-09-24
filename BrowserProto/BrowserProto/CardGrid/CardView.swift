@@ -195,7 +195,9 @@ private final class TiledContentView: UIView {
     private lazy var overageView = {
         let view = UILabel()
         view.backgroundColor = .systemGray4
-        view.text = "+\(overage)"
+        if overage > 0 {
+            view.text = "+\(overage)"
+        }
         view.textAlignment = .center
         view.adjustsFontSizeToFitWidth = true
         view.font = .systemFont(ofSize: 20, weight: .regular)
@@ -284,7 +286,10 @@ private final class ThumbnailView: UIView {
             imageView.widthAnchor.constraint(equalTo: widthAnchor)
         ])
 
-        guard let image else { return }
+        guard let image else {
+            backgroundColor = .systemGray4
+            return
+        }
 
         // Allow the height of the imageView to overflow the bounds of its
         // container. We will just clip the part the spills over.
