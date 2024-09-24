@@ -99,14 +99,8 @@ extension MainViewModel {
     private func setIncognito(incognito: Bool) {
         webContentViewModel.incognito = incognito
 
-        // XXX update tabsGroupingModel instead
-        var cards = IdentifiedArrayOf<Card>()
-        tabsModel.data.sections[id: currentTabsSection]!.tabs.forEach { tab in
-            cards.append(.init(from: tab))
-        }
-        let selectedID = tabsModel.data.sections[id: currentTabsSection]!.selectedTabID
-        cardGridViewModel.replaceAllCards(cards, selectedID: selectedID)
-        if cards.isEmpty {
+        tabsGroupingModel.updateAll(tabsModel.data.sections[id: currentTabsSection]!)
+        if cardGridViewModel.cards.isEmpty {
             cardGridViewModel.showGrid = true
         }
     }
