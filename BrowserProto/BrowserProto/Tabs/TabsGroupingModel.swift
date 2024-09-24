@@ -167,11 +167,15 @@ extension TabsGroupingModel {
             tabsToExtract.append(tabsToKeep.removeLast()) // Reverses order
         }
 
+        var insertionIndex: Int
+
         // Update group item
         if tabsToKeep.isEmpty {
+            insertionIndex = index
             items.remove(at: index)
             changes.send(.removed(.group(group), atIndex: index))
         } else {
+            insertionIndex = index + 1
             let updatedGroup = TabsGroup(id: group.id, tabs: tabsToKeep)
             items[id: group.id] = .group(updatedGroup)
             changes.send(.updated(.group(updatedGroup), atIndex: index))
@@ -179,7 +183,8 @@ extension TabsGroupingModel {
 
         // Now insert the tabsToExtract
         for tab in tabsToExtract {
-            insert(.tab(tab), after: group.id) // Reverses order
+            items.insert(.tab(tab), at: insertionIndex) // Reverses order
+            changes.send(.inserted(.tab(tab), atIndex: insertionIndex))
         }
     }
 }
