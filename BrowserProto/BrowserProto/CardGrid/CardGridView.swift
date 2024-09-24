@@ -10,9 +10,9 @@ final class CardGridView: UIView {
     }
 
     enum Action {
-        case selectCard(byID: Card.ID)
-        case removeCard(byID: Card.ID)
-        case swappedCards(atIndex1: Int, atIndex2: Int)
+        case selectCard(Card.ID)
+        case removeCard(Card.ID)
+        case movedCard(Card.ID, toIndex: Int)
     }
 
     private let model: CardGridViewModel
@@ -109,7 +109,7 @@ final class CardGridView: UIView {
             case let .updated(card, atIndex: index):
                 guard let cell = collectionView.cellForItem(at: .init(item: index, section: 0)) else { return }
                 (cell as! CardGridCellView).card = card
-            case .swapped:
+            case .moved:
                 break // Ignored as this is driven by collectionView(_:moveItemAt:to:)
             default:
                 collectionView.reloadData()
@@ -191,7 +191,7 @@ extension CardGridView: UICollectionViewDataSource {
             guard let self else { return }
             switch action {
             case .closed:
-                handler(.removeCard(byID: card.id))
+                handler(.removeCard(card.id))
             }
         }
         cell.card = card
@@ -203,7 +203,7 @@ extension CardGridView: UICollectionViewDataSource {
     }
 
     func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        handler(.swappedCards(atIndex1: sourceIndexPath.item, atIndex2: destinationIndexPath.item))
+        handler(.movedCard(model.cards[sourceIndexPath.item].id, toIndex: destinationIndexPath.item))
     }
 }
 
@@ -212,7 +212,7 @@ extension CardGridView: UICollectionViewDelegate {
         _ collectionView: UICollectionView,
         didSelectItemAt indexPath: IndexPath
     ) {
-        handler(.selectCard(byID: model.cards[indexPath.item].id))
+        handler(.selectCard(model.cards[indexPath.item].id))
     }
 }
 

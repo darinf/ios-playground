@@ -56,6 +56,7 @@
 		93E1634C2C77B893002A2186 /* WebContentCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E1634B2C77B893002A2186 /* WebContentCache.swift */; };
 		93E1C9C72C9E322100CC7ACB /* MainViewModel+CardGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E1C9C62C9E322100CC7ACB /* MainViewModel+CardGrid.swift */; };
 		93E1C9C92CA090BB00CC7ACB /* TabsGroupingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E1C9C82CA090BB00CC7ACB /* TabsGroupingModel.swift */; };
+		93E1C9CB2CA3441C00CC7ACB /* IdentifiedArray+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E1C9CA2CA3441C00CC7ACB /* IdentifiedArray+Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -108,6 +109,7 @@
 		93E1634B2C77B893002A2186 /* WebContentCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebContentCache.swift; sourceTree = "<group>"; };
 		93E1C9C62C9E322100CC7ACB /* MainViewModel+CardGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MainViewModel+CardGrid.swift"; sourceTree = "<group>"; };
 		93E1C9C82CA090BB00CC7ACB /* TabsGroupingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabsGroupingModel.swift; sourceTree = "<group>"; };
+		93E1C9CA2CA3441C00CC7ACB /* IdentifiedArray+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "IdentifiedArray+Extensions.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -255,6 +257,7 @@
 		93D481172C31A2300019921F /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				93E1C9CA2CA3441C00CC7ACB /* IdentifiedArray+Extensions.swift */,
 				938675C32C825060001CC07F /* ImageRef.swift */,
 				938675C12C8136C4001CC07F /* Logging.swift */,
 				93D481182C31A24D0019921F /* UIColor+Extensions.swift */,
@@ -350,6 +353,7 @@
 				93D4810C2C2C493B0019921F /* DropShadow.swift in Sources */,
 				93D481252C4AEBE80019921F /* UIView+Extensions.swift in Sources */,
 				93C94CD92C4F2C2D00E3BB13 /* SearchEngine.swift in Sources */,
+				93E1C9CB2CA3441C00CC7ACB /* IdentifiedArray+Extensions.swift in Sources */,
 				93D480F42C2609950019921F /* BottomBarView.swift in Sources */,
 				938822F32C5C78E500B4FE37 /* TabsModel.swift in Sources */,
 				93D4810A2C2B275F0019921F /* Colors.swift in Sources */,

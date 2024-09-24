@@ -11,7 +11,7 @@ final class TabsGroupingModel {
         case removedAll
         case updated(Item.MutableField, atIndex: Int)
         case updatedAll(IdentifiedArrayOf<Item>, selectedItemID: Item.ID?)
-        case swapped(atIndex1: Int, atIndex2: Int)
+        case moved(Item.ID, toIndex: Int)
     }
 
     enum Item: Identifiable {
@@ -50,7 +50,7 @@ struct TabsGroup: Identifiable {
 }
 
 extension TabsGroupingModel {
-    func apply(_ change: TabsModel.Change) {
+    func apply(_ change: TabsModel.DataChange) {
         switch change {
         case let .selected(tabID):
             select(tabID)
@@ -66,8 +66,8 @@ extension TabsGroupingModel {
             update(field, ofTab: tabID)
         case let .updatedAll(tabsSectionData):
             updateAll(tabsSectionData)
-        case let .swapped(tabsSectionData, atIndex1: index1, atIndex2: index2):
-            swap(tabsSectionData, atIndex1: index1, atIndex2: index2)
+        case .moved:
+            break // Ignored
         }
     }
 
@@ -146,16 +146,23 @@ extension TabsGroupingModel {
         changes.send(.updatedAll(items, selectedItemID: selectedItemID))
     }
 
-    func swap(_ tabsSectionData: TabsSectionData, atIndex1 index1: Int, atIndex2 index2: Int) {
-        let tab1 = tabsSectionData.tabs[index1]
-        let tab2 = tabsSectionData.tabs[index2]
+//    func swap(_ tabsSectionData: TabsSectionData, atIndex1 index1: Int, atIndex2 index2: Int) {
+//        let tab1 = tabsSectionData.tabs[index1]
+//        let tab2 = tabsSectionData.tabs[index2]
+//
+//        guard let indexOfItem1 = items.index(id: tab1.id), let indexOfItem2 = items.index(id: tab2.id) else {
+//            fatalError("Unexpected tabs: not found as top level items")
+//        }
+//
+//        items.swapAt(indexOfItem1, indexOfItem2)
+//        changes.send(.swapped(atIndex1: indexOfItem1, atIndex2: indexOfItem2))
+//    }
 
-        guard let indexOfItem1 = items.index(id: tab1.id), let indexOfItem2 = items.index(id: tab2.id) else {
-            fatalError("Unexpected tabs: not found as top level items")
-        }
-
-        items.swapAt(indexOfItem1, indexOfItem2)
-        changes.send(.swapped(atIndex1: indexOfItem1, atIndex2: indexOfItem2))
+    func move(_ itemID: Item.ID, toIndex index: Int) {
+        print(">>> move \(itemID) to: \(index)")
+        let itemIndex = items.index(id: itemID)!
+        items.move(fromOffset: itemIndex, toOffset: index)
+        changes.send(.moved(itemID, toIndex: index))
     }
 
     func expandGroup(_ group: TabsGroup) {
@@ -186,6 +193,30 @@ extension TabsGroupingModel {
             items.insert(.tab(tab), at: insertionIndex) // Reverses order
             changes.send(.inserted(.tab(tab), atIndex: insertionIndex))
         }
+    }
+
+    func tabsModelIndex(of itemID: Item.ID) -> Int {
+        tabsModelIndex(of: items.index(id: itemID)!)
+    }
+
+    // Returns the index of the first tab in the group if the specified item is a group.
+    func tabsModelIndex(of itemIndex: Int) -> Int {
+        let targetItem = items[itemIndex]
+
+        var result = 0
+        for item in items {
+            if item.id == targetItem.id {
+                break
+            }
+            switch item {
+            case .tab:
+                result += 1
+            case let .group(group):
+                result += group.tabs.count
+            }
+        }
+
+        return result
     }
 }
 

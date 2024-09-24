@@ -11,7 +11,7 @@ final class TabsStorage {
 
     private struct Update {
         let data: TabsData
-        let change: TabsModel.Change
+        let change: TabsModel.DataChange
         let section: TabsSection
     }
 
@@ -45,7 +45,7 @@ final class TabsStorage {
         }
     }
 
-    func persistTabsChange(_ change: TabsModel.Change, in section: TabsSection, for data: TabsData, immediately: Bool = false) {
+    func persistTabsChange(_ change: TabsModel.DataChange, in section: TabsSection, for data: TabsData, immediately: Bool = false) {
         pendingUpdatesLock.lock()
         defer { pendingUpdatesLock.unlock() }
 

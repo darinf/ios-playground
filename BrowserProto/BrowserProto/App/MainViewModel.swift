@@ -129,37 +129,6 @@ extension MainViewModel {
         }
     }
 
-    func handle(_ action: CardGridView.Action) {
-        switch action {
-        case let .removeCard(byID: cardID):
-            switch tabsGroupingModel.items[id: cardID]! {
-            case let .tab(tab):
-                tabsModel.removeTab(byID: tab.id, inSection: currentTabsSection)
-            case let .group(group):
-                // XXX remove all tabs in the group
-                break
-            }
-        case let .selectCard(byID: cardID):
-            switch tabsGroupingModel.items[id: cardID]! {
-            case let .tab(tab):
-                tabsModel.selectTab(byID: cardID, inSection: currentTabsSection)
-                cardGridViewModel.showGrid = false
-                updateSelectedTabLastAccessedTime()
-            case let .group(group):
-                tabsGroupingModel.expandGroup(group)
-            }
-        case let .swappedCards(index1, index2):
-//            switch tabsGroupingModel.items[id: cardID]! {
-//            case let .tab(tab):
-//                tabsModel.swapTabs(inSection: currentTabsSection, atIndex1: index1, atIndex2: index2)
-//            case let .group(group):
-//                // XXX
-//                break
-//            }
-            break
-        }
-    }
-
     func handle(_ action: BottomBarView.Action) {
         switch action {
         case .editURL:

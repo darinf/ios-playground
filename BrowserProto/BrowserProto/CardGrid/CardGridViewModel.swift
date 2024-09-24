@@ -11,7 +11,7 @@ final class CardGridViewModel {
         case removedAll
         case updated(Card, atIndex: Int)
         case updatedAll
-        case swapped(atIndex1: Int, atIndex2: Int)
+        case moved(Card.ID, toIndex: Int)
     }
 
     @Published var showGrid = false
@@ -70,9 +70,15 @@ extension CardGridViewModel {
         self.selectedID = selectedID
     }
 
-    func swapCards(atIndex1 index1: Int, atIndex2 index2: Int) {
-        cards.swapAt(index1, index2)
-        cardsChanges.send(.swapped(atIndex1: index1, atIndex2: index2))
+//    func swapCards(atIndex1 index1: Int, atIndex2 index2: Int) {
+//        cards.swapAt(index1, index2)
+//        cardsChanges.send(.swapped(atIndex1: index1, atIndex2: index2))
+//    }
+
+    func moveCard(_ cardID: Card.ID, toIndex: Int) {
+        let cardIndex = cards.index(id: cardID)!
+        cards.move(fromOffset: cardIndex, toOffset: toIndex)
+        cardsChanges.send(.moved(cardID, toIndex: toIndex))
     }
 
     func update(_ field: Card.MutableField, forCardByID cardID: Card.ID) {

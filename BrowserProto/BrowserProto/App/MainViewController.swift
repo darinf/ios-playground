@@ -132,7 +132,7 @@ class MainViewController: UIViewController {
             self?.updateBottomBarOffset(panningDeltaY: panningDeltaY)
         }.store(in: &subscriptions)
 
-        model.tabsModel.changes.sink { [weak self] (section, change) in
+        model.tabsModel.dataChanges.sink { [weak self] (section, change) in
             guard let self else { return }
             model.tabsStorage.persistTabsChange(change, in: section, for: model.tabsModel.data)
             if section == model.currentTabsSection {
