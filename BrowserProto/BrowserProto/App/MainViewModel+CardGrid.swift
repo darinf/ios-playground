@@ -14,7 +14,7 @@ extension MainViewModel {
             cardGridViewModel.removeCard(atIndex: index)
         case .removedAll:
             cardGridViewModel.removeAllCards()
-        case let .updated(field, ofItem: item, atIndex: index):
+        case let .updated(field, atIndex: index):
             switch field {
             case let .tab(tabField):
                 switch tabField {
@@ -27,9 +27,8 @@ extension MainViewModel {
                 case .url, .interactionState, .lastAccessedTime:
                     break
                 }
-            case .group:
-                // XXX
-                break
+            case let .group(group):
+                cardGridViewModel.update(.content(.tiled(group.images, overage: group.overage)), forCardAtIndex: index)
             }
         case let .updatedAll(items, selectedItemID):
             cardGridViewModel.replaceAllCards(

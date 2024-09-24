@@ -9,7 +9,7 @@ final class TabsGroupingModel {
         case inserted(Item, atIndex: Int)
         case removed(Item, atIndex: Int)
         case removedAll
-        case updated(Item.MutableField, ofItem: Item, atIndex: Int)
+        case updated(Item.MutableField, atIndex: Int)
         case updatedAll(IdentifiedArrayOf<Item>, selectedItemID: Item.ID?)
         case swapped(atIndex1: Int, atIndex2: Int)
     }
@@ -19,7 +19,7 @@ final class TabsGroupingModel {
 
         enum MutableField {
             case tab(TabData.MutableField)
-            case group(TabsGroup.MutableField)
+            case group(TabsGroup)
         }
 
         case tab(TabData)
@@ -44,10 +44,6 @@ final class TabsGroupingModel {
 
 struct TabsGroup: Identifiable {
     typealias ID = UUID
-
-    enum MutableField {
-        case tabs
-    }
 
     let id: ID
     let tabs: IdentifiedArrayOf<TabData>
@@ -110,10 +106,10 @@ extension TabsGroupingModel {
             }
             tabToGroupMap.removeValue(forKey: itemID)
             // XXX flatten a group of one
-            let updatedItem: Item = .group(.init(id: group.id, tabs: tabs))
+            let updatedGroup = TabsGroup(id: group.id, tabs: tabs)
             let index = items.index(id: groupID)!
-            items[index] = updatedItem
-            changes.send(.updated(.group(.tabs), ofItem: updatedItem, atIndex: index))
+            items[index] = .group(updatedGroup)
+            changes.send(.updated(.group(updatedGroup), atIndex: index))
         }
     }
 
@@ -126,9 +122,8 @@ extension TabsGroupingModel {
 
     func update(_ field: TabData.MutableField, ofTab tabID: TabData.ID) {
         if let index = items.index(id: tabID), case .tab(let tab) = items[index] {
-            let updatedItem: Item = .tab(tab.applying(field))
-            items[index] = updatedItem
-            changes.send(.updated(.tab(field), ofItem: updatedItem, atIndex: index))
+            items[index] = .tab(tab.applying(field))
+            changes.send(.updated(.tab(field), atIndex: index))
         } else {
             // Look to see if this refers to a tab that is part of a group.
             guard let groupID = tabToGroupMap[tabID], let item = items[id: groupID], case .group(let group) = item else {
@@ -139,8 +134,9 @@ extension TabsGroupingModel {
                 fatalError("Unexpected tabID: not a tab within a group")
             }
             tabs[id: tabID] = tab.applying(field)
-            items[id: groupID] = .group(.init(id: group.id, tabs: tabs))
-            changes.send(.updated(.group(.tabs), ofItem: item, atIndex: items.index(id: groupID)!))
+            let updatedGroup = TabsGroup(id: group.id, tabs: tabs)
+            items[id: groupID] = .group(updatedGroup)
+            changes.send(.updated(.group(updatedGroup), atIndex: items.index(id: groupID)!))
         }
     }
 
@@ -160,6 +156,31 @@ extension TabsGroupingModel {
 
         items.swapAt(indexOfItem1, indexOfItem2)
         changes.send(.swapped(atIndex1: indexOfItem1, atIndex2: indexOfItem2))
+    }
+
+    func expandGroup(_ group: TabsGroup) {
+        let index = items.index(id: group.id)!
+
+        var tabsToKeep = group.tabs
+        var tabsToExtract: [TabData] = []
+        for _ in 0..<min(group.tabs.count, 4) {
+            tabsToExtract.append(tabsToKeep.removeLast()) // Reverses order
+        }
+
+        // Update group item
+        if tabsToKeep.isEmpty {
+            items.remove(at: index)
+            changes.send(.removed(.group(group), atIndex: index))
+        } else {
+            let updatedGroup = TabsGroup(id: group.id, tabs: tabsToKeep)
+            items[id: group.id] = .group(updatedGroup)
+            changes.send(.updated(.group(updatedGroup), atIndex: index))
+        }
+
+        // Now insert the tabsToExtract
+        for tab in tabsToExtract {
+            insert(.tab(tab), after: group.id) // Reverses order
+        }
     }
 }
 
