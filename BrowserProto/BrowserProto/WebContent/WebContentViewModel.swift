@@ -11,7 +11,7 @@ final class WebContentViewModel {
     }
 
     private(set) var webContent: WebContent?
-    let changes = PassthroughSubject<Change, Never>()
+    let webContentChanges = PassthroughSubject<Change, Never>()
 
     @Published var panningDeltaY: CGFloat?
     @Published var incognito: Bool = false
@@ -47,18 +47,18 @@ final class WebContentViewModel {
 
     func openWebContent(with newWebContent: WebContent, relativeToOpener: Bool = false) {
         webContent = newWebContent
-        changes.send(.opened(relativeToOpener: relativeToOpener))
+        webContentChanges.send(.opened(relativeToOpener: relativeToOpener))
     }
 
     func popBack() {
         guard let fromWebContent = webContent else { return }
         webContent = fromWebContent.opener // Can be nil, corresponding to window.close().
-        changes.send(.poppedBack(from: fromWebContent))
+        webContentChanges.send(.poppedBack(from: fromWebContent))
     }
 
     func replaceWebContent(with newWebContent: WebContent?) {
         webContent = newWebContent
-        changes.send(.switched)
+        webContentChanges.send(.switched)
     }
 }
 
