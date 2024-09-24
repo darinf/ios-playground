@@ -66,7 +66,7 @@ extension TabsGroupingModel {
             update(field, ofTab: tabID)
         case let .updatedAll(tabsSectionData):
             updateAll(tabsSectionData)
-        case .moved:
+        case .moved, .movedSubrange:
             break // Ignored
         }
     }

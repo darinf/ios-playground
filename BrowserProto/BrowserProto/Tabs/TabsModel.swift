@@ -12,7 +12,8 @@ final class TabsModel {
         case removedAll
         case updated(TabData.MutableField, ofTab: TabData.ID, atIndex: Int)
         case updatedAll(TabsSectionData)
-        case moved(TabData.ID, toIndex: Int)
+        case moved(fromIndex: Int, toIndex: Int)
+        case movedSubrange(fromIndex: Int, toIndex: Int, count: Int)
     }
 
     private(set) var data: TabsData = .init()
@@ -87,7 +88,13 @@ extension TabsModel {
 
     func moveTab(inSection section: TabsSection, fromIndex: Int, toIndex: Int) {
         data.sections[id: section]!.tabs.move(fromOffset: fromIndex, toOffset: toIndex)
-        changes.send((section, .moved(data.sections[id: section]!.tabs[toIndex].id, toIndex: toIndex)))
+        changes.send((section, .moved(fromIndex: fromIndex, toIndex: toIndex)))
+    }
+
+    func moveTabs(inSection section: TabsSection, fromIndex: Int, toIndex: Int, count: Int) {
+        //        data.sections[id: section]!.tabs.moveSubrange(fromOffset: fromIndex, toOffset: toIndex, count: count)
+        data.sections[id: section]!.tabs.moveSubrange(fromOffset: fromIndex, toOffset: toIndex, count: count)
+        changes.send((section, .movedSubrange(fromIndex: fromIndex, toIndex: toIndex, count: count)))
     }
 
     func update(_ field: TabData.MutableField, forTabByID tabID: TabData.ID, inSection section: TabsSection) {

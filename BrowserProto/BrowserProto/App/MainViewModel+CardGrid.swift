@@ -32,15 +32,19 @@ extension MainViewModel {
             tabsGroupingModel.move(cardID, toIndex: toIndex)
 
             switch tabsGroupingModel.items[id: cardID]! {
-            case let .tab(tab):
+            case .tab:
                 tabsModel.moveTab(
                     inSection: currentTabsSection,
                     fromIndex: fromIndex,
                     toIndex: tabsGroupingModel.tabsModelIndex(of: toIndex)
                 )
             case let .group(group):
-                // XXX
-                break
+                tabsModel.moveTabs(
+                    inSection: currentTabsSection,
+                    fromIndex: fromIndex,
+                    toIndex: tabsGroupingModel.tabsModelIndex(of: toIndex),
+                    count: group.tabs.count
+                )
             }
         }
     }
