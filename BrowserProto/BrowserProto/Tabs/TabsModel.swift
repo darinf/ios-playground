@@ -99,7 +99,7 @@ extension TabsModel {
 
     func update(_ field: TabData.MutableField, forTabByID tabID: TabData.ID, inSection section: TabsSection) {
         let tabIndex = indexByID(tabID, inSection: section)
-        data.sections[id: section]!.tabs[tabIndex].update(field)
+        data.sections[id: section]!.tabs[tabIndex].apply(field)
         changes.send((section, .updated(field, ofTab: tabID, atIndex: tabIndex)))
     }
 
@@ -132,24 +132,5 @@ extension TabsModel {
             webContent.webView.load(.init(url: url))
         }
         return webContent
-    }
-}
-
-extension TabData {
-    mutating func update(_ field: MutableField) {
-        switch field {
-        case let .url(url):
-            self.url = url
-        case let .title(title):
-            self.title = title
-        case let .favicon(favicon):
-            self.favicon = favicon
-        case let .thumbnail(thumbnail):
-            self.thumbnail = thumbnail
-        case let .interactionState(interactionState):
-            self.interactionState = interactionState
-        case let .lastAccessedTime(lastAccessedTime):
-            self.lastAccessedTime = lastAccessedTime
-        }
     }
 }

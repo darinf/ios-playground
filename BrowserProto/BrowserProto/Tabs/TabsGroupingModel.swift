@@ -14,7 +14,7 @@ final class TabsGroupingModel {
         case moved(Item.ID, toIndex: Int)
     }
 
-    enum Item: Identifiable {
+    enum Item: Identifiable, Equatable {
         typealias ID = UUID
 
         enum MutableField {
@@ -32,6 +32,10 @@ final class TabsGroupingModel {
             case .group(let group):
                 return group.id
             }
+        }
+
+        static func == (lhs: TabsGroupingModel.Item, rhs: TabsGroupingModel.Item) -> Bool {
+            lhs.id == rhs.id
         }
     }
 
@@ -94,6 +98,11 @@ extension TabsGroupingModel {
         assert(itemID != selectedItemID) // Should have been updated to nil as a precondition
         if let index = items.index(id: itemID) {
             let item = items.remove(at: index)
+            if case .group(let group) = item {
+                group.tabs.forEach {
+                    tabToGroupMap.removeValue(forKey: $0.id)
+                }
+            }
             changes.send(.removed(item, atIndex: index))
         } else {
             // Look to see if this refers to a tab that is part of a group.
@@ -146,6 +155,15 @@ extension TabsGroupingModel {
         changes.send(.updatedAll(items, selectedItemID: selectedItemID))
     }
 
+    func updateAllIfChanged(tabsSectionData: TabsSectionData) {
+        let (items, tabToGroupMap) = ItemsBuilder(for: tabsSectionData).makeItems()
+        guard self.items != items || selectedItemID != tabsSectionData.selectedTabID else { return }
+        self.items = items
+        self.tabToGroupMap = tabToGroupMap
+        selectedItemID = tabsSectionData.selectedTabID
+        changes.send(.updatedAll(items, selectedItemID: selectedItemID))
+    }
+
     func move(_ itemID: Item.ID, toIndex index: Int) {
         print(">>> move \(itemID) to: \(index)")
         let itemIndex = items.index(id: itemID)!
@@ -173,6 +191,9 @@ extension TabsGroupingModel {
             insertionIndex = index + 1
             let updatedGroup = TabsGroup(id: group.id, tabs: tabsToKeep)
             items[id: group.id] = .group(updatedGroup)
+            tabsToExtract.forEach {
+                tabToGroupMap.removeValue(forKey: $0.id)
+            }
             changes.send(.updated(.group(updatedGroup), atIndex: index))
         }
 
@@ -210,7 +231,7 @@ extension TabsGroupingModel {
 
 private final class ItemsBuilder {
     enum Metrics {
-        static let daysThreshold = 5.0
+        static let daysThreshold = 3.0
     }
 
     private let tabsSectionData: TabsSectionData
@@ -225,18 +246,24 @@ private final class ItemsBuilder {
         var tabToGroupMap: [TabData.ID: TabsGroup.ID] = [:]
 
         func appendGroup(_ group: TabsGroup) {
-            // XXX flatten a group of one
-            items.append(.group(group))
+            // Flatten a group of one
+            if group.tabs.count == 1 {
+                items.append(.tab(group.tabs[0]))
+            } else {
+                items.append(.group(group))
+                group.tabs.forEach {
+                    tabToGroupMap[$0.id] = group.id
+                }
+            }
         }
 
         for tab in tabsSectionData.tabs {
-            if shouldElideTab(tab) {
+            if tab.id != tabsSectionData.selectedTabID, shouldElideTab(tab) {
                 if group != nil {
                     group = group!.appending(tab: tab)
                 } else {
                     group = .init(id: .init(), tabs: [tab])
                 }
-                tabToGroupMap[tab.id] = group!.id
             } else {
                 if let group {
                     appendGroup(group)

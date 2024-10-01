@@ -21,6 +21,10 @@ extension MainViewModel {
         webContentViewModel.incognito ? .incognito : .default
     }
 
+    var currentTabsSectionData: TabsSectionData {
+        tabsModel.data.sections[id: currentTabsSection]!
+    }
+
     func loadData() {
         tabsStorage.loadTabsData { [self] tabsData in
             guard let tabsData else {

@@ -161,7 +161,8 @@ class MainViewController: UIViewController {
         }.store(in: &subscriptions)
 
         model.cardGridViewModel.$showGrid.dropFirst().removeDuplicates().sink { [weak self] showGrid in
-            self?.model.bottomBarViewModel.centerButtonViewModel.mode = showGrid ? .showAsPlus : .showAsText
+            guard let self else { return }
+            model.bottomBarViewModel.centerButtonViewModel.mode = showGrid ? .showAsPlus : .showAsText
         }.store(in: &subscriptions)
 
         model.$suppressInteraction.sink { [weak self] suppressInteraction in

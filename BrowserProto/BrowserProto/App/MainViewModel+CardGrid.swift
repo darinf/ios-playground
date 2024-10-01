@@ -71,7 +71,7 @@ extension MainViewModel {
                     cardGridViewModel.update(.favicon(favicon?.image), forCardAtIndex: index)
                 case let .thumbnail(thumbnail):
                     cardGridViewModel.update(.content(.image(thumbnail?.image)), forCardAtIndex: index)
-                case .url, .interactionState, .lastAccessedTime:
+                case .url, .interactionState, .creationTime, .lastAccessedTime, .accessCount:
                     break
                 }
             case let .group(group):

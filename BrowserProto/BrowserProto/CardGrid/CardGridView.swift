@@ -95,7 +95,7 @@ final class CardGridView: UIView {
 
         model.$selectedID.sink { [weak self] selectedID in
             guard let self else { return }
-            guard let selectedID else {
+            guard let selectedID, model.containsCard(byID: selectedID) else {
                 collectionView.selectItem(at: nil, animated: false, scrollPosition: [])
                 return
             }
