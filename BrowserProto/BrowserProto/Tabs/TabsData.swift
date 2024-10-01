@@ -31,9 +31,7 @@ struct TabData: Identifiable, Codable {
         case favicon(Favicon?)
         case thumbnail(Thumbnail?)
         case interactionState(Data?)
-        case creationTime(Date?)
         case lastAccessedTime(Date?)
-        case accessCount(Int?)
     }
 
     let id: ID
@@ -62,12 +60,12 @@ extension TabData {
             self.thumbnail = thumbnail
         case let .interactionState(interactionState):
             self.interactionState = interactionState
-        case let .creationTime(creationTime):
-            self.creationTime = creationTime
         case let .lastAccessedTime(lastAccessedTime):
             self.lastAccessedTime = lastAccessedTime
-        case let .accessCount(accessCount):
-            self.accessCount = accessCount
+            self.accessCount = (self.accessCount ?? 0) + 1
+            if self.creationTime == nil {
+                self.creationTime = lastAccessedTime
+            }
         }
     }
 
